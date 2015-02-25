@@ -20,14 +20,8 @@ include MovingImages
 $verbose = false
 $smig = "smig"
 
-$is_yosemite = `sw_vers -productVersion`.start_with? "10.10"
-
 $filename = File.basename(__FILE__)
 $directory = File.expand_path(File.dirname(__FILE__))
-$imagefile = $directory + "/images/test002image.jpg"
-if $is_yosemite
-  $imagefile = File.join($directory, "yosemite/images/test002image.jpg")
-end
 $errorcode = 0
 
 # Get the list of bit map context presets.
