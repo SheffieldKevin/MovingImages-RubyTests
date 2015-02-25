@@ -86,7 +86,44 @@ This test is about testing that when drawing an array of different shapes that d
 
 1. Draw some more basic shapes which haven't previously drawn including a linear gradient object
 2. Draw a radial gradient
-3. 
+
+##### test011 - Test using CoreImage filters
+
+1. Test of various simple CoreImage filters, just applying a single filter to an image.
+2. Test of various CoreImage blend filters first drawing a background image & then foreground image with filter.
+3. Construct a filter chain made up of five different core image filters.
+  * Uses radial gradient filter, crop filter, height field mask filter, shaded material filter, bump distortion filter
+
+##### test012 - Test of taking, drawing and clearing snapshots. Test cleanup commands
+
+You can take a snapshot of a bitmap context or window context and draw that snapshot back into the context later.
+
+Cleanup commands are commands that run after the last command in the main list of commands has run. The cleanup command will always run even if the main list commands did not finish and all cleanup commands will be attempted. The cleanup commands will mostly be close object commands or remove images from the image collection.
+
+1. Test snapshot in a bitmap context
+2. Test snapshot in a window context
+3. Test cleanup commands
+
+##### test013 - Tests using equations and variables and calculating graphic size of text. Test MIMeta
+
+1. Uses equations and variables for positions, sizes, colours and shadow blur of shapes being drawn.
+2. Testing that equations work when specifying source & destination rectangles when rendering a filter chain.
+3. Calculate graphic text size using user interface fonts and post script fonts.
+4. Test MIMeta returns correct values for core graphic blend modes, presets, video writer presets
+5. Test getting pixel data works for a floating point backed bitmap context.
+  * Test getting pixel data works for a 8 bit per component integer based context.
+6. Test the getproperties command by getting image properties from an image works.
+
+#####  test014 - Draw arcs, use equations, apply clipping
+
+1. Draw a path made up of arcs and stroke.
+2. Set up a clipping path, and then draw an image which will have its drawing clipped.
+3. Use a grayscale image as an image mask before drawing an image.
+4. 
+
+
+
+1. 
 
 
 
