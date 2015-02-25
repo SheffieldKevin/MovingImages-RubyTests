@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Maps the colors of an image to various shades of brown.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryColorEffect</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryInterlaced</string>
+		<string>CICategoryNonSquarePixels</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Sepia Tone</string>
+	<key>CIAttributeFilterName</key>
+	<string>CISepiaTone</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CISepiaTone</string>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputIntensity</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>1</real>
+		<key>CIAttributeDescription</key>
+		<string>The intensity of the sepia effect. A value of 1.0 creates a monochrome sepia image. A value of 0.0 has no effect on the image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Intensity</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

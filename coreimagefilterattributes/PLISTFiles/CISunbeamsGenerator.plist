@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Generates a sun effect. You typically use the output of the sunbeams filter as input to a composite filter.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryGenerator</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Sunbeams</string>
+	<key>CIAttributeFilterName</key>
+	<string>CISunbeamsGenerator</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CISunbeamsGenerator</string>
+	<key>inputCenter</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[150 150]</string>
+		<key>CIAttributeDescription</key>
+		<string>The  x and y position to use as the center of the sunbeam pattern</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Center</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputColor</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>1 0.5 0 1</string>
+		<key>CIAttributeDescription</key>
+		<string>The color of the sun.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Color</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputMaxStriationRadius</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>2.5800000000000001</real>
+		<key>CIAttributeDescription</key>
+		<string>The radius of the sunbeams.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Maximum Striation Radius</string>
+		<key>CIAttributeIdentity</key>
+		<real>2.5800000000000001</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>10</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputStriationContrast</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>1.375</real>
+		<key>CIAttributeDescription</key>
+		<string>The contrast of the sunbeams. Higher values result in more contrast.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Striation Contrast</string>
+		<key>CIAttributeIdentity</key>
+		<real>1.375</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>5</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputStriationStrength</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.5</real>
+		<key>CIAttributeDescription</key>
+		<string>The intensity of the sunbeams. Higher values result in more intensity.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Striation Strength</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.5</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>3</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputSunRadius</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>40</real>
+		<key>CIAttributeDescription</key>
+		<string>The radius of the sun.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Sun Radius</string>
+		<key>CIAttributeIdentity</key>
+		<real>40</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>800</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeDistance</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputTime</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.0</real>
+		<key>CIAttributeDescription</key>
+		<string>The duration of the effect.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Time</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeMax</key>
+		<real>1</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

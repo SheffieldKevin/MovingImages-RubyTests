@@ -1,0 +1,105 @@
+{
+  "inputTargetImage" : {
+    "CIAttributeDisplayName" : "Target Image",
+    "CIAttributeDescription" : "The target image for a transition.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputTime" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The parametric time of the transition. This value drives the transition from start (at time 0) to end (at time 1).",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Time",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeTime",
+    "CIAttributeDefault" : 0
+  },
+  "CIAttributeDescription" : "Transitions from one image to another by simulating a curling page, revealing the new image as the page curls.",
+  "inputAngle" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The angle of the curling page.",
+    "CIAttributeSliderMax" : 3.141592653589793,
+    "CIAttributeDisplayName" : "Angle",
+    "CIAttributeDefault" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : -3.141592653589793
+  },
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputShadowExtent" : {
+    "CIAttributeDisplayName" : "ShadowExtent",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[0 0 0 0]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypeRectangle"
+  },
+  "inputShadowAmount" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeDisplayName" : "ShadowAmount",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 0.7
+  },
+  "inputShadowSize" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeDisplayName" : "ShadowSize",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 0.5
+  },
+  "CIAttributeFilterName" : "CIPageCurlWithShadowTransition",
+  "inputExtent" : {
+    "CIAttributeDisplayName" : "Extent",
+    "CIAttributeDescription" : "The extent of the effect.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[0 0 0 0]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypeRectangle"
+  },
+  "CIAttributeFilterDisplayName" : "Page Curl With Shadow",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIPageCurlWithShadowTransition",
+  "inputBacksideImage" : {
+    "CIAttributeDisplayName" : "Backside Image",
+    "CIAttributeDescription" : "The image that appears on the back of the source image, as the page curls to reveal the target image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryTransition",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius of the curl.",
+    "CIAttributeSliderMax" : 400,
+    "CIAttributeDisplayName" : "Radius",
+    "CIAttributeSliderMin" : 0.01,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0.01,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 100
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Adjust the tonal mapping of an image while preserving spatial detail</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryStylize</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Highlight and Shadow Adjust</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIHighlightShadowAdjust</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIHighlightShadowAdjust</string>
+	<key>inputHighlightAmount</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>1</real>
+		<key>CIAttributeDescription</key>
+		<string>The amount of adjustment to the highlights of the image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>HighlightAmount</string>
+		<key>CIAttributeIdentity</key>
+		<real>1</real>
+		<key>CIAttributeMax</key>
+		<real>1</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.29999999999999999</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputRadius</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.0</real>
+		<key>CIAttributeDescription</key>
+		<string>Shadow Hightlight Radius</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Radius</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>10</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputShadowAmount</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.0</real>
+		<key>CIAttributeDescription</key>
+		<string>The amount of adjustment to the shadows of the image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>ShadowAmount</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeMax</key>
+		<real>1</real>
+		<key>CIAttributeMin</key>
+		<real>-1</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>-1</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

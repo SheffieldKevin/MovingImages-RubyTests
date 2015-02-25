@@ -1,0 +1,483 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+#
+# This script tests various simple filters. No chaining of filters together.
+# Only filters that take 0 or 1 input images and up to 2 numerical values.
+# Numerical inputs will be default values.
+
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+
+require 'moving_images'
+
+include MovingImages
+include MICoreImage
+
+$directory = File.expand_path(File.dirname(__FILE__))
+
+$inputimagesdir = File.join($directory, "images")
+$origforcompareimagesdir = File.join($directory,
+                              "images/test011ForComparison/simplesingleimages")
+$compareimages = File.join($directory, "compareimages")
+$tempDir = Dir.tmpdir()
+
+$foregroundimage = File.join($directory,
+                            "images/horizontaltestpattern.png")
+$backgroundimage = File.join($directory, "images/verticaltestpattern.png")
+
+$originalblendimages = File.join($directory, 
+                            "images/test011ForComparison/blendedimages/")
+
+$testingembossmaskscript = File.join($directory, "testingembossmask")
+
+$embossimagemask = File.join($directory, "images/MovingImagesMaskSmall.png")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareimages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    puts "File1: #{filePath1}"
+    puts "File2: #{filePath2}"
+    raise "failed to compare files with result: " + result + " exitstatus: " +
+          exitVal.exitstatus.to_s
+  end
+  return result.eql? "SAME"
+end
+
+module TestFile011
+  def self.apply_simplesinglecifilter(filterName, inputFile, outputDir)
+    result = ""
+    begin
+      inputKey1 = nil
+      inputValue1 = nil
+      if filterName.eql? "CIHueAdjust"
+        inputKey1 = "inputAngle"
+        inputValue1 = 2.09
+      elsif filterName.eql? "CIUnsharpMask"
+        inputKey1 = "inputIntensity"
+        inputValue1 = 1.0
+      end
+      
+      filterOptions = MILibrary::Utility.make_simplesinglecifilter_options(
+                                         cifilter: filterName,
+                                        outputdir: outputDir,
+                                   exportfiletype: :'public.jpeg',
+                                          quality: 0.9,
+                                   softwarerender: false,
+                                        inputkey1: inputKey1,
+                                      inputvalue1: inputValue1,
+                                        inputkey2: nil,
+                                      inputvalue2: nil)
+      # filterOptions[:generate_json] = true
+      fileList = { width: 908, height: 681, files: [inputFile] }
+      result = MILibrary.simplesinglecifilter_files(filterOptions, fileList)
+      # puts result
+    rescue RuntimeError => e
+      $errorcode = Smig.exitvalue
+      unless $errorcode.zero?
+        puts "Exit string: " + Smig.exitstring
+        puts "Exit status: " + $errorcode.to_s
+      end
+      puts e.message
+      puts e.backtrace.to_s
+    end
+    return result
+  end
+
+  def self.apply_simplefilter_tofile_andcompare(filterName, baseFileName)
+    begin
+      outputFile = nil
+      intermediateFile = nil
+      newFileName = baseFileName + filterName + ".jpg"
+      inputFile = File.join($inputimagesdir, baseFileName + ".JPG")
+      intermediateFile = File.join($inputimagesdir, newFileName)
+      FileUtils.cp(inputFile, intermediateFile)
+      origFile = File.join($origforcompareimagesdir, newFileName)
+      result = self.apply_simplesinglecifilter(filterName, intermediateFile, $tempDir)
+      distance = 17
+      if filterName.eql? "CIColorPosterize"
+        distance = 63
+      elsif filterName.eql? "CIBloom"
+        distance = 22
+      end
+      outputFile = File.join($tempDir, newFileName)
+      puts "outputFile doesn't exist: #{outputFile}" unless File.exists?(outputFile)
+      unless AreImageFilesSame(origFile, outputFile, distance)
+        raise "Different image files: " + origFile + " and " + outputFile
+      end
+    rescue RuntimeError => e
+      puts e.message
+    ensure
+      # FileUtils.cp(outputFile, origFile)
+      FileUtils.rm_f(outputFile) unless outputFile.nil?
+      FileUtils.rm_f(intermediateFile) unless intermediateFile.nil?
+      # `open #{outputFile}`
+    end
+  end
+
+  # Using the simplesinglefilter command, apply a number of the simple
+  # core image filters to a small range of images. Then compare the results
+  # to see if the new output is different to the previously generated output.
+  def self.test01()
+    listOfFilesFilters = [
+              { :basename => "DSCN0724", :filter => "CIBloom" },
+              { :basename => "DSCN0724", :filter => "CIColorPosterize" },
+              { :basename => "DSCN0733", :filter => "CIExposureAdjust" },
+              { :basename => "DSCN0733", :filter => "CIHueAdjust" },
+              { :basename => "DSCN0744", :filter => "CIMedianFilter" },
+              { :basename => "DSCN0746", :filter => "CIPhotoEffectChrome" },
+              { :basename => "DSCN0748", :filter => "CISharpenLuminance" },
+              { :basename => "DSCN0724", :filter => "CIUnsharpMask" } ]
+    listOfFilesFilters.each { |fileFilter|
+      self.apply_simplefilter_tofile_andcompare(fileFilter[:filter],
+                                               fileFilter[:basename])
+    }
+  end
+
+  def self.apply_blendcifilter(filterName, outputFile, fgImporterObj,
+                               bgImporterObj, bitmapObj, exporterObj)
+    theCommands = CommandModule::SmigCommands.new
+    # before rendering the filter chain to the bitmap. Clear the bitmap.
+    drawInstructions = MIDrawElement.new(:fillrectangle)
+    drawColor = MIColor.make_rgbacolor(1,1,1)
+    drawInstructions.fillcolor = drawColor
+    drawRect = MIShapes.make_rectangle(width: 600, height: 600)
+    drawInstructions.rectangle = drawRect
+    drawCommand = CommandModule.make_drawelement(bitmapObj,
+                                drawinstructions: drawInstructions)
+    theCommands.add_command(drawCommand)
+    
+    inputImageProperty = MIFilterProperty.make_ciimageproperty(
+                                          value: fgImporterObj,
+                                        options: { imageindex: 0 })
+    blendFilter = MICoreImage::MIFilter.new(filterName)
+    blendFilter.add_property(inputImageProperty)
+    backgroundImageProperty = MIFilterProperty.make_ciimageproperty(
+                                            key: :inputBackgroundImage,
+                                          value: bgImporterObj,
+                                        options: { imageindex: 0 } )
+    theFilter = MIFilter.new(filterName)
+    theFilter.add_property(inputImageProperty)
+    theFilter.add_property(backgroundImageProperty)
+    filterChain = MIFilterChain.new(bitmapObj)
+    filterChain.add_filter(theFilter)
+    filterObjectID = theCommands.make_createimagefilterchain(filterChain)
+    renderFilterChain = CommandModule.make_renderfilterchain(filterObjectID)
+    theCommands.add_command(renderFilterChain)
+    addImageToExporterCommand = CommandModule.make_addimage(exporterObj, bitmapObj)
+    theCommands.add_command(addImageToExporterCommand)
+    setPathCommand = CommandModule.make_set_objectproperty(exporterObj,
+        propertykey: :exportfilepath, propertyvalue: outputFile)
+    theCommands.add_command(setPathCommand)
+    exportCommand = CommandModule.make_export(exporterObj)
+    theCommands.add_command(exportCommand)
+    result = Smig.perform_commands(theCommands)
+    return result
+  end
+
+  # Using the coreimageblend command, apply a number of the core image blend
+  # mode filters to a foreground and a background image. Compare the results
+  # with previously generated images to see if new output is different to old.
+  # This is not a very good test as the tolerance for image difference needs
+  # be too high, see the 75 value in AreImageFilesSame above. I removed the
+  # following blend modes and compositing filters because the differences
+  # were just too large: CILuminosityBlendModeBlendedImage.png,
+  # CISaturationBlendModeBlendedImage.png, CISoftLightBlendModeBlendedImage.png
+  # There could well be others which are as bad.
+  # I've also changed the script to not raise an exception when file comparison
+  # indicates the files are different. There will still be a record in the
+  # output but the script will continue to run.
+  def self.test02()
+    begin
+      endName = "BlendedImage"
+
+      theCommands = CommandModule::SmigCommands.new
+      fgImporterObj = theCommands.make_createimporter($foregroundimage,
+          addtocleanup: false)
+      bgImporterObj = theCommands.make_createimporter($backgroundimage,
+          addtocleanup: false)
+      
+      imageSize = MIShapes.make_size(600, 600)
+      bitmapObj = theCommands.make_createbitmapcontext(size: imageSize,
+          addtocleanup: false)
+      
+      exporterObj = theCommands.make_createexporter("~/temp",
+          export_type: :'public.tiff', addtocleanup: false)
+      result = Smig.perform_commands(theCommands)
+  
+      listOfBlendModes = [ "CIAdditionCompositing", "CIColorDodgeBlendMode",
+                          "CIDifferenceBlendMode", "CIHueBlendMode",
+                          "CIMultiplyBlendMode", "CIMultiplyCompositing",
+                          "CIOverlayBlendMode", "CIScreenBlendMode",
+                          "CIMinimumCompositing", "CISourceAtopCompositing" ]
+      listOfBlendModes.each { |ciblendmode|
+        begin
+          newFileName = ciblendmode + endName + ".tiff"
+          origFileName = ciblendmode + endName + ".png"
+          # outputFile = File.join($tempDir, newFileName)
+          outputFile = File.join(File.expand_path("~/Desktop/"), newFileName)
+          origFile = File.join($originalblendimages, origFileName)
+          result = self.apply_blendcifilter(ciblendmode, outputFile,
+                          fgImporterObj, bgImporterObj, bitmapObj, exporterObj)
+          unless AreImageFilesSame(origFile, outputFile, 75)
+            puts "Different image files: " + origFile + " and " + outputFile
+          end
+        ensure
+          FileUtils.rm_f(outputFile) unless outputFile.nil?
+        end
+      }
+    rescue RuntimeError => e
+      $errorcode = Smig.exitvalue
+      unless $errorcode.zero?
+        puts "Exit string: " + Smig.exitstring
+        puts "Exit status: " + $errorcode.to_s
+      end
+      puts e.message
+      puts e.backtrace.to_s
+    ensure
+      closeCommands = CommandModule::SmigCommands.new
+      closeCommands.stoponfailure = false
+      closeFGObjCommand = CommandModule.make_close(fgImporterObj)
+      closeCommands.add_command(closeFGObjCommand)
+      closeBGObjCommand = CommandModule.make_close(bgImporterObj)
+      closeCommands.add_command(closeBGObjCommand)
+      closeBitmapCommand = CommandModule.make_close(bitmapObj)
+      closeCommands.add_command(closeBitmapCommand)
+      closeExporterCommand = CommandModule.make_close(exporterObj)
+      closeCommands.add_command(closeExporterCommand)
+      Smig.perform_commands_nothrow(closeCommands)
+    end
+  end
+
+  def self.make_radialgradientfilter(sphereDiam, filterIdentifier)
+    width = sphereDiam
+    center = width * 0.5
+    centerProperty = MIFilterProperty.make_civectorproperty_frompoint(
+                                        key: :inputCenter,
+                                      value: { x: center, y: center })
+    radius = center
+    innerRadius = center * 0.05
+    radiusProperty = MIFilterProperty.make_cinumberproperty(key: :inputRadius1,
+                                                          value: radius)
+    innerRadiusProperty = MIFilterProperty.make_cinumberproperty(
+                                                            key: :inputRadius0,
+                                                          value: innerRadius)
+    blackColor = MIColor.make_rgbacolor(0,0,0)
+    innerColorProperty = MIFilterProperty.make_cicolorproperty_fromhash(
+                                                          key: :inputColor1,
+                                                        value: blackColor)
+    whiteColor = MIColor.make_rgbacolor(1,1,1)
+    outerColorProperty = MIFilterProperty.make_cicolorproperty_fromhash(
+                                                          key: :inputColor0,
+                                                        value: whiteColor)
+    radialGradientFilter = MIFilter.new(:CIRadialGradient,
+                            identifier: filterIdentifier)
+    radialGradientFilter.add_properties([centerProperty, radiusProperty,
+                   innerRadiusProperty, innerColorProperty, outerColorProperty])
+    radialGradientFilter
+  end
+
+  def self.make_cropfilter(sphereDiam, cropID, inImageFilterID)
+    cropRect = MIShapes.make_rectangle(width: sphereDiam, height: sphereDiam)
+    cropRectProperty = MIFilterProperty.make_civectorproperty_fromrectangle(
+                                    key: :inputRectangle, value: cropRect)
+    inputFilterID = SmigIDHash.makeid_withfilternameid(inImageFilterID)
+    inputImageProperty = MIFilterProperty.make_ciimageproperty(key: :inputImage,
+                                                          value: inputFilterID )
+    cropFilter = MIFilter.new(:CICrop, identifier: cropID)
+    cropFilter.properties = [ cropRectProperty, inputImageProperty ]
+    cropFilter
+  end
+
+  def self.make_heightfield_frommaskfilter(radius, imageMask, filterID)
+    inputImageProperty = MIFilterProperty.make_ciimageproperty(
+                                                          key: :inputImage,
+                                                        value: imageMask,
+                                                      options: { imageindex: 0 })
+    radiusProperty = MIFilterProperty.make_cinumberproperty(key: :inputRadius,
+                                                          value: radius)
+    heightFieldMaskFilter = MIFilter.new(:CIHeightFieldFromMask,
+                             identifier: filterID)
+    heightFieldMaskFilter.properties = [ inputImageProperty, radiusProperty ]
+    heightFieldMaskFilter
+  end
+
+  def self.make_shadedmaterialfilter(cropFilter, heightFieldFilter, scale,
+                                     shadedmaterialID)
+    inputFilterID = SmigIDHash.makeid_withfilternameid(heightFieldFilter)
+    inputImageProperty = MIFilterProperty.make_ciimageproperty(key: :inputImage,
+                                                        value: inputFilterID)
+    cropFilterID = SmigIDHash.makeid_withfilternameid(cropFilter)
+    inputShadingImageProperty = MIFilterProperty.make_ciimageproperty(
+                                                          key: :inputShadingImage,
+                                                        value: cropFilterID)
+    scaleProperty = MIFilterProperty.make_cinumberproperty(key: :inputScale,
+                                                         value: scale)
+    shadedMaterialFilter = MIFilter.new(:CIShadedMaterial,
+                            identifier: shadedmaterialID)
+    shadedMaterialFilter.properties = [ inputImageProperty, scaleProperty,
+                                        inputShadingImageProperty ]
+    shadedMaterialFilter
+  end
+
+  def self.make_bumpdistortionfilter(shadedMaterialFilter, centerX, centerY,
+                                     radius, scale, distortionID)
+    inputFilterID = SmigIDHash.makeid_withfilternameid(shadedMaterialFilter)
+    inputImageProperty = MIFilterProperty.make_ciimageproperty(key: :inputImage,
+                                                        value: inputFilterID)
+    scaleProperty = MIFilterProperty.make_cinumberproperty(key: :inputScale,
+                                                         value: scale)
+    centerProperty = MIFilterProperty.make_civectorproperty_frompoint(
+                                        key: :inputCenter,
+                                      value: { x: centerX, y: centerY })
+    radiusProperty = MIFilterProperty.make_cinumberproperty(key: :inputRadius,
+                                                         value: radius)
+    bumpDistortion = MIFilter.new(:CIBumpDistortion, identifier: distortionID)
+    bumpDistortion.properties = [ inputImageProperty, scaleProperty,
+                                  centerProperty, radiusProperty, ]
+    bumpDistortion
+  end
+
+  def self.make_embossfilterchain(renderDestination, imageMask, width, height)
+    sphereDiam = 400
+    gradientFilter = self.make_radialgradientfilter(sphereDiam, :radialfilter)
+    cropFilter = self.make_cropfilter(sphereDiam, :cropfilter, :radialfilter)
+    radius = 17
+    heightFieldMaskFilter = self.make_heightfield_frommaskfilter(radius,
+                                                                 imageMask,
+                                                                 :heightfieldmask)
+    scale = 16.0
+    shadedMaterialFilter = self.make_shadedmaterialfilter(:cropfilter,
+                                :heightfieldmask, scale, :shadedmaterial)
+    
+    bumpRadius = 250
+    bumpScaleInit = 0.6
+    bumpDistortionFilter = self.make_bumpdistortionfilter(:shadedmaterial,
+        width * 0.5, height * 0.5, bumpRadius, bumpScaleInit, :bumpdistortion)
+    
+    filterList = [ gradientFilter.filterhash, cropFilter.filterhash,
+                   heightFieldMaskFilter.filterhash,
+                   shadedMaterialFilter.filterhash,
+                   bumpDistortionFilter.filterhash ]
+    filterChain = MIFilterChain.new(renderDestination, filterList: filterList)
+    filterChain
+  end
+
+  def self.apply_testingembossmaskscript(outputDir, numFrames, baseName)
+    result = ""
+    begin
+      theCommands = CommandModule::SmigCommands.new
+      maskImporter = theCommands.make_createimporter($embossimagemask)
+      width = 454.0
+      height = 341.0
+      sourceRect = MIShapes.make_rectangle(width: width, height: height)
+      bitmapObject = theCommands.make_createbitmapcontext(
+                                          size: { width: width, height: height},
+                                          preset: :PlatformDefaultBitmapContext)
+      embossFilterChain = self.make_embossfilterchain(bitmapObject, maskImporter,
+                                                      width, height)
+      filterChainObj = theCommands.make_createimagefilterchain(embossFilterChain)
+      exportObj = theCommands.make_createexporter("~/Desktop/temp.",
+                                                    export_type: :'public.png')
+      numFrames.times do |i|
+        radians = i.to_f * 2.0 * Math::PI / numFrames.to_f
+        bumpScale = 0.6 * Math.cos(radians)
+        renderProp = MIFilterRenderProperty.make_renderproperty_withfilternameid(
+                                    key: :inputScale,
+                                  value: bumpScale,
+                          filtername_id: :bumpdistortion)
+        renderInstructions = MIFilterChainRender.new
+        renderInstructions.add_filterproperty(renderProp)
+        renderInstructions.sourcerectangle = sourceRect
+        renderCommand = CommandModule.make_renderfilterchain(filterChainObj,
+                                          renderinstructions: renderInstructions)
+        theCommands.add_command(renderCommand)
+        addImageToExporterCommand = CommandModule.make_addimage(exportObj,
+                                                                bitmapObject)
+        theCommands.add_command(addImageToExporterCommand)
+        
+        numString = i.to_s.rjust(3, '0')
+        fileName = baseName + numString + ".png"
+        outputFile = File.join($tempDir, fileName)
+        
+        setPathCommand = CommandModule.make_set_objectproperty(exportObj,
+            propertykey: :exportfilepath, propertyvalue: outputFile)
+        theCommands.add_command(setPathCommand)
+        exportCommand = CommandModule.make_export(exportObj,
+                               runasynchronously: true)
+        theCommands.add_command(exportCommand)
+      end
+      Smig.perform_commands(theCommands)
+    rescue RuntimeError => e
+      $errorcode = Smig.exitvalue
+      unless $errorcode.zero?
+        puts "Exit string: " + Smig.exitstring
+        puts "Exit status: " + $errorcode.to_s
+      end
+      puts e.message
+      puts e.backtrace.to_s
+    end
+
+    return result
+  end
+
+  # Using the testingembossmask script
+  def self.test03()
+    # create path to directory where images will be created.
+    outputDir = $tempDir
+    numFrames = 7
+    begin
+      baseName = "EmbossMask"
+      origDir = File.join($directory, "images/test011ForComparison")
+      result = self.apply_testingembossmaskscript(outputDir, numFrames, baseName)
+      numFrames.times { |i|
+        numString = i.to_s.rjust(3, '0')
+        fileName = baseName + numString + ".png"
+        origFile = File.join(origDir, fileName)
+        newFile = File.join(outputDir, fileName)
+        unless AreImageFilesSame(origFile, newFile, 20)
+          raise "Different image files: " + origFile + " and " + newFile
+        end
+      }
+    rescue RuntimeError => e
+      $errorcode = Smig.exitvalue
+      unless $errorcode.zero?
+        puts "Exit string: " + Smig.exitstring
+        puts "Exit status: " + $errorcode.to_s
+      end
+      puts e.message
+      puts e.backtrace.to_s
+    ensure
+      numFrames.times { |i|
+        numString = i.to_s.rjust(3, '0')
+        fileName = baseName + numString + ".png"
+        newFile = File.join(outputDir, fileName)
+        FileUtils.rm_f(newFile)
+      }
+      # FileUtils.rmdir(outputDir)
+    end
+  end
+end
+
+def LocalTestMain011()
+  puts "TestFile011.test01"
+  TestFile011.test01()
+  puts "TestFile011.test02"
+  TestFile011.test02()
+  puts "TestFile011.test03"
+  TestFile011.test03()
+  return 0
+end
+
+exit(LocalTestMain011())
+

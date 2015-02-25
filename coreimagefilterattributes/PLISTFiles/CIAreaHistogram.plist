@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Calculates a histogram for the specified area in an image, returning the result in a 1D image.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryReduction</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Area Histogram</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIAreaHistogram</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIAreaHistogram</string>
+	<key>inputCount</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>64</real>
+		<key>CIAttributeDescription</key>
+		<string>The number of bins for the histogram.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Count</string>
+		<key>CIAttributeMin</key>
+		<real>1</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1000</real>
+		<key>CIAttributeSliderMin</key>
+		<real>10</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputExtent</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[0 0 640 80]</string>
+		<key>CIAttributeDescription</key>
+		<string>A rectangle that specifies the subregion of the image that you want to process.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Extent</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeRectangle</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image whose histogram you want to calculate.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputScale</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>1</real>
+		<key>CIAttributeDescription</key>
+		<string>The scale value to use for the histogram values.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Scale</string>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

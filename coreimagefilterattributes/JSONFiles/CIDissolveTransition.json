@@ -1,0 +1,42 @@
+{
+  "CIAttributeFilterDisplayName" : "Dissolve",
+  "CIAttributeDescription" : "Uses a dissolve to transition from one image to another.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIDissolveTransition",
+  "inputTargetImage" : {
+    "CIAttributeDisplayName" : "Target Image",
+    "CIAttributeDescription" : "The target image for a transition.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputTime" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The parametric time of the transition. This value drives the transition from start (at time 0) to end (at time 1).",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Time",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeTime",
+    "CIAttributeDefault" : 0
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIDissolveTransition",
+  "CIAttributeFilterCategories" : [
+    "CICategoryTransition",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryInterlaced",
+    "CICategoryNonSquarePixels",
+    "CICategoryBuiltIn"
+  ]
+}

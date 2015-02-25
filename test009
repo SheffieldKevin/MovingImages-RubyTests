@@ -1,0 +1,196 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+#
+# This script tests drawing an array of elements.
+# After drawing the shapes the script compares
+# the generated image with a previously generated image.
+# 
+# 1. Create a bitmap context
+# 2. Create an array of shapes. 4 different shapes are needed.
+#  1. A Rectangle
+#  2. A Circle
+#  3. A Triangle
+#  4. A rounded rectangle
+# 3. Set fill color to be blue, set stroke color to be red.
+# 4. Override fill color to green and stroke color to red in the the circle.
+# 5. Draw the array of elements to the bitmap context
+# 6. Create an image exporter with filetype public.jpeg and path
+# 7. Generate image from bitmap context and add to image exporter.
+# 8. Export from image exporter
+# 9. Close base object
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MICGDrawing
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$teststring = ""
+$compareImageDir = File.join($directory, "images/test009ForComparison")
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# 1. Create a bitmap context
+# 2. Create an array of shapes. 4 different shapes are needed.
+#  1. A filled Rectangle
+#  2. A stroked Circle
+#  3. A filled Triangle
+#  4. A stroked rounded rectangle
+# 3. Set fill color to be blue, set stroke color to be red.
+# 4. Override fill color to green and stroke color to blue in the the circle.
+# 5. Draw the array of elements to the bitmap context
+# 6. Create an image exporter with filetype public.jpeg and path
+# 7. Generate image from bitmap context and add to image exporter.
+# 8. Export from image exporter
+# 9. Compare the generated image with previously generated
+# 10. Report if image files are different.
+# 11. Close base objects
+
+def test01()
+  baseImageName = "arrayofshapes.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create the bitmap context command
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                      width: 600, height: 450,
+                                      preset: "AlphaPreMulFirstRGB8bpcInt", 
+                                      name: bitmapContextName)
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+
+    # Smig.bitmapcontext_showwindow_nothrow(bitmap, "YES")
+    # 2. Setup the array of shapes objects.
+    shapeArrayDrawElement = MIDrawElement.new("arrayofelements")
+    redColor = MIColor.make_rgbacolor(1,0,0)
+    blueColor = MIColor.make_rgbacolor(0,0,1)
+    greenColor = MIColor.make_rgbacolor(0,1,0)
+    shapeArrayDrawElement.fillcolor = blueColor
+    shapeArrayDrawElement.strokecolor = redColor
+    shapeArrayDrawElement.linewidth = 3.0
+    
+    # 2.1 create the fillrectangle draw element.
+    rectDrawElement = MIDrawElement.new("fillrectangle")
+    theOrigin = MIShapes.make_point(30.0, 30.0)
+    theSize = MIShapes.make_size(240.0, 180.0)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    rectDrawElement.rectangle = theRect
+    shapeArrayDrawElement.add_drawelement_toarrayofelements(
+                                        rectDrawElement.elementhash)
+    
+    # 2.2 create the stroke circle draw element.
+    strokedCircle = MIDrawElement.new("strokeoval")
+    circleOrigin = MIShapes.make_point(40.0, 220.0)
+    circleSize = MIShapes.make_size(200.0, 200.0)
+    circleBoundRect = MIShapes.make_rectangle(origin: circleOrigin, 
+                                              size: circleSize)
+    strokedCircle.rectangle = circleBoundRect
+    strokedCircle.strokecolor = blueColor
+    shapeArrayDrawElement.add_drawelement_toarrayofelements(
+                                      strokedCircle.elementhash)
+    # 2.3 create the filled triangle draw element.
+    filledTriangle = MIDrawElement.new("fillpath")
+    triangleObject = MIPath.new
+    trianglePoints = []
+    startPoint = MIShapes.make_point(320.0, 105.0)
+    trianglePoints.push(MIShapes.make_point(320.0, 105.0))
+    trianglePoints.push(MIShapes.make_point(540.0, 190.0))
+    trianglePoints.push(MIShapes.make_point(540.0, 20.0))
+    triangleObject.add_triangle(points: trianglePoints)
+    filledTriangle.arrayofpathelements = triangleObject
+    filledTriangle.startpoint = startPoint
+    filledTriangle.fillcolor = greenColor
+    shapeArrayDrawElement.add_drawelement_toarrayofelements(
+                                    filledTriangle.elementhash)
+    # 2.4 create the stroked rounded rectangle.
+    roundedRect = MIDrawElement.new("strokeroundedrectangle")
+    theOrigin = MIShapes.make_point(320.5, 220.5)
+    theSize = MIShapes.make_size(240.0, 200.0)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    roundedRect.rectangle = theRect
+    roundedRect.strokecolor = redColor
+    radiuses = [ 4.0, 8.0, 16.0, 32.0 ]
+    roundedRect.radiuses = radiuses
+    shapeArrayDrawElement.add_drawelement_toarrayofelements(
+                                  roundedRect.elementhash)
+    # 3 and 4 done above as part of creating the objects.
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject, 
+                                        drawinstructions: shapeArrayDrawElement)
+    theCommands.add_command(drawCommand)
+    
+    # Make the image exporter object command
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                          export_type: :"public.jpeg",
+                                          name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+    # 7. Add an image representation of the bitmap to the image exporter object
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    # 8. Save the image as jpeg.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+    $teststring = theCommands.commandshash.to_json
+    Smig.perform_commands(theCommands.commandshash)
+
+    origFile = File.join($compareImageDir, baseImageName)
+    # 9. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    # 11 Delete temporary files
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+  end
+end
+
+def LocalTestMain009()
+  puts "test01"
+  test01()
+  return $errorcode
+end
+
+exit(LocalTestMain009())

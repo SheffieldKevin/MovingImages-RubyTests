@@ -1,0 +1,45 @@
+{
+  "CIAttributeFilterDisplayName" : "Linear Gradient",
+  "CIAttributeDescription" : "Generates a gradient that varies along a linear axis between two defined endpoints.",
+  "inputColor0" : {
+    "CIAttributeDisplayName" : "Color 1",
+    "CIAttributeDescription" : "The first color to use in the gradient.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "1 1 1 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CILinearGradient",
+  "inputPoint1" : {
+    "CIAttributeDisplayName" : "Point 2",
+    "CIAttributeDescription" : "The ending position of the gradient -- where the sedon color begins.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[200 200]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CILinearGradient",
+  "CIAttributeFilterCategories" : [
+    "CICategoryGradient",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputColor1" : {
+    "CIAttributeDisplayName" : "Color 2",
+    "CIAttributeDescription" : "The second color to use in the gradient.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "0 0 0 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "inputPoint0" : {
+    "CIAttributeDisplayName" : "Point 1",
+    "CIAttributeDescription" : "The starting position of the gradient -- where the first color begins.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[0 0]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  }
+}

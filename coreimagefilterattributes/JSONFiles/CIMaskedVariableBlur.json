@@ -1,0 +1,38 @@
+{
+  "CIAttributeFilterDisplayName" : "Masked Variable Blur",
+  "CIAttributeDescription" : "Masked Variable Blur",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIMaskedVariableBlur",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIMaskedVariableBlur",
+  "CIAttributeFilterCategories" : [
+    "CICategoryBlur",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputMask" : {
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Mask",
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The distance from the center of the effect.",
+    "CIAttributeSliderMax" : 100,
+    "CIAttributeDisplayName" : "Radius",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 10
+  }
+}

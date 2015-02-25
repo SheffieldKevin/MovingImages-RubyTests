@@ -1,0 +1,33 @@
+{
+  "inputMaskImage" : {
+    "CIAttributeDisplayName" : "Mask Image",
+    "CIAttributeDescription" : "A grayscale mask. When a mask value is 0.0, the result is the background. When the mask value is 1.0, the result is the image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterDisplayName" : "Blend With Mask",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeDescription" : "Uses values from a grayscale mask to interpolate between an image and the background. When a mask green value is 0.0, the result is the background. When the mask green value is 1.0, the result is the image.",
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIBlendWithMask",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIBlendWithMask",
+  "CIAttributeFilterCategories" : [
+    "CICategoryStylize",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputBackgroundImage" : {
+    "CIAttributeDisplayName" : "Background Image",
+    "CIAttributeDescription" : "The image to use as a background image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

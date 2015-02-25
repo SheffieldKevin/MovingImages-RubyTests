@@ -1,0 +1,294 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2013-2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+
+# This scripts tests getting individual properties from the LaunchAgent.
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+
+#  $is_yosemite = `sw_vers -productVersion`.start_with? "10.10"
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$teststring = ""
+$compareImageDir = File.join($directory, "images/test010ForComparison")
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+$verbose = false
+$smig = "smig"
+
+$smigversion = "0.3a"
+$miversion = "0.3a"
+$imagefile = File.join($directory, "/images/test002image.jpg")
+
+# Get the smig version number.
+def test01()
+  begin
+    resultStr = MILAMeta.smig_version
+    
+    if resultStr != $smigversion
+      puts "MILAMeta.smig_verion returned: #{resultStr}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = MILAMeta.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: #{MILAMeta.exitstring}, Code: #{MILAMeta.exitvalue}"
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# Get MovingImages version number
+def test02()
+  begin
+    resultStr = MILAMeta.version
+    
+    if resultStr != $miversion
+      puts "MILAMeta.version returned: #{resultStr}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = MILAMeta.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: #{MILAMeta.exitstring}, Code: #{MILAMeta.exitvalue}"
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# Tests reading and writing of idle time.
+# 1. Get the idle time,
+# 2. Set the idle time,
+# 3. Get the idle time and check returned idle time same as value set at 2.
+# 4. Set idle time to value obtained in step 1.
+
+def test03()
+  begin
+    origResult = MILAMeta.idletime
+    unless origResult.eql? 10
+      puts "Idletime is: #{origResult} when expecting 10"
+    end
+    MILAMeta.idletime = 300
+    newResult = MILAMeta.idletime
+    unless newResult.eql? 300
+      puts "Idletime is: #{newResult} when expecting 300"
+    end
+  rescue RuntimeError => e
+    $errorcode = MILAMeta.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: #{MILAMeta.exitstring}, Code: #{MILAMeta.exitvalue}"
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    begin
+      MILAMeta.idletime = origResult # restore idle time to original value.
+    rescue RuntimeError => e
+    end
+  end
+end
+
+def CreateImageImporterObject()
+  Smig.perform_command(CommandModule.make_createimporter($imagefile))
+end
+
+def CreateBitmapContextObject()
+  createBitmapCommand = CommandModule.make_createbitmapcontext(
+                                            width: 512,
+                                           height: 342,
+                                           preset: :AlphaPreMulFirstRGB8bpcInt)
+  Smig.perform_command(createBitmapCommand)
+end
+
+def CreateImageExporterObject()
+  createExporterCommand = CommandModule.make_createexporter("~/mynewfile.png",
+                                          export_type: :'public.png')
+  Smig.perform_command(createExporterCommand)
+end
+
+def CreatePDFContextObject()
+  createPDFContextCommand = CommandModule.make_createpdfcontext(
+                                          width: 600,
+                                         height: 800,
+                                       filepath: "~/deleteme.pdf")
+  Smig.perform_command(createPDFContextCommand)
+end
+
+def CreateWindowContextObject()
+  createWindowCommand = CommandModule.make_createwindowcontext(
+                                          width: 600,
+                                         height: 800,
+                                           xloc: 100,
+                                           yloc: 100,
+                                           name: 'smig.windowobject.1')
+  Smig.perform_command(createWindowCommand)
+end
+
+def CloseAllObjectsOfType(theType)
+  Smig.closeall_nothrow(objectType: theType)
+end
+
+def GetNumberOfObjectsOfType(theType)
+  Smig.get_numberofobjects(objecttype: theType)
+end
+
+# Tests closing all objects.
+# 1. Create some image importer objects.
+# 2. Create some bitmap context objects.
+# 3. Create some image exporter objects.
+# 4. Close all objects
+# 5. Check that we have no more objects.
+# 6. Create some image importer objects (2).
+# 7. Create some bitmap context objects (3).
+# 8. Create some image exporter objects (1).
+# 9. Check that we have 6 objects.
+# 10. Close all bitmap context objects.
+# 11. Check that we have no more bitmap context objects open.
+# 12. Check that we still have image importer objects open.
+# 13. Close all image importer objects.
+# 14. Check that all image importer objects have been closed.
+# 15. Check that we still have a image exporter object open.
+# 16. Close all image exporter objects.
+# 17. Check that all image exporter objects have been closed.
+# 18. Check that all objects have been closed.
+
+def test04()
+  baseStr = "File:" + $filename + ": test04(): "
+  begin
+    # First just close everything.
+    CloseAllObjectsOfType("")
+    CreateImageImporterObject()
+    CreateImageImporterObject()
+    CreateImageImporterObject()
+    CreateBitmapContextObject()
+    CreateBitmapContextObject()
+    CreateImageExporterObject()
+    CreatePDFContextObject()
+    CreateWindowContextObject()
+    # no errors so far, so start checking.
+    CloseAllObjectsOfType("")
+    FileUtils.rm_f("~/deleteme.pdf")
+    numObjects = GetNumberOfObjectsOfType(nil)
+    unless numObjects.eql? 0
+      puts baseStr + "5: Not all objects deleted. We have: #{numObjects}"
+    end
+
+    CreateWindowContextObject()
+    CreateWindowContextObject()
+    CreatePDFContextObject()
+    CreateImageImporterObject()
+    CreateImageImporterObject()
+    CreateBitmapContextObject()
+    CreateBitmapContextObject()
+    CreateBitmapContextObject()
+    CreateImageExporterObject()
+    numObjects = GetNumberOfObjectsOfType(nil)
+    unless numObjects.eql? 9
+      puts baseStr + "9: We should have 9 objects. We got: #{numObjects}"
+    end
+    
+    CloseAllObjectsOfType("bitmapcontext")
+    numBitmapObjects = GetNumberOfObjectsOfType("bitmapcontext")
+    unless numBitmapObjects.eql? 0
+      puts baseStr + "11: Sould have 0 bitmaps. We got: #{numBitmapObjects}"
+    end
+    
+    numImageImporter = GetNumberOfObjectsOfType("imageimporter")
+    unless numImageImporter.eql? 2
+      puts baseStr + "12: Should have 2 image importers. We got: #{numImageImporter}"
+    end
+
+    CloseAllObjectsOfType("imageimporter")
+    numImageImporter = GetNumberOfObjectsOfType("imageimporter")
+    unless numImageImporter.eql? 0
+      puts baseStr + "14: Should have 0 image importers. We got: #{numImageImporter}"
+    end
+
+    numImageExporters = GetNumberOfObjectsOfType("imageexporter")
+    unless numImageExporters.eql? 1
+      puts baseStr + "15: Should have 1 image exporter. We got #{numImageExporters}"
+    end
+
+    CloseAllObjectsOfType("imageexporter")
+    numImageExporters = GetNumberOfObjectsOfType("imageexporter")
+    unless numImageExporters.eql? 0
+      puts baseStr + "17: Should have 0 image exporters. We got: #{numImageExporters}"
+    end
+
+    numObjects = GetNumberOfObjectsOfType(nil)
+    unless numObjects.eql? 3
+      puts baseStr + "18: Should have 3 objects. We got: #{numObjects}"
+    end
+    
+    numWindowObjects = GetNumberOfObjectsOfType("nsgraphicscontext")
+    unless numWindowObjects.eql? 2
+      puts baseStr + "19: Should have 2 window objects. We got: #{numWindowObjects}"
+    end
+    CloseAllObjectsOfType("nsgraphicscontext")
+
+    numPDFContexts =  GetNumberOfObjectsOfType("pdfcontext")
+    unless numPDFContexts.eql? 1
+      puts baseStr + "20: Should have 1 pdf objects. We got #{numPDFContexts}"
+    end
+
+    CloseAllObjectsOfType("pdfcontext")
+    FileUtils.rm_f("~/deleteme.pdf")
+
+    numObjects = GetNumberOfObjectsOfType(nil)
+    unless numObjects.eql? 0
+      puts baseStr + "21: Should have 0 objects. We got: #{numObjects}"
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    FileUtils.rm_f(File.expand_path("~/deleteme.pdf"))
+  end
+end
+
+def LocalTestMain001()
+  puts "test01"
+  test01()
+  puts "test02"
+  test02()
+  puts "test03"
+  test03()
+  puts "test04"
+  test04()
+  return $errorcode
+end
+
+exit(LocalTestMain001())

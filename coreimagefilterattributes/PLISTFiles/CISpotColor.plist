@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Replaces one or more color ranges with spot colors.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryStylize</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Spot Color</string>
+	<key>CIAttributeFilterName</key>
+	<string>CISpotColor</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CISpotColor</string>
+	<key>inputCenterColor1</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>0.0784 0.0627 0.0706 1</string>
+		<key>CIAttributeDescription</key>
+		<string>The center value of the first color range to replace.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Center Color 1</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCenterColor2</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>0.5255 0.3059 0.3451 1</string>
+		<key>CIAttributeDescription</key>
+		<string>The center value of the second color range to replace.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Center Color 2</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCenterColor3</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>0.9216 0.4549 0.3333 1</string>
+		<key>CIAttributeDescription</key>
+		<string>The center value of the third color range to replace.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Center Color 3</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCloseness1</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.22</real>
+		<key>CIAttributeDescription</key>
+		<string>A value that indicates how close the first color must match before it is replaced.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Closeness 1</string>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>0.5</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCloseness2</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.14999999999999999</real>
+		<key>CIAttributeDescription</key>
+		<string>A value that indicates how close the second color must match before it is replaced.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Closeness 2</string>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>0.5</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCloseness3</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.5</real>
+		<key>CIAttributeDescription</key>
+		<string>A value that indicates how close the third color must match before it is replaced.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Closeness 3</string>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>0.5</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputContrast1</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.97999999999999998</real>
+		<key>CIAttributeDescription</key>
+		<string>The contrast of the first replacement color.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Contrast 1</string>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputContrast2</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.97999999999999998</real>
+		<key>CIAttributeDescription</key>
+		<string>The contrast of the second replacement color.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Contrast 2</string>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputContrast3</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.98999999999999999</real>
+		<key>CIAttributeDescription</key>
+		<string>The contrast of the third replacement color.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Contrast 3</string>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputReplacementColor1</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>0.4392 0.1922 0.1961 1</string>
+		<key>CIAttributeDescription</key>
+		<string>A replacement color for the first color range.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Replacement Color 1</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputReplacementColor2</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>0.9137 0.5608 0.5059 1</string>
+		<key>CIAttributeDescription</key>
+		<string>A replacement color for the second color range.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Replacement Color 2</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputReplacementColor3</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>0.9098 0.7529 0.6078 1</string>
+		<key>CIAttributeDescription</key>
+		<string>A replacement color for the third color range.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Replacement Color 3</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

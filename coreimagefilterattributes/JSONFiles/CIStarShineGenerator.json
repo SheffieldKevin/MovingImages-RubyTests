@@ -1,0 +1,101 @@
+{
+  "inputColor" : {
+    "CIAttributeDisplayName" : "Color",
+    "CIAttributeDescription" : "The color to use for the outer shell of the circular star.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "1 0.8 0.6 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "CIAttributeDescription" : "Generates a starburst pattern. The output image is typically used as input to another filter",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputCrossScale" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The size of the cross pattern.",
+    "CIAttributeSliderMax" : 100,
+    "CIAttributeDisplayName" : "Cross Scale",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 15,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 15
+  },
+  "CIAttributeFilterName" : "CIStarShineGenerator",
+  "CIAttributeFilterDisplayName" : "Star Shine",
+  "inputCrossWidth" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The width of the cross pattern.",
+    "CIAttributeSliderMax" : 10,
+    "CIAttributeDisplayName" : "Cross Width",
+    "CIAttributeSliderMin" : 0.5,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 2.5,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 2.5
+  },
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The  x and y position to use as the center of the star.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "inputCrossOpacity" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The opacity of the cross pattern.",
+    "CIAttributeSliderMax" : 0,
+    "CIAttributeDisplayName" : "Cross Opacity",
+    "CIAttributeSliderMin" : -8,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : -8,
+    "CIAttributeIdentity" : -2,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : -2
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIStarShineGenerator",
+  "inputCrossAngle" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The angle of the cross pattern.",
+    "CIAttributeSliderMax" : 3.141592653589793,
+    "CIAttributeDisplayName" : "Cross Angle",
+    "CIAttributeDefault" : 0.6,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeIdentity" : 0.6,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : -3.141592653589793
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryGenerator",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius of the star.",
+    "CIAttributeSliderMax" : 300,
+    "CIAttributeDisplayName" : "Radius",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 50,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 50
+  },
+  "inputEpsilon" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The length of the cross spikes.",
+    "CIAttributeSliderMax" : 0,
+    "CIAttributeDisplayName" : "Epsilon",
+    "CIAttributeSliderMin" : -8,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : -8,
+    "CIAttributeIdentity" : -2,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : -2
+  }
+}

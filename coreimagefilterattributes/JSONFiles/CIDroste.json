@@ -1,0 +1,75 @@
+{
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeDescription" : "Performs M.C. Escher Droste style deformation",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputInsetPoint1" : {
+    "CIAttributeDisplayName" : "InsetPoint1",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[400 400]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeFilterName" : "CIDroste",
+  "CIAttributeFilterDisplayName" : "Droste",
+  "inputRotation" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 6.283185307179586,
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeDisplayName" : "Rotation",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 0
+  },
+  "inputPeriodicity" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 10,
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeDisplayName" : "Periodicity",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 1
+  },
+  "inputStrands" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 10,
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeDisplayName" : "Strands",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 1
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIDroste",
+  "inputInsetPoint0" : {
+    "CIAttributeDisplayName" : "InsetPoint0",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[200 200]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryDistortionEffect",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputZoom" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 5,
+    "CIAttributeSliderMin" : 0.01,
+    "CIAttributeDisplayName" : "Zoom",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0.01,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 1
+  }
+}

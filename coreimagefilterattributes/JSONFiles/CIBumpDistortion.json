@@ -1,0 +1,51 @@
+{
+  "CIAttributeFilterDisplayName" : "Bump Distortion",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeDescription" : "Creates a concave or convex bump that originates at a specified point in the image.",
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputScale" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The scale of the effect determines the curvature of the bump. A value of 0.0 has no effect. Positive values create an outward bump; negative values create an inward bump.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Scale",
+    "CIAttributeDefault" : 0.5,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeSliderMin" : -1
+  },
+  "CIAttributeFilterName" : "CIBumpDistortion",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIBumpDistortion",
+  "CIAttributeFilterCategories" : [
+    "CICategoryDistortionEffect",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius determines how many pixels are used to create the distortion. The larger the radius, wider the extent of the distortion.",
+    "CIAttributeSliderMax" : 600,
+    "CIAttributeDisplayName" : "Radius",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 300
+  },
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The x and y position to use as the center of the bump.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  }
+}

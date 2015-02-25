@@ -1,0 +1,44 @@
+{
+  "CIAttributeFilterDisplayName" : "Motion Blur",
+  "CIAttributeDescription" : "Blurs an image to simulate the effect of using a camera that moves a specified angle and distance while capturing the image.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputAngle" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The angle of the motion determines which direction the blur smears.",
+    "CIAttributeSliderMax" : 3.141592653589793,
+    "CIAttributeDisplayName" : "Angle",
+    "CIAttributeDefault" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : -3.141592653589793
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIMotionBlur",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIMotionBlur",
+  "CIAttributeFilterCategories" : [
+    "CICategoryBlur",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius determines how many pixels are used to create the blur. The larger the radius, the blurrier the result.",
+    "CIAttributeSliderMax" : 100,
+    "CIAttributeDisplayName" : "Radius",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 20
+  }
+}

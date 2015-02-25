@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Vertical Convolution with 9 values</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryStylize</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>CIConvolution9Vertical</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIConvolution9Vertical</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIConvolution9Vertical</string>
+	<key>inputBias</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.0</real>
+		<key>CIAttributeDisplayName</key>
+		<string>Bias</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeDistance</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputWeights</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[0 0 0 0 1 0 0 0 0]</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Weights</string>
+		<key>CIAttributeIdentity</key>
+		<string>[0 0 0 0 1 0 0 0 0]</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

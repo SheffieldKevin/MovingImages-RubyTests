@@ -1,0 +1,457 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+
+# FILE: embossmask
+# Emboss the visible part of a mask.
+
+require 'Open3'
+require 'optparse'
+require 'pp'
+require 'JSON'
+require 'FileUtils'
+
+$verbose = false
+$smig = "smig"
+
+def verboseputs(input)
+  if $verbose
+    puts input
+  end
+end
+
+def verbosepp(input)
+  if $verbose
+    pp input
+  end
+end
+
+class EmbossMask
+  @@options = {}
+  @@smigExitVal = 0
+  
+  #
+  # Creates a radial gradient. Assumes white inner circle, black outer.
+  # Assumes a square context.
+  #
+  def self.create_radialgradientfilter_hash(width, identName)
+    center = width * 0.5
+    circleRadius = center > 800.0 ? 800 : center # radius is half width. max800
+    smallCircleRadius = circleRadius * 0.05 # inner circle has 5% diam of outer.
+    centerString = "[" + center.to_s + " " + center.to_s + "]"
+    
+    input1 = { :cifilterkey =>"inputCenter", :cifiltervalueclass => "CIVector",
+                :cifiltervalue => centerString }
+    input2 = { :cifilterkey => "inputRadius0",
+                :cifiltervalue => smallCircleRadius }
+    input3 = { :cifilterkey => "inputRadius1", :cifiltervalue => circleRadius }
+    input4 = { :cifilterkey => "inputColor0", :cifiltervalueclass => "CIColor",
+                :cifiltervalue => "1 1 1 1" }
+    input5 = { :cifilterkey => "inputColor1", :cifiltervalueclass => "CIColor",
+                :cifiltervalue => "0 0 0 1" }
+    return { :cifiltername => "CIRadialGradient",
+          :mifiltername => identName,
+          :cifilterproperties => [ input1, input2, input3, input4, input5 ] }
+  end
+
+  def self.create_cropfilter_hash(minDim, cropId, inImageFilterId)
+    inputRect = "[0 0 " + minDim.to_s + " " + minDim.to_s + "]"
+    input1 = { :cifilterkey =>"inputRectangle", :cifiltervalue => inputRect,
+                :cifiltervalueclass => "CIVector" }
+    input2 = { :cifilterkey => "inputImage",
+                :cifiltervalueclass => "CIImage",
+                :cifiltervalue => { :mifiltername => inImageFilterId } }
+    filterHash = { :cifiltername => "CICrop", :mifiltername => cropId,
+                    :cifilterproperties => [ input1, input2 ] }
+    return filterHash
+  end
+
+  def self.create_heightfieldfrommaskfilter_hash(inimage, radius, identName)
+    #inimage is a dictionary with either :mifiltername as a key
+    # reprepresenting an earlier filter as input, or :objectreference
+    # referring to another object with the image. If objectreference is
+    # used then :imageindex could also be needed. Radius effects the smoothness
+    # of the transition from the edge of the mask and the height field.
+    input1 = { :cifilterkey => "inputImage", :cifiltervalue => inimage,
+                :cifiltervalueclass => "CIImage" }
+    input2 = { :cifilterkey => "inputRadius", :cifiltervalue => radius }
+    filterHash = { :cifiltername => "CIHeightFieldFromMask",
+                    :mifiltername => identName,
+                    :cifilterproperties => [ input1, input2 ] }
+    return filterHash
+  end
+  
+  def self.create_shadedmaterialfilter_hash(inShadingFilterID, 
+                                            inHeightFieldFilterID,
+                                            scale, identName)
+    input1 = { :cifilterkey => "inputImage", :cifiltervalueclass => "CIImage",
+                :cifiltervalue => { :mifiltername => inHeightFieldFilterID } }
+    input2 = { :cifilterkey => "inputScale", :cifiltervalue => scale }
+    input3 = {:cifilterkey => "inputShadingImage",
+              :cifiltervalueclass => "CIImage",
+              :cifiltervalue => { :mifiltername => inShadingFilterID } }
+    filterHash = { :cifiltername => "CIShadedMaterial",
+                    :mifiltername => identName,
+                    :cifilterproperties => [ input1, input2, input3 ] }
+    return filterHash
+  end
+
+  def self.create_bumpdistortionfilter_hash(inputImageId, 
+                                      centerX, centerY, radius,
+                                      scale, identName)
+    input1 = { :cifilterkey => "inputImage", :cifiltervalueclass => "CIImage",
+                :cifiltervalue => { :mifiltername => inputImageId } }
+    input2 = { :cifilterkey => "inputScale", :cifiltervalue => scale }
+    vectorString = "[" + centerX.to_s + " " + centerY.to_s + "]"
+    input3 = { :cifilterkey => "inputCenter",
+               :cifiltervalueclass => "CIVector",
+               :cifiltervalue => vectorString }
+    input4 = { :cifilterkey => "inputRadius",
+                :cifiltervalue => radius }
+    filterHash = { :cifiltername => "CIBumpDistortion",
+                    :mifiltername => identName,
+                   :cifilterproperties => [ input1, input2, input3, input4 ] }
+    return filterHash
+  end
+
+  #
+  # Return whether all mandatory options were included on command line
+  #
+  def self.missing_mandatory_options?()
+    return  @@options[:spherediameter].nil? ||
+            @@options[:outputdir].nil? ||
+            @@options[:inputfile].nil?
+  end
+
+  #
+  # Return a hash describing the options.
+  # 
+  def self.parse!(theArgs)
+
+    opt_parser = OptionParser.new do |opts|
+      opts.version = "0.1b"
+      opts.banner = "Usage: createshadowsphere [options]"
+      opts.separator ""
+      opts.separator "Draws a shadowed sphere using the radial gradient filter."
+      opts.separator ""
+      opts.separator "If the output directory doesn't exist the " +
+                     "directory will be created."
+      opts.separator ""
+      opts.separator "Options:"
+
+      opts.on("--spherediameter DIAMETER", Float, "Sphere diameter.") do |val|
+        @@options[:spherediameter] = val
+      end
+
+      @@options[:numframes] = 7
+      opts.on("--numberofframes [NUMFRAMES]", Integer,
+            "The number of frames for the gif animation. Default is 7." + 
+            "The frame delay time is 0.1 seconds.") do |numFrames|
+        @@options[:numframes] = numFrames
+      end
+
+      @@options[:scale] = 16.0
+      opts.on("--scale [SCALE]", Float,
+            "The scale applied to CIShadedMaterial. Use larger values for a " + 
+            "stronger shading effect. Min 0.5, Default 16, Max 200.") do |scale|
+        @@options[:scale] = scale
+      end
+
+      @@options[:radius] = 17
+      opts.on("--radius [RADIUS]", Float,
+            "The radius from the edge of the mask. Applied to " +
+            "the CIHeightFieldMask. Min 0, Default 17, Max 300.") do |radius|
+        @@options[:radius] = radius
+      end
+
+      @@options[:bumpradius] = 250
+      opts.on("--bumpradius [BUMPRADIUS]", Float,
+            "The radius of the bump that is applied to " +
+            "the CIBumpFilter. Min 0, Default 250, Max 600.") do |radius|
+        @@options[:bumpradius] = radius
+      end
+
+      opts.on("--inputfilemask INPUTFILEMASK", String,
+            "The input image mask file.") do |input|
+        @@options[:inputfile] = input
+      end
+
+      opts.on("--outputdir OUTPUTDIRECTORY", String,
+            "Save image file to OUTPUTDIRECTORY.") do |od|
+        @@options[:outputdir] = od
+      end
+
+      @@options[:verbose] = false
+      opts.on("-v", "--[no-]verbose", "Run verbosely") do
+        @@options[:verbose] = true
+      end
+
+      @@options[:displayhelp] = false
+      opts.on("-h", "--help", "Display this screen") do
+        @@options[:displayhelp] = true
+      end
+
+      # Now add an example of using the command.
+      opts.separator "Examples:"
+      opts.separator "Create an embossed image from a mask:"
+      opts.separator "  testingembossmask --spherediameter 400 --scale 16 " +
+          "--outputdir \"~/Desktop/testingembossmask/\" " +
+          "--bumpradius 250 --radius 17 --inputfilemask " +
+          "\"~/gitlab/using-movingimages/coreimage/MovingImagesMaskSmall.png\""
+    end # parse!
+
+    begin
+      opt_parser.parse!(theArgs)
+
+      if @@options[:displayhelp]
+        raise opt_parser.to_s
+      end
+
+      if self.missing_mandatory_options?()
+        raise "Missing mandatory options."
+      end
+
+    rescue Exception => e
+      exitVal = 0
+      if @@options[:displayhelp] || @@options[:listfilters] ||
+                             !@@options[:getfilterproperties].nil?
+        puts e.message
+      else
+        exitVal = 240
+        puts e.message
+        puts opt_parser
+      end
+      exit exitVal
+    end
+
+    @@options
+  end # self.parse!
+  
+  def self.smig_close_base_object(objectRef)
+    if !objectRef.nil?
+      # ignore any errors that the following call might return.
+      Open3.capture2($smig, "doaction", "-close", "-object", objectRef)
+    end
+  end
+
+  def self.smig_import_image_file(pathToFile, importerName)
+    # we could give this object a name as an alternative way to identify.
+    # Though image importer objects take the absolute path as their name
+    # by default.
+    importerRef = nil
+    importerExitVal = nil
+    if importerName.nil?
+      importerRef, importerExitVal = Open3.capture2($smig, "create", "-type",
+                                            "imageimporter", "-file",
+                                            pathToFile)
+    else
+      importerRef, importerExitVal = Open3.capture2($smig, "create", "-type",
+                                            "imageimporter", "-file",
+                                            pathToFile, "-name", importerName)
+    end
+    unless importerExitVal.exitstatus.zero?
+      @@smigExitVal = importerExitVal.exitstatus
+      raise "Failed to import file: " + pathToFile
+    end
+    importerRef
+  end
+
+  def self.smig_create_bitmap_context(width, height, preset)
+    # we could give this object a name as an alternative way to identify.
+    contextRef, exitVal = Open3.capture2($smig, "create", "-type",
+                                    "bitmapcontext", "-width", width.to_s,
+#     "nsgraphicscontext", "-width", width.to_s, "-xloc", "200", "-yloc", "100.0", "-borderlesswindow", "NO",
+                                    "-height", height.to_s, "-preset", preset)
+    unless exitVal.exitstatus.zero?
+      @@smigExitVal = exitVal.exitstatus
+      raise "Failed to create bitmap context: Preset: " + preset + " Width: " +
+            width + " Height: " + height 
+    end
+    contextRef
+  end
+
+  def self.smig_displaywindow(contextRef)
+    errorStr, exitVal = Open3.capture2($smig, "doaction", "-showwindow", "YES",
+                                      "-object", contextRef)
+    # ignore a failure to display the window.
+  end
+
+  def self.smig_create_imageexporter(index)
+    outputDir = File.expand_path(@@options[:outputdir])
+    baseFileName = "EmbossMask"
+    numString = index.to_s.rjust(3, '0')
+    outputFile = File.join(outputDir, baseFileName + numString + ".png")
+    exporterRef, exporterExitVal = Open3.capture2($smig, "create", "-type",
+                                              "imageexporter", "-utifiletype",
+                                              "public.png",
+                                              "-file", outputFile)
+    unless exporterExitVal.exitstatus.zero?
+      @@smigExitVal = exporterExitVal.exitstatus
+      raise "Failed to create image exporter object: "
+    end
+    exporterRef
+  end
+
+  def self.smig_addimage_toexporter(exporter, secondObject)
+    result, exitVal = Open3.capture2($smig, "doaction", "-addimage",
+                                    "-object", exporter,
+                                    "-secondaryobject", secondObject)
+    unless exitVal.exitstatus.zero?
+      @@smigExitVal = exitVal.exitstatus
+      raise "Failed to add image to exporter object. Result: " + result
+    end
+  end
+  
+  def self.smig_export_exporter(exporter)
+    result, exitVal = Open3.capture2($smig, "doaction", "-export",
+                                    "-object", exporter)
+    unless exitVal.exitstatus.zero?
+      @@smigExitVal = exitVal.exitstatus
+      raise "Failed to export from exporter. Result: " + result
+    end
+  end
+  
+  def self.smig_getimageproperty(objectRef, property, imageindex)
+    # we could give this object a name as an alternative way to identify.
+    propertyVal, exitVal = Open3.capture2($smig, "getproperty", "-object",
+                                          objectRef, "-property", property,
+                                          "-imageindex", imageindex)
+    unless exitVal.exitstatus.zero?
+      @@smigExitVal = exitVal.exitstatus
+      raise "Failed to get image property: " + property
+    end
+    propertyVal
+  end
+
+  def self.create_filterchain_hash(destRef, imageMaskObjectRef,
+                                                centerX, centerY)
+    radialFilterH = self.create_radialgradientfilter_hash(
+                      @@options[:spherediameter], "radialfilter")
+    cropFilterH = self.create_cropfilter_hash(@@options[:spherediameter],
+                      "cropfilter", "radialfilter")
+    inimage = { :objectreference => imageMaskObjectRef.to_i }
+    heightFieldMaskH = self.create_heightfieldfrommaskfilter_hash(inimage, 
+                      @@options[:radius], "heightfieldmask")
+    shadedMaterialH = self.create_shadedmaterialfilter_hash("cropfilter", 
+                                          "heightfieldmask",
+                                          @@options[:scale], "shadedmaterial")
+    bumpScaleInit = 0.6
+    bumpFilterH = self.create_bumpdistortionfilter_hash("shadedmaterial", 
+                                      centerX, centerY, @@options[:bumpradius],
+                                      bumpScaleInit, "bumpdistortion")
+    dest = { :objectreference => destRef.to_i }
+    filterChainHash = { :cirenderdestination => dest,
+                        :cifilterlist => [ radialFilterH, cropFilterH,
+                        heightFieldMaskH, shadedMaterialH, bumpFilterH ] }
+#                        heightFieldMaskH, shadedMaterialH ] }
+    return filterChainHash
+  end
+  
+  def self.smig_create_cifilter(filterJSON)
+    # We could give this object a name as an alternative way to identify.
+    filterRef, exitVal = Open3.capture2($smig, "create", "-type", 
+                                      "imagefilterchain", "-jsonstring",
+                                      filterJSON)
+    unless exitVal.exitstatus.zero?
+      @@smigExitVal = exitVal.exitstatus
+      raise "Failed to create ci filter chain with json: " + filterJSON
+    end
+    Open3.capture2($smig, "setproperty", "-object", filterRef,
+                    "-property", "coreimagesoftwarerender", "NO")
+    return filterRef
+  end
+  
+  def self.smig_render_filterchain(filterRef, renderHash)
+    result, exitVal = Open3.capture2($smig, "doaction", "-renderfilterchain",
+                                    "-object", filterRef, "-jsonstring",
+                                    renderHash.to_json)
+    unless exitVal.exitstatus.zero?
+      @@smigExitVal = exitVal.exitstatus
+      raise "Failed to render the filter chain with reference: " + filterRef
+    end
+  end
+
+  def self.apply
+
+    outputDir = File.expand_path(@@options[:outputdir])
+    # Make sure that the directory that the file will be saved in exists.
+    unless File.exists?(outputDir)
+      FileUtils.makedirs(outputDir)
+    end
+    inputMaskImage = File.expand_path(@@options[:inputfile])
+    begin
+      inputMaskImageRef = self.smig_import_image_file(inputMaskImage,
+                                          "com.yvs.embossmask.inputmask")
+      width = self.smig_getimageproperty(inputMaskImageRef,
+                                          "dictionary.PixelWidth", "0")
+      height = self.smig_getimageproperty(inputMaskImageRef,
+                                          "dictionary.PixelHeight","0")
+      contextRef = self.smig_create_bitmap_context(width, height, 
+#                                                "AlphaPreMulLastRGB32bpcFloat")
+                                                  "Gray8bpcInt")
+      verboseputs("Created bitmap context")
+      filterHash = self.create_filterchain_hash(contextRef, inputMaskImageRef,
+                                        width.to_f / 2.0, height.to_f / 2.0)
+      verboseputs("Generated filterHash:\n" + JSON.pretty_generate(filterHash))
+      filterRef = self.smig_create_cifilter(filterHash.to_json)
+      verboseputs("Created core image filter chain object.")
+
+#      exporterRef = self.smig_create_imageexporter()
+      verboseputs("Created exporter")
+
+      a = Time.now
+
+      bumpProp = { :cifilterkey => "inputScale", :cifiltervalue => 0.6,
+                     :mifiltername => "bumpdistortion" }
+      renderHash = { :cifilterproperties => [ bumpProp ],
+                :sourcerectangle => { :origin => { :x => 0, :y => 0 },
+                :size => { :width => width.to_i, :height => height.to_i } } }
+
+      @@options[:numframes].times do |i|
+        radians = i.to_f * 2 * Math::PI / @@options[:numframes]
+        bumpScale = 0.6 * Math.cos(radians)
+        bumpProp[:cifiltervalue] = bumpScale
+        verboseputs("Render filter chain has: \n" +
+                          JSON.pretty_generate(renderHash))
+        self.smig_render_filterchain(filterRef, renderHash)
+        verboseputs("Rendered filter chain")
+        exporterRef = self.smig_create_imageexporter(i)
+        self.smig_addimage_toexporter(exporterRef, contextRef)
+        self.smig_export_exporter(exporterRef)
+        verboseputs("Added image to exporter")
+        smig_close_base_object(exporterRef)
+      end
+
+      b = Time.now
+      puts("Time to process images: " + (b-a).to_s + " seconds")
+      verboseputs("Exported image")
+    rescue Exception => e
+        puts e.message
+        puts "With smig error code: " + @@smigExitVal.to_s
+        exit 240
+    ensure
+      smig_close_base_object(inputMaskImageRef)
+      smig_close_base_object(contextRef)
+      smig_close_base_object(filterRef)
+    end
+    
+    0
+  end
+end
+
+def localmain()
+  options = EmbossMask.parse!(ARGV)
+  $verbose = options[:verbose]
+  verbosepp(options)
+  result = EmbossMask.apply()
+  unless result.zero?
+    verboseputs("Error fail code: " + result.to_s)
+  end
+  result
+end
+
+result = localmain()
+exit(result)

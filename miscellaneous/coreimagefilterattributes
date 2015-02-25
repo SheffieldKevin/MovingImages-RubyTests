@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability. Please include the link to the documentation:
+# https://gitlab.com/ktam/using-movingimages/wikis/UsingMovingImagesContents
+
+require 'Open3'
+
+$smig = "smig"
+@errorcode = 0
+
+def FailOnExitCode(exitCode, testString)
+  unless exitCode.exitstatus.zero?
+    puts testString + " Process status: " + exitCode.to_s
+    @errorcode = exitCode.exitstatus
+    return true
+  end
+  return false
+end
+
+def CreateCoreImageFiltersPlists(filterName)
+  filePath = "~/CoreImageFilter/PLISTFiles/" + filterName + ".plist"
+  baseStr = "smig getproperty -type imagefilterchain -property " +
+                  "imagefilterattributes -filtername " + filterName +
+                  " -propertyfile \"" + filePath + "\""
+  filterDesc, exitVal = Open3.capture2($smig, "getproperty", "-type",
+                        "imagefilterchain", "-property",
+                        "imagefilterattributes", "-filtername", filterName,
+                        "-propertyfile", filePath)
+  FailOnExitCode(exitVal, baseStr)
+end
+
+def CreateCoreImageFiltersJSON(filterName)
+  filePath = "~/CoreImageFilter/JSONFiles/" + filterName + ".json"
+  baseStr = "smig getproperty -type imagefilterchain -property " +
+                  "imagefilterattributes -filtername " + filterName +
+                  " -jsonfile \"" + filePath + "\""
+  filterDesc, exitVal = Open3.capture2($smig, "getproperty", "-type",
+                        "imagefilterchain", "-property",
+                        "imagefilterattributes", "-filtername", filterName,
+                        "-jsonfile", filePath)
+  FailOnExitCode(exitVal, baseStr)
+end
+
+def CreateCoreImageFilterFiles()
+  baseStr = "smig getproperty -type imagefilterchain -property imagefiltertypes"
+  filters, exitVal = Open3.capture2($smig, "getproperty", "-type",
+                        "imagefilterchain", "-property", "imagefiltertypes")
+  unless FailOnExitCode(exitVal, baseStr)
+    arrayOfFilters = filters.split(" ")
+    arrayOfFilters.each do |filterName|
+      CreateCoreImageFiltersPlists(filterName)
+      CreateCoreImageFiltersJSON(filterName)
+    end
+  end
+  return @errorcode
+end
+
+exit(CreateCoreImageFilterFiles())

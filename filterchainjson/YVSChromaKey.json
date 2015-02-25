@@ -1,0 +1,43 @@
+{
+  "cirenderdestination" : 
+  {
+    "objecttype" : "bitmapcontext",
+    "objectname" : "chromakey.destination"
+  },
+  "cifilterlist" :
+  [
+    {
+      "cifiltername" : "YVSChromaKeyFilter",
+      "cifilterproperties" :
+      [
+        {
+          "cifilterkey" : "inputImage",
+          "cifiltervalueclass" : "CIImage",
+          "cifiltervalue" :
+          {
+            "objectname" : "chromakeychain.source",
+            "objecttype" : "bitmapcontext",
+            "_comment1" : "Another key is: imageindex"
+          },
+          "_comment1" : "Another key is: cisourceimagekeepstatic"
+        },
+        {
+          "cifilterkey" : "inputColor",
+          "cifiltervalueclass" : "CIVector",
+          "cifiltervalue" : "[ 0.38 0.53 0.30 1.0 ]",
+        },
+        {
+          "cifilterkey" : "inputDistance",
+          "cifiltervalueclass" : "NSNumber",
+          "cifiltervalue" : 0.2,
+        },
+        {
+          "cifilterkey" : "inputSlopeWidth",
+          "cifiltervalueclass" : "NSNumber",
+          "cifiltervalue" : 0.1,
+        }
+      ]
+    }
+  ]
+}
+

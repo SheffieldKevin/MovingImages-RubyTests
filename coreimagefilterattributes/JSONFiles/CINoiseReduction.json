@@ -1,0 +1,45 @@
+{
+  "CIAttributeFilterDisplayName" : "Noise Reduction",
+  "CIAttributeDescription" : "Reduces noise using a threshold value to define what is considered noise. Small changes in luminance below that value are considered noise and get a noise reduction treatment, which is a local blur. Changes above the threshold value are considered edges, so they are sharpened.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CINoiseReduction",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CINoiseReduction",
+  "inputSharpness" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The sharpness of the final image. The larger the value, the sharper the result.",
+    "CIAttributeSliderMax" : 2,
+    "CIAttributeDisplayName" : "Sharpness",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.4
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryBlur",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputNoiseLevel" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The amount of noise reduction. The larger the value, the more noise reduction.",
+    "CIAttributeSliderMax" : 0.1,
+    "CIAttributeDisplayName" : "Noise Level",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.02
+  }
+}

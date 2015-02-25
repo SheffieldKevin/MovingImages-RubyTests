@@ -1,0 +1,213 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2013-2014 Kevin Meaney
+# Script for testing smig and moving images importer objects.
+# Requires file test002image.jpg
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+
+# This script tests image importers. Creating one, and getting properties about
+# about the file and properties about images in the file.
+
+require 'Open3'
+require 'JSON'
+require 'moving_images'
+
+include MovingImages
+
+$verbose = false
+$smig = "smig"
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$imagefile = File.join($directory, "/images/test002image.jpg")
+$errorcode = 0
+
+# Get the import types from the image importer objects.
+def test01()
+  importTypes = "public.jpeg public.png com.compuserve.gif public.jpeg-2000 com.canon.tif-raw-image com.adobe.raw-image com.canon.cr2-raw-image com.leafamerica.raw-image com.hasselblad.fff-raw-image com.hasselblad.3fr-raw-image com.nikon.raw-image com.nikon.nrw-raw-image com.pentax.raw-image com.samsung.raw-image com.sony.raw-image com.sony.sr2-raw-image com.sony.arw-raw-image com.epson.raw-image com.kodak.raw-image public.tiff com.apple.icns com.canon.crw-raw-image com.fuji.raw-image com.panasonic.raw-image com.panasonic.rw2-raw-image com.leica.raw-image com.leica.rwl-raw-image com.konicaminolta.raw-image com.olympus.sr-raw-image com.olympus.or-raw-image com.olympus.raw-image com.adobe.photoshop-image com.microsoft.ico com.microsoft.bmp com.microsoft.cur com.truevision.tga-image com.sgi.sgi-image com.apple.macpaint-image com.ilm.openexr-image public.radiance public.mpo-image public.pbm public.pvr com.apple.rjpeg com.apple.pict com.apple.quicktime-image com.kodak.flashpix-image"
+  exportTypes = "public.jpeg public.png com.compuserve.gif public.jpeg-2000 public.tiff com.apple.icns com.adobe.photoshop-image com.adobe.pdf com.microsoft.ico com.microsoft.bmp com.truevision.tga-image com.sgi.sgi-image com.ilm.openexr-image public.pbm public.pvr com.apple.rjpeg"
+
+  begin
+    result = MIMeta.listimageimporttypes
+    if result != importTypes
+      puts "MIMeta.listimageimporttypes return #{result}"
+    end
+
+    result = MIMeta.listimageexporttypes
+    if result != exportTypes
+      puts "MIMeta.listimageexporttypes return #{result}"
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# Get the number of importer objects
+# 1. Get the number of importer objects.
+# 2. Create an importer object.
+# 3. Find out how many importer objects there are
+# 4. Check to make sure that there is one more than previously.
+# 5. Close the importer object created in step 2.
+def test02()
+  begin
+    getNumImageImportersCommand = CommandModule.make_get_nonobjectproperty(
+                                    property: :numberofobjects,
+                                        type: :imageimporter)
+    origNumOfImporters = Smig.perform_command(getNumImageImportersCommand).to_i
+    
+    createImporterCommand = CommandModule.make_createimporter($imagefile)
+    importerRef = Smig.perform_command(createImporterCommand).to_i
+    newNumOfImporters = Smig.perform_command(getNumImageImportersCommand).to_i
+    unless newNumOfImporters.eql? origNumOfImporters + 1
+      puts "Should have one new image importer object. Now have #{newNumOfImporters}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    importerObject = SmigIDHash.make_objectid(objectreference: importerRef)
+    Smig.close_object_nothrow(importerObject)
+  end
+end
+
+# Get various properties of an imported image file.
+# 1. Get the object type "objecttype",
+# 2. Get number of images "numberofimages",
+# 3. Get the path to the imported image file "sourcefilepath".
+# 4. Get the image file type "utifiletype"
+# 5. Close image.
+
+def test03()
+  begin
+    createImporterCommand = CommandModule.make_createimporter($imagefile)
+    importerRef = Smig.perform_command(createImporterCommand).to_i
+    importerObject = SmigIDHash.make_objectid(objectreference: importerRef)
+    getObjectPropertyCommand = CommandModule.make_get_objectproperty(importerObject,
+                                          property: :objecttype)
+    objectType = Smig.perform_command(getObjectPropertyCommand)
+    unless objectType.eql? "imageimporter"
+      puts "2: Image importer object object type is: #{objectType}"
+    end
+    
+    getNumImagesCommand = CommandModule.make_get_objectproperty(importerObject,
+                                          property: :numberofimages)
+    numImages = Smig.perform_command(getNumImagesCommand).to_i
+    unless numImages.eql? 1
+      puts "3: Number of images is #{numImages}. Should be 1."
+    end
+
+    getFilePathCommand = CommandModule.make_get_objectproperty(importerObject,
+                                                               property: :file)
+    sourceFilePath = Smig.perform_command(getFilePathCommand)
+    unless sourceFilePath.eql? $imagefile
+      puts "4: Source file path for image importer different: #{sourceFilePath}"
+    end
+
+    getFileTypeCommand = CommandModule.make_get_objectproperty(importerObject,
+                                                          property: :utifiletype)
+    fileType = Smig.perform_command(getFileTypeCommand)
+    unless fileType.eql? "public.jpeg"
+      puts "5: utifiletype different than expected: #{fileType}"
+    end
+  rescue
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    Smig.close_object_nothrow(importerObject)
+  end
+end
+
+# Get information about the image in the image file.
+# 1. Import the image
+# 2. Get image width
+# 3. Get image height
+# 4. Get exposure time (in seconds).
+# 5. Get fNumber.
+
+def test04()
+  begin
+    createImporterCommand = CommandModule.make_createimporter($imagefile)
+    importerRef = Smig.perform_command(createImporterCommand).to_i
+    importerObject = SmigIDHash.make_objectid(objectreference: importerRef)
+
+    getObjectPropertyCommand = CommandModule.make_get_objectproperty(importerObject,
+                                              property: :'dictionary.PixelWidth',
+                                              imageindex: 0)
+
+    imageWidth = Smig.perform_command(getObjectPropertyCommand).to_i
+    unless imageWidth.eql? 336
+      puts "1: Imported image returns wrong width: #{imageWidth}"
+    end
+
+    getObjectPropertyCommand = CommandModule.make_get_objectproperty(importerObject,
+                                              property: :'dictionary.PixelHeight',
+                                              imageindex: 0)
+
+    imageHeight = Smig.perform_command(getObjectPropertyCommand).to_i
+    unless imageHeight.eql? 600
+      puts "2: Imported image returns wrong height: #{imageHeight}"
+    end
+
+    getObjectPropertyCommand = CommandModule.make_get_objectproperty(importerObject,
+                                      property: :'dictionary.{Exif}.ExposureTime',
+                                      imageindex: 0)
+
+    exposureTime = Smig.perform_command(getObjectPropertyCommand).to_f
+    unless exposureTime.eql? 0.01666666666666667
+      puts "3: Imported image returns wrong exposure time: #{exposureTime}"
+    end
+
+    getObjectPropertyCommand = CommandModule.make_get_objectproperty(importerObject,
+                                      property: :'dictionary.{Exif}.FNumber',
+                                      imageindex: 0)
+
+    fNumber = Smig.perform_command(getObjectPropertyCommand).to_f
+    unless fNumber.eql? 9.0
+      puts "4: Imported image returns wrong fNumber: #{fNumber}"
+    end
+
+  rescue
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    Smig.close_object_nothrow(importerObject)
+  end
+end
+
+def LocalTestMain002()
+  puts "test01"
+  test01()
+  puts "test02"
+  test02()
+  puts "test03"
+  test03()
+  puts "test04"
+  test04()
+  return $errorcode
+end
+
+exit(LocalTestMain002())

@@ -1,0 +1,41 @@
+{
+  "CIAttributeFilterDisplayName" : "Zoom Blur",
+  "CIAttributeDescription" : "Simulates the effect of zooming the camera while capturing the image.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputAmount" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The zoom-in amount. Larger values result in more zooming in.",
+    "CIAttributeSliderMax" : 200,
+    "CIAttributeDisplayName" : "Amount",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 20
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIZoomBlur",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIZoomBlur",
+  "CIAttributeFilterCategories" : [
+    "CICategoryBlur",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The x and y position to use as the center of the effect.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  }
+}

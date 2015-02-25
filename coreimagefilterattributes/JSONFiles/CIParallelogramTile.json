@@ -1,0 +1,63 @@
+{
+  "inputAcuteAngle" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The primary angle for the repeating parallelogram tile. Small values create thin diamond tiles, and higher values create fatter parallelogram tiles.",
+    "CIAttributeSliderMax" : 3.141592653589793,
+    "CIAttributeDisplayName" : "Acute Angle",
+    "CIAttributeDefault" : 1.570796326794897,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeIdentity" : 1.570796326794897,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : -3.141592653589793
+  },
+  "CIAttributeFilterDisplayName" : "Parallelogram Tile",
+  "CIAttributeDescription" : "Warps an image by reflecting it in a parallelogram, and then tiles the result.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputAngle" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The angle (in degrees) of the tiled pattern.",
+    "CIAttributeSliderMax" : 3.141592653589793,
+    "CIAttributeDisplayName" : "Angle",
+    "CIAttributeDefault" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : -3.141592653589793
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIParallelogramTile",
+  "inputWidth" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The width of a tile.",
+    "CIAttributeSliderMax" : 200,
+    "CIAttributeDisplayName" : "Width",
+    "CIAttributeSliderMin" : 1,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 100,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 100
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIParallelogramTile",
+  "CIAttributeFilterCategories" : [
+    "CICategoryTileEffect",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The x and y position to use as the center of the effect",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  }
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Code128 Barcode Generator</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryGenerator</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>CICode128BarcodeGenerator</string>
+	<key>CIAttributeFilterName</key>
+	<string>CICode128BarcodeGenerator</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CICode128BarcodeGenerator</string>
+	<key>inputMessage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSData</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Message</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputQuietSpace</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<integer>7</integer>
+		<key>CIAttributeDisplayName</key>
+		<string>QuietSpace</string>
+		<key>CIAttributeMax</key>
+		<integer>20</integer>
+		<key>CIAttributeMin</key>
+		<integer>0</integer>
+		<key>CIAttributeSliderMax</key>
+		<integer>20</integer>
+		<key>CIAttributeSliderMin</key>
+		<integer>0</integer>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Distorts an image by applying a glass-like texture. The raised portions of the output image are the result of applying a texture map.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryDistortionEffect</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Glass Distortion</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIGlassDistortion</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIGlassDistortion</string>
+	<key>inputCenter</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[150 150]</string>
+		<key>CIAttributeDescription</key>
+		<string>The x and y position to use as the center of the distortion.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Center</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputScale</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>200</real>
+		<key>CIAttributeDescription</key>
+		<string>The amount of texturing of the resulting image. The larger the value, the greater the texturing.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Scale</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>500</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.01</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeDistance</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputTexture</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>A texture to apply to the source image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Texture</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

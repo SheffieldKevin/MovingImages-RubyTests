@@ -1,0 +1,556 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+# 
+# test017
+# This script file tests:
+# 1. Creating a few different video writer objects.
+# 2. Confirm getting properties from the different video writer object works.
+# 3. Adding a few different video writer inputs.
+# 4. Getting properties from the video writer objects with different inputs.
+# 5. For H264, ProRes4444 and ProRes422 codecs test creation of files.
+# 6. Don't try and do comparison of actual movie pixels. Do test dimensions
+#      and movie length.
+# Test path substitution when creating a movie writer class.
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MIMovie
+include MICGDrawing
+include CommandModule
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$compareImageDir = File.join($directory, "images/test017ForComparison")
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# Will through an exception if different.
+def compare_videowriterproperties_hash(oldResH, newResH)
+      fail "Different number of properties" unless oldResH.size.eql? newResH.size
+    
+    # The check that they have the same properties
+    oldResH.each_key do |key| 
+      fail "Property with key missing: #{key}" if newResH[key].nil?
+    end
+
+    # Now compare specific properties.
+    unless newResH["objecttype"].eql? oldResH["objecttype"]
+      fail "Object type different"
+    end
+
+    unless newResH["objectname"].eql? oldResH["objectname"]
+      fail "Object name different"
+    end
+
+    unless newResH["utifiletype"].eql? oldResH["utifiletype"]
+      fail "UTI file type different"
+    end
+
+    unless newResH["videowriterstatus"].eql? 0
+      fail "Video writer status non zero"
+    end
+
+    unless newResH["canwriteframes"].eql? false
+      fail "Can write frames should be zero"
+    end
+end
+
+
+# Tests creating and automically close video writer objects.
+# Video writer created that will export as mp4, mov and m4v.
+# Tests getting properties of 
+def test01()
+  destMovieFileNameMP4 = "movie01.mp4"
+  destMovieFileNameMOV = "movie02.mov"
+  destMovieFileNameM4V = "movie03.m4v"
+  begin
+    # Test with a mpeg4 file type.
+    
+    # Create the list of commands object.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+     
+    movieFilePath = File.join(Dir.tmpdir(), destMovieFileNameMP4)
+    videoWriterName = "videowriter.test01.name"
+    utiFileType = "public.mpeg-4"
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                          addtocleanup: true,
+                                                  name: videoWriterName,
+                                           utifiletype: utiFileType,
+                                   pathsubstitutionkey: nil)
+     
+    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
+                                            saveresultstype: :jsonstring)
+    theCommands.add_command(getMovieWriterProps)
+    result = Smig.perform_commands(theCommands)
+    oldResH = { 
+                  "exportfilepath" => "/This/Path/Is/Ignored",
+                      "objectname" => videoWriterName,
+                      "objecttype" => "videoframeswriter",
+                     "utifiletype" => utiFileType,
+                  "canwriteframes" => false,
+               "videowriterstatus" => 0
+              }
+    newResH = JSON.parse(result)
+    
+    # Compare the different property hashes.
+    compare_videowriterproperties_hash(oldResH, newResH)
+
+    # Now lets ask for the number of objects. Should be 0.
+    fail "Video writer object not closed" unless Smig.get_numberofobjects().eql? 0
+    
+    # Test with a quicktime file type.
+
+    # Create the list of commands object.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+     
+    movieFilePath = File.join(Dir.tmpdir(), destMovieFileNameMOV)
+    videoWriterName = "videowriter.test01.name"
+    utiFileType = "com.apple.quicktime-movie"
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                          addtocleanup: true,
+                                                  name: videoWriterName,
+                                           utifiletype: utiFileType,
+                                   pathsubstitutionkey: nil)
+     
+    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
+                                            saveresultstype: :jsonstring)
+    theCommands.add_command(getMovieWriterProps)
+    result = Smig.perform_commands(theCommands)
+    oldResH = { 
+                  "exportfilepath" => "/This/Path/Is/Ignored",
+                      "objectname" => videoWriterName,
+                      "objecttype" => "videoframeswriter",
+                     "utifiletype" => utiFileType,
+                  "canwriteframes" => false,
+               "videowriterstatus" => 0
+              }
+    newResH = JSON.parse(result)
+    
+    # Compare the different property hashes.
+    compare_videowriterproperties_hash(oldResH, newResH)
+    
+    # Now lets ask for the number of objects. Should be 0.
+    fail "Video writer object not closed" unless Smig.get_numberofobjects().eql? 0
+
+    # Test with a m4v file type.
+
+    # Create the list of commands object.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+     
+    movieFilePath = File.join(Dir.tmpdir(), destMovieFileNameM4V)
+    videoWriterName = "videowriter.test01.name"
+    utiFileType = "com.apple.m4v-video"
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                          addtocleanup: true,
+                                                  name: videoWriterName,
+                                           utifiletype: utiFileType,
+                                   pathsubstitutionkey: nil)
+     
+    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
+                                            saveresultstype: :jsonstring)
+    theCommands.add_command(getMovieWriterProps)
+    result = Smig.perform_commands(theCommands)
+    oldResH = { 
+                  "exportfilepath" => "/This/Path/Is/Ignored",
+                      "objectname" => videoWriterName,
+                      "objecttype" => "videoframeswriter",
+                     "utifiletype" => utiFileType,
+                  "canwriteframes" => false,
+               "videowriterstatus" => 0
+              }
+    newResH = JSON.parse(result)
+    
+    # Compare the different property hashes.
+    compare_videowriterproperties_hash(oldResH, newResH)
+    
+    # Now lets ask for the number of objects. Should be 0.
+    fail "Video writer object not closed" unless Smig.get_numberofobjects().eql? 0
+
+    # One last test. Check that we can get a single property.
+    # In this case the utifiletype.
+    # Create the list of commands object.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+     
+    movieFilePath = File.join(Dir.tmpdir(), destMovieFileNameM4V)
+    videoWriterName = "videowriter.test01.name"
+    utiFileType = "com.apple.m4v-video"
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                          addtocleanup: true,
+                                                  name: videoWriterName,
+                                           utifiletype: utiFileType,
+                                   pathsubstitutionkey: nil)
+     
+    getMovieWriterProp = CommandModule.make_get_objectproperty(movieWriter,
+                                            property: :utifiletype)
+    theCommands.add_command(getMovieWriterProp)
+    result = Smig.perform_commands(theCommands)
+
+    fail "utifiletype different to assigned: " unless result.eql? utiFileType
+
+    # Now lets ask for the number of objects. Should be 0.
+    fail "Video writer object not closed" unless Smig.get_numberofobjects().eql? 0
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# Test adding an input to a video writer object.
+# Set the file type to quicktime.
+# All the presets for the inputs will be tested.
+# Once again we will request all the associated properties.
+
+def test02()
+  movieFileName = "movie01.mov"
+  begin
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+     
+    movieFilePath = File.join("/blah", movieFileName)
+    videoWriterName = "videowriter.test02.name"
+    utiFileType = "com.apple.quicktime-movie"
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                          addtocleanup: true,
+                                                  name: videoWriterName,
+                                           utifiletype: utiFileType,
+                                   pathsubstitutionkey: nil)
+    
+    # Now add the h264_sd input to the video writer object
+    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
+      timescale: 30000)
+    cleanAperture = MIMovie::CleanAperture.make_cleanaperture(0, 30, 640, 420)
+    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
+      movieWriter, preset: :h264preset_sd, framesize: { width: 640, height: 480 },
+      frameduration: frameduration, cleanaperture: cleanAperture,
+      scalingmode: :AVVideoScalingModeResizeAspect)
+    theCommands.add_command(addVideoInputCommand)
+    
+    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
+                                            saveresultstype: :jsonstring)
+    theCommands.add_command(getMovieWriterProps)
+    result = Smig.perform_commands(theCommands)
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
+    '"videoframeswriter","videosettings":{"AVVideoCleanApertureKey":'\
+    '{"AVVideoCleanApertureHorizontalOffsetKey":0,'\
+    '"AVVideoCleanApertureHeightKey":420,"AVVideoCleanApertureVerticalOffsetKey"'\
+    ':30,"AVVideoCleanApertureWidthKey":640},"AVVideoHeightKey":'\
+    '480,"AVVideoCodecKey":"avc1","AVVideoCompressionPropertiesKey":{'\
+    '"AverageBitRate":3145728,"MaxKeyFrameInterval":30,"ProfileLevel":'\
+    '"H264_Baseline_AutoLevel","ExpectedFrameRate":30},"AVVideoWidthKey":'\
+    '640,"AVVideoScalingModeKey":"AVVideoScalingModeResizeAspect"},'\
+    '"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
+    '0},"canwriteframes":true,"time":{"flags":1,"value":0,"timescale":6000,'\
+    '"epoch":0},"size":{"width":640,"height":480},"exportfilepath":'\
+    '"\/blah\/movie01.mov","videowriterstatus":0,'\
+    '"utifiletype":"com.apple.quicktime-movie"}'
+    
+    fail "Writer with input h264_sd properties different: " unless result.eql? oldRes
+
+    # Now redo for h264_hd
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+     
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                          addtocleanup: true,
+                                                  name: videoWriterName,
+                                           utifiletype: utiFileType,
+                                   pathsubstitutionkey: nil)
+    
+    # Now add the h264_hd input to the video writer object
+    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
+      timescale: 30000)
+    cleanAperture = MIMovie::CleanAperture.make_cleanaperture(150, 0, 1620, 1080)
+    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
+      movieWriter, preset: :h264preset_hd, framesize: { width: 1920, height: 1080 },
+      frameduration: frameduration, cleanaperture: cleanAperture,
+      scalingmode: :AVVideoScalingModeResizeAspect)
+    theCommands.add_command(addVideoInputCommand)
+    
+    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
+                                            saveresultstype: :jsonstring)
+    theCommands.add_command(getMovieWriterProps)
+    result = Smig.perform_commands(theCommands)
+
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
+    '"videoframeswriter","videosettings":{"AVVideoCleanApertureKey":'\
+    '{"AVVideoCleanApertureHorizontalOffsetKey":150,'\
+    '"AVVideoCleanApertureHeightKey":1080,"AVVideoCleanApertureVerticalOffsetKey"'\
+    ':0,"AVVideoCleanApertureWidthKey":1620},"AVVideoHeightKey":1080,'\
+    '"AVVideoCodecKey":"avc1","AVVideoCompressionPropertiesKey":'\
+    '{"ProfileLevel":"H264_High_AutoLevel","AverageBitRate":15585760'\
+    ',"H264EntropyMode":"CABAC","MaxKeyFrameInterval":30,"AllowFrameReordering":'\
+    '1,"ExpectedFrameRate":30},"AVVideoWidthKey":1920,"AVVideoScalingModeKey":'\
+    '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001'\
+    ',"timescale":30000,"epoch":0},"canwriteframes":true,"time":{"flags":1,'\
+    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":1080},'\
+    '"exportfilepath":"\/blah\/movie01.mov","videowriterstatus":0,"utifiletype"'\
+    ':"com.apple.quicktime-movie"}'
+    
+    fail "Writer with input h264_hd properties different: " unless result.eql? oldRes
+
+    # Now redo for jpegpreset
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+     
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                          addtocleanup: true,
+                                                  name: videoWriterName,
+                                           utifiletype: utiFileType,
+                                   pathsubstitutionkey: nil)
+    
+    # Now add the jpegpreset input to the video writer object
+    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
+      timescale: 30000)
+    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
+      movieWriter, preset: :jpegpreset, framesize: { width: 1280, height: 720 },
+      frameduration: frameduration)
+    theCommands.add_command(addVideoInputCommand)
+    
+    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
+                                            saveresultstype: :jsonstring)
+    theCommands.add_command(getMovieWriterProps)
+    result = Smig.perform_commands(theCommands)
+
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
+    '"videoframeswriter","videosettings":{"AVVideoHeightKey":720,"AVVideoCodecKey"'\
+    ':"jpeg","AVVideoWidthKey":1280,"AVVideoCompressionPropertiesKey":{"Quality":'\
+    '0.85}},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
+    '0},"canwriteframes":true,"time":{"flags":1,"value":0,"timescale":6000,'\
+    '"epoch":0},"size":{"width":1280,"height":720},"exportfilepath":'\
+    '"\/blah\/movie01.mov","videowriterstatus":0,"utifiletype":'\
+    '"com.apple.quicktime-movie"}'
+    
+    fail "Writer with input jpegpreset properties different: " unless result.eql? oldRes
+
+    # Now redo for ProRes422
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+     
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                          addtocleanup: true,
+                                                  name: videoWriterName,
+                                           utifiletype: utiFileType,
+                                   pathsubstitutionkey: nil)
+    
+    # Now add the ProRes422 input to the video writer object
+    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
+      timescale: 30000)
+    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
+      movieWriter, preset: :prores422preset,
+      framesize: { width: 1280, height: 720 }, frameduration: frameduration)
+    theCommands.add_command(addVideoInputCommand)
+    
+    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
+                                            saveresultstype: :jsonstring)
+    theCommands.add_command(getMovieWriterProps)
+    result = Smig.perform_commands(theCommands)
+
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
+    '"videoframeswriter","videosettings":{"AVVideoColorPropertiesKey":'\
+    '{"TransferFunction":"ITU_R_709_2","YCbCrMatrix":"ITU_R_709_2",'\
+    '"ColorPrimaries":"ITU_R_709_2"},"AVVideoCodecKey":"apcn",'\
+    '"AVVideoHeightKey":720,"AVVideoWidthKey":1280,"AVVideoScalingModeKey":'\
+    '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001,'\
+    '"timescale":30000,"epoch":0},"canwriteframes":true,"time":{"flags":1,'\
+    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1280,"height":720}'\
+    ',"exportfilepath":"\/blah\/movie01.mov","videowriterstatus":'\
+    '0,"utifiletype":"com.apple.quicktime-movie"}'
+    
+    fail "Writer with input ProRes422 properties different: " unless result.eql? oldRes
+
+    # Now redo for ProRes4444
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+     
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                          addtocleanup: true,
+                                                  name: videoWriterName,
+                                           utifiletype: utiFileType,
+                                   pathsubstitutionkey: nil)
+    
+    # Now add the ProRes4444 input to the video writer object
+    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
+      timescale: 30000)
+    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
+      movieWriter, preset: :prores4444preset,
+      framesize: { width: 1920, height: 1080 }, frameduration: frameduration)
+    theCommands.add_command(addVideoInputCommand)
+    
+    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
+                                            saveresultstype: :jsonstring)
+    theCommands.add_command(getMovieWriterProps)
+    result = Smig.perform_commands(theCommands)
+    # puts result
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
+    '"videoframeswriter","videosettings":{"AVVideoColorPropertiesKey":'\
+    '{"TransferFunction":"ITU_R_709_2","YCbCrMatrix":"ITU_R_709_2",'\
+    '"ColorPrimaries":"ITU_R_709_2"},"AVVideoCodecKey":"ap4h","AVVideoHeightKey":'\
+    '1080,"AVVideoWidthKey":1920,"AVVideoScalingModeKey":'\
+    '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":'\
+    '1001,"timescale":30000,"epoch":0},"canwriteframes":true,"time":{"flags"'\
+    ':1,"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":'\
+    '1080},"exportfilepath":"\/blah\/movie01.mov","videowriterstatus":'\
+    '0,"utifiletype":"com.apple.quicktime-movie"}'
+    
+    fail "Writer with input ProRes4444 properties different: " unless result.eql? oldRes
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# test reading frames from an imported movie draw them and then write a movie.
+def test03()
+  movieFileName = "movie03.mov"
+  # In this example source file and output dimensions are both 1280x720
+  sourceMovie = File.join($directory, "images/testinput-movingimages.mov")
+  utiFileType = "com.apple.quicktime-movie"
+
+  begin
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # Importer the movie file
+    movieImporterName = SecureRandom.uuid
+    movieImporter = theCommands.make_createmovieimporter(sourceMovie,
+                                                 name: movieImporterName)
+
+    contextSize = MIShapes.make_size(1280, 720)
+    bitmapObject = theCommands.make_createbitmapcontext(size: contextSize,
+                                        profile: :kCGColorSpaceGenericRGB)
+
+    movieFilePath = File.join(File.expand_path("~/Desktop"), movieFileName)
+    # Create the video frames writer object
+    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
+                                      addtocleanup: true,
+                                       utifiletype: utiFileType,
+                               pathsubstitutionkey: nil)
+
+    # Now add the ProRes422 input to the video writer object
+    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 400,
+                                                      timescale: 6000)
+    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
+        movieWriter, preset: :prores422preset, framesize: contextSize,
+        frameduration: frameduration)
+    theCommands.add_command(addVideoInputCommand)
+
+    # Prepare to loop over accessing frames and add frames to video frame writer
+    # Will do nothing else other than halve the speed by doubling frame duration
+    # time.
+    # lets get 60 frames.
+    numberOfFrames = 60
+    imageID = SecureRandom.uuid
+    trackID = MIMovie::MovieTrackIdentifier.make_movietrackid_from_mediatype(
+        mediatype: :vide, trackindex: 0)
+    currentTime = MIMovie::MovieTime.make_movietime(timevalue: 120, timescale: 30)
+    
+    # I've needed to use drawing to a bitmap context because my old laptop is
+    # incapable of creating the necessary color correction data to go from
+    # the profile of the image frame from the movie importer to the pixel buffer.
+    # Drawing to bitmap slows down the processing of the movie frames. When
+    # writing a script for computers with better hardware and optimizing for
+    # speed you could leave out the draw image code and swap it for the commented
+    # out code.
+    
+    numberOfFrames.times do |frameIndex|
+      currentTime = MIMovie::MovieTime.make_movietime(timevalue: 60 + frameIndex,
+                                                      timescale: 30)
+      # frameOptions = MIMovie::FrameOptions.new
+      # frameOptions.frametime = currentTime
+      # frameOptions.tracks = [trackID]
+      #==================================================================
+      drawImageElement = MIDrawImageElement.new
+      drawImageElement.set_moviefile_imagesource(source_object: movieImporter,
+          frametime: currentTime, tracks: [trackID])
+      drawImageElement.destinationrectangle = MIShapes.make_rectangle(
+          size: contextSize)
+      drawImageCommand = CommandModule.make_drawelement(bitmapObject, 
+          drawinstructions: drawImageElement, createimage: true)
+      theCommands.add_command(drawImageCommand)
+      addImageToWriterInput = CommandModule.make_addimageto_videoinputwriter(
+          movieWriter, sourceobject: bitmapObject)
+      #==================================================================
+      # addImageToWriterInput = CommandModule.make_addimageto_videoinputwriter(
+      # movieWriter, imageoptions: frameOptions, sourceobject: movieImporter)
+      theCommands.add_command(addImageToWriterInput)
+    end
+    
+    finalize = CommandModule.make_finishwritingframescommand(movieWriter)
+    theCommands.add_command(finalize)
+    result = Smig.perform_commands(theCommands)
+    # The above will throw if an error occured.
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    FileUtils.rm_f(movieFilePath) unless movieFilePath.nil?
+#    `open #{movieFilePath}`
+  end
+end
+
+def LocalTestMain017()
+  begin
+    puts "test01"
+    test01()
+    puts "test02"
+    test02()
+    puts "test03"
+    test03()
+  rescue RuntimeError => e
+    puts e.message
+    # puts e.backtrace
+    puts "Error code: #{$errorcode}"
+    puts "Smig.exitstring: #{Smig.exitstring}"
+    # don't allow the exception to propagate outside of this file.
+  end
+  return $errorcode
+end
+
+exit(LocalTestMain017())
+

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Generates a starburst pattern. The output image is typically used as input to another filter</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryGenerator</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Star Shine</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIStarShineGenerator</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIStarShineGenerator</string>
+	<key>inputCenter</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[150 150]</string>
+		<key>CIAttributeDescription</key>
+		<string>The  x and y position to use as the center of the star.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Center</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputColor</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>1 0.8 0.6 1</string>
+		<key>CIAttributeDescription</key>
+		<string>The color to use for the outer shell of the circular star.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Color</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCrossAngle</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.59999999999999998</real>
+		<key>CIAttributeDescription</key>
+		<string>The angle of the cross pattern.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Cross Angle</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.59999999999999998</real>
+		<key>CIAttributeSliderMax</key>
+		<real>3.1415926535897931</real>
+		<key>CIAttributeSliderMin</key>
+		<real>-3.1415926535897931</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeAngle</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCrossOpacity</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>-2</real>
+		<key>CIAttributeDescription</key>
+		<string>The opacity of the cross pattern.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Cross Opacity</string>
+		<key>CIAttributeIdentity</key>
+		<real>-2</real>
+		<key>CIAttributeMin</key>
+		<real>-8</real>
+		<key>CIAttributeSliderMax</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMin</key>
+		<real>-8</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCrossScale</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>15</real>
+		<key>CIAttributeDescription</key>
+		<string>The size of the cross pattern.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Cross Scale</string>
+		<key>CIAttributeIdentity</key>
+		<real>15</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>100</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCrossWidth</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>2.5</real>
+		<key>CIAttributeDescription</key>
+		<string>The width of the cross pattern.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Cross Width</string>
+		<key>CIAttributeIdentity</key>
+		<real>2.5</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>10</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.5</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeDistance</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputEpsilon</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>-2</real>
+		<key>CIAttributeDescription</key>
+		<string>The length of the cross spikes.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Epsilon</string>
+		<key>CIAttributeIdentity</key>
+		<real>-2</real>
+		<key>CIAttributeMin</key>
+		<real>-8</real>
+		<key>CIAttributeSliderMax</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMin</key>
+		<real>-8</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputRadius</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>50</real>
+		<key>CIAttributeDescription</key>
+		<string>The radius of the star.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Radius</string>
+		<key>CIAttributeIdentity</key>
+		<real>50</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>300</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeDistance</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

@@ -1,0 +1,92 @@
+{
+  "inputTargetImage" : {
+    "CIAttributeDisplayName" : "Target Image",
+    "CIAttributeDescription" : "The target image for a transition.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputTime" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The parametric time of the transition. This value drives the transition from start (at time 0) to end (at time 1).",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Time",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeTime",
+    "CIAttributeDefault" : 0
+  },
+  "CIAttributeDescription" : "Transitions from one image to another by simulating the effect of a copy machine.",
+  "inputAngle" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The angle of the copier light.",
+    "CIAttributeSliderMax" : 6.283185307179586,
+    "CIAttributeDisplayName" : "Angle",
+    "CIAttributeDefault" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : 0
+  },
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputWidth" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The width of the copier light. ",
+    "CIAttributeSliderMax" : 500,
+    "CIAttributeDisplayName" : "Width",
+    "CIAttributeSliderMin" : 0.1,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0.1,
+    "CIAttributeIdentity" : 200,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 200
+  },
+  "inputColor" : {
+    "CIAttributeDisplayName" : "Color",
+    "CIAttributeDescription" : "The color of the copier light.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "0.6 1 0.8 1",
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeOpaqueColor"
+  },
+  "CIAttributeFilterName" : "CICopyMachineTransition",
+  "CIAttributeFilterDisplayName" : "Copy Machine",
+  "inputExtent" : {
+    "CIAttributeDisplayName" : "Extent",
+    "CIAttributeDescription" : "A rectangle that defines the extent of the effect.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[0 0 300 300]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypeRectangle"
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CICopyMachineTransition",
+  "CIAttributeFilterCategories" : [
+    "CICategoryTransition",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputOpacity" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The opacity of the copier light. A value of 0.0 is transparent. A value of 1.0 is opaque.",
+    "CIAttributeSliderMax" : 3,
+    "CIAttributeDisplayName" : "Opacity",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 1.3,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 1.3
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

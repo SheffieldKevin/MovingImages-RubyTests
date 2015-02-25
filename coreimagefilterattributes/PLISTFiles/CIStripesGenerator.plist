@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Generates a stripe pattern. You can control the color of the stripes, the spacing, and the contrast.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryGenerator</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Stripes</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIStripesGenerator</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIStripesGenerator</string>
+	<key>inputCenter</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[150 150]</string>
+		<key>CIAttributeDescription</key>
+		<string>The x and y position to use as the center of the stripe pattern.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Center</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputColor0</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>1 1 1 1</string>
+		<key>CIAttributeDescription</key>
+		<string>A color to use for the odd stripes.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Color 1</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputColor1</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>0 0 0 1</string>
+		<key>CIAttributeDescription</key>
+		<string>A color to use for the even stripes.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Color 2</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputSharpness</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>1</real>
+		<key>CIAttributeDescription</key>
+		<string>The sharpness of the stripe pattern. The smaller the value, the more blurry the pattern. Values range from 0.0 to 1.0.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Sharpness</string>
+		<key>CIAttributeMax</key>
+		<real>1</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputWidth</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>80</real>
+		<key>CIAttributeDescription</key>
+		<string>The width of a stripe.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Width</string>
+		<key>CIAttributeSliderMax</key>
+		<real>800</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeDistance</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

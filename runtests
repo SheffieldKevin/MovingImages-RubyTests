@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require 'Open3'
+
+$dir = File.dirname(__FILE__)
+
+# $is_yosemite = `sw_vers -productVersion`.eql? "10.10\n"
+# $dir = File.join($dir, 'yosemite') if $is_yosemite
+
+def RunTest(testName)
+  puts "Running test: " + testName
+  testFilePath = File.join($dir, testName)
+  resultStr, exitVal = Open3.capture2(testFilePath)
+  unless exitVal.exitstatus.zero?
+    raise "Test " + testName + " failed with message\n" + resultStr
+  end
+  return resultStr
+end
+
+begin
+  startTime = Time.now
+  puts RunTest("test001")
+  puts RunTest("test002")
+  puts RunTest("test003")
+  puts RunTest("test004")
+  puts RunTest("test005")
+  puts RunTest("test006")
+  puts RunTest("test007")
+  puts RunTest("test008")
+  puts RunTest("test009")
+  puts RunTest("test010")
+  puts RunTest("test011")
+  puts RunTest("test012")
+  puts RunTest("test013")
+  puts RunTest("test014")
+  puts RunTest("test015")
+  puts RunTest("test016")
+  puts RunTest("test017")
+  endTime = Time.now
+  puts "Time to runtests: " + (endTime - startTime).to_s
+rescue Exception => e
+  puts e.message
+  exit 240
+end

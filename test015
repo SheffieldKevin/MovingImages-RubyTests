@@ -1,0 +1,433 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+#
+# This script file tests:
+# 1. Getting metadata bits and pieces from a movie importer object.
+# 2. Getting metadata bits and pieces from tracks in a movie importer object.
+# 3. Getting a single frame from a movie file
+# 4. Getting a single frame from a track in a movie file
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MIMovie
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$compareImageDir = File.join($directory, "images/test015ForComparison")
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# test01 Getting metadata of a movie importer object.
+# 1. Get a list of the different possible media types.
+# 2. Create a movie importer, get the movie importers base object reference.
+# 3. Use the object reference for accessing the movie for getting other metadata.
+# 4. Get the movie importer name
+# 5. Get the movie importer type
+# 6. Get the movie importer metadata
+# 7. Get the the number of tracks
+# 8. Get the number of video tracks
+# 9. Get the number of audio tracks
+# 10. Get the movie properties.
+# 11. Close the movie importer base object.
+
+def test01()
+  sourceMovie = File.join($directory, "images/418_clip5_sd.m4v")
+  begin
+    # 1. Get the possible track media types.
+    getMediaTypes = CommandModule.make_get_nonobjectproperty(property: :mediatypes,
+                                                             type: :movieimporter)
+    theResult = Smig.perform_command(getMediaTypes)
+    mt = "soun clcp meta muxx sbtl text tmcd vide"
+    raise 'Different list of media types: ' + theResult unless theResult.eql? mt
+    
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 2.1. Create a movie importer, get the movie importers base object reference.
+    movieImporterName = SecureRandom.uuid
+
+    movieObject = theCommands.make_createmovieimporter(sourceMovie,
+                                                 name: movieImporterName,
+                                         addtocleanup: false)
+
+    # 2.2. Create the get_objectproperty command.
+    getReferenceCommand = CommandModule.make_get_objectproperty(movieObject,
+                                            property: :objectreference)
+    theCommands.add_command(getReferenceCommand)
+    theResult = Smig.perform_commands(theCommands)
+    
+    # We now use that reference for getting other properties of the movie.
+    # 3. So we got the result without an exception being thrown. We have the ref.
+    movieObject = SmigIDHash.make_objectid(objectreference: theResult.to_i)
+
+    # 4. Get the movie importer object name.
+    getObjectTypeCommand = CommandModule.make_get_objectproperty(movieObject,
+                                            property: :objectname)
+    res = Smig.perform_command(getObjectTypeCommand)
+    raise 'Movie importer name is wrong' unless res.eql? movieImporterName
+
+    # 5. Get the movie importer object type.
+    getObjectTypeCommand = CommandModule.make_get_objectproperty(movieObject,
+                                            property: :objecttype)
+    res = Smig.perform_command(getObjectTypeCommand)
+    raise 'Movie importer type not :movieimporter' unless res.eql? 'movieimporter'
+
+    # 6. Get the movie importer metadata.
+    getObjectTypeCommand = CommandModule.make_get_objectproperty(movieObject,
+                                            property: :metadata)
+    res = Smig.perform_command(getObjectTypeCommand)
+    meta = '[{"key":"@cmt","keyspace":"itsk","stringValue":"iTunes metadata: ' +
+    'Exported to preset AVAssetExportPresetAppleM4VCellular using avexporter ' +
+    'at: 20 Nov 2014 13:25"},{"key":"meta","keyspace":"uiso"}]'
+    raise 'Movie metadata has changed' unless res.eql? meta
+    
+    # 7. Get the number of tracks in the movie
+    getObjectTypeCommand = CommandModule.make_get_objectproperty(movieObject,
+                                            property: :numberoftracks)
+    res = Smig.perform_command(getObjectTypeCommand).to_i
+    raise 'Movie should have 2 tracks: ' unless res.eql? 2
+
+    # 8. Get the number of video tracks in the movie
+    getObjectTypeCommand = CommandModule.make_get_objectproperty(movieObject,
+                                            property: :numberoftracks)
+    getObjectTypeCommand.add_option(key: :mediatype, value: :vide)
+    res = Smig.perform_command(getObjectTypeCommand).to_i
+    raise 'Movie should have 1 video tracks: ' unless res.eql? 1
+
+    # 9. Get the number of tracks in the movie
+    getObjectTypeCommand = CommandModule.make_get_objectproperty(movieObject,
+                                            property: :numberoftracks)
+    getObjectTypeCommand.add_option(key: :mediatype, value: :soun)
+    res = Smig.perform_command(getObjectTypeCommand).to_i
+    raise 'Movie should have 1 audio track: ' unless res.eql? 1
+
+    getPropertiesCommand = CommandModule.make_get_objectproperties(movieObject,
+                                                saveresultstype: :jsonstring)
+    res = Smig.perform_command(getPropertiesCommand)
+    props = '{"objectname":"67ea7e99-b0c8-413a-9688-9020b4ddf53d",' +
+      '"objecttype":"movieimporter","metadataformats":"com.apple.itunes org.mp4ra","file":' +
+      '"/Volumes/MacintoshHD/Users/ktam/gitlab/movingimages/testing/images/418_clip5_sd.m4v",' +
+      '"duration":{"flags":1,"value":9000,"timescale":600,"epoch":0},"objectreference":1,' +
+      '"numberoftracks":2}'
+    propsH = JSON.parse(props)
+    resH = JSON.parse(res)
+    unless propsH[:objecttype].eql? propsH[:objecttype]
+      raise "Movie importer object type is wrong: #{res}"
+    end
+
+    unless propsH[:file].eql? propsH[:file]
+      raise "file is different: #{res}"
+    end
+
+    unless propsH[:duration].eql? propsH[:duration]
+      raise "duration is different: #{res}"
+    end
+
+    unless propsH[:numberoftracks].eql? propsH[:numberoftracks]
+      raise "number of tracks is different: #{res}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    # 11. Close the movie object
+    Smig.close_object_nothrow(movieObject)
+  end
+end
+
+# test02 Getting metadata of a video track of movie importer object.
+# 1. Create a movie importer.
+# 2. Get the track id of the first video track.
+# 3. Get the media type of the track with track id.
+# 4. Get whether the track with track id is enabled?
+# 5. Get the track time range.
+# 6. Get the track natural size.
+# 7. Get the track's nominal frame rate.
+# 8. Get whether frames need reordering.
+# 8.1 Get minimum frame duration.
+# 9. Get the track affine transform
+# 10. Get track segment mappings
+# 11. Get track metadata.
+# 12. Get properties of the audio track.
+# 13. Close the movie importer base object.
+
+def test02()
+  sourceMovie = File.join($directory, "images/418_clip5_sd.m4v")
+  begin    
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create a movie importer, get the movie importers base object reference.
+    movieImporterName = SecureRandom.uuid
+
+    movieObject = theCommands.make_createmovieimporter(sourceMovie,
+                                                 name: movieImporterName,
+                                         addtocleanup: false)
+
+    # 2. Create the get_objectproperty command and get the track id.
+    getReferenceCommand = CommandModule.make_get_objectproperty(movieObject,
+                                            property: :trackid)
+    getReferenceCommand.add_option(key: :track,
+                                  value: { trackindex: 0, mediatype: :vide })
+    theCommands.add_command(getReferenceCommand)
+    theResult = Smig.perform_commands(theCommands)
+    trackID = { trackid: theResult.to_i }    
+
+    # 3. Get the media type of the track.
+    getMediaTypeCommand = CommandModule.make_get_objectproperty(movieObject,
+                                                      property: :mediatype)
+    getMediaTypeCommand.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getMediaTypeCommand)
+    raise 'First video track doesn\'t have media type vide' unless res.eql? 'vide'
+
+    # 4. Get the media type of the track.
+    getIsTrackEnabled = CommandModule.make_get_objectproperty(movieObject,
+                                                      property: :trackenabled)
+    getIsTrackEnabled.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getIsTrackEnabled)
+    raise 'Track with track id #{trackID} enabled is not YES' unless res.eql? 'YES'
+
+    # 5. Get the track time range.
+    getTrackTimeRange = CommandModule.make_get_objectproperty(movieObject,
+                                                      property: :timerange)
+    getTrackTimeRange.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getTrackTimeRange)
+    timeRange = '{"start":{"flags":1,"value":0,"timescale":600,"epoch":0},' +
+              '"duration":{"flags":1,"value":9000,"timescale":600,"epoch":0}}'
+    raise "Track with track id #{trackID} time range #{res}" unless res.eql? timeRange
+
+    # 6. Get the track natural size.
+    getTrackNaturalSize = CommandModule.make_get_objectproperty(movieObject,
+                                                        property: :naturalsize)
+    getTrackNaturalSize.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getTrackNaturalSize)
+    natSize = '{"width":400.000000, "height":252.000000}'
+    raise "Track with id #{trackID} natural size #{res}" unless res.eql? natSize
+
+    # 7. Get the nominal frame rate.
+    getFrameRate = CommandModule.make_get_objectproperty(movieObject,
+                                                        property: :framerate)
+    getFrameRate.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getFrameRate).to_f
+    raise "Track with id #{trackID} frame rate #{res}" unless res.eql? 10.0
+
+    # 8. Get whether frames need reordering.
+    getRequiresFrameReordering = CommandModule.make_get_objectproperty(movieObject,
+                                              property: :requiresframereordering)
+    getRequiresFrameReordering.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getRequiresFrameReordering)
+    raise "Track with id #{trackID} frame reorder #{res}" unless res.eql? "NO"
+
+    # 8. Get min frame rate duration.
+    getMinFramerateDuration = CommandModule.make_get_objectproperty(movieObject,
+                                              property: :minframeduration)
+    getMinFramerateDuration.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getMinFramerateDuration)
+    duration = '{"flags":1,"value":60,"timescale":600,"epoch":0}'
+    raise "Track with id #{trackID} min frame duration #{res}" unless res.eql? duration
+    
+    # 9. Get the affine transform for the track. Usually identity.
+    getAffineTransform = CommandModule.make_get_objectproperty(movieObject,
+                                              property: :affinetransform)
+    getAffineTransform.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getAffineTransform)
+    transform = '{"m12":0,"m21":0,"m22":1,"tY":0,"m11":1,"tX":0}'
+    raise "Track with id #{trackID} affine transform #{res}" unless res.eql? transform
+
+    # 10. Get track segment mappings for the track.
+    getTrackSegmentMappings = CommandModule.make_get_objectproperty(movieObject,
+                                              property: :tracksegmentmappings)
+    getTrackSegmentMappings.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getTrackSegmentMappings)
+    mappings = '[{"sourcetimerange":{"start":{"flags":1,"value":0,"timescale"' +
+                ':600,"epoch":0},"duration":{"flags":1,"value":9000,"timescale"' +
+                ':600,"epoch":0}},"targettimerange":{"start":{"flags":1,"value"' +
+                ':0,"timescale":600,"epoch":0},"duration":{"flags":1,"value":9000' +
+                ',"timescale":600,"epoch":0}}}]'
+    raise "Track with id #{trackID} segment mappings #{res}" unless res.eql? mappings
+
+    # 11. Get track metadata.
+    getTrackMetadata = CommandModule.make_get_objectproperty(movieObject,
+                                              property: :metadata)
+    getTrackMetadata.add_option(key: :track, value: trackID)
+    res = Smig.perform_command(getTrackMetadata)
+    metadata = '[]'
+    raise "Track with id #{trackID} metadata #{res}" unless res.eql? metadata
+
+    # 12. Get properties of the audio track
+    audioTrackID = { mediatype: :soun, trackindex: 0 }
+    getTrackMetadata = CommandModule.make_get_objectproperties(movieObject,
+                                              saveresultstype: :jsonstring)
+    getTrackMetadata.add_option(key: :track, value: audioTrackID)
+    res = Smig.perform_command(getTrackMetadata)
+    properties = '{"preferredvolume":1,"mediatype":"soun","timerange":{"start":' +
+    '{"flags":1,"value":0,"timescale":600,"epoch":0},"duration":{"flags":1,' +
+    '"value":8973,"timescale":600,"epoch":0}},"trackid":1,"languagecode":"und",' +
+    '"languagetag":"","trackenabled":true}'
+    raise "First audio track properties #{res}" unless res.eql? properties
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    # 13. Close the movie object
+    Smig.close_object_nothrow(movieObject)
+  end
+end
+
+# test03
+# 1. Get image frames from a movie.
+# 2. Compare image obtained with previous obtained image.
+def test03()
+  sourceMovie = File.join($directory, "images/418_clip5_sd.m4v")
+  baseImageName = "movie-frame10secs.jpg"
+  begin    
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    movieImporterName = SecureRandom.uuid
+    movieObject = theCommands.make_createmovieimporter(sourceMovie,
+                                                 name: movieImporterName)
+    # Create an image exporter object
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+#    tempFile = File.join($compareImageDir, baseImageName)
+    exporterObject = theCommands.make_createexporter(tempFile)
+    # The following creates a movie time 10 seconds into the movie.
+    frameTime = MovieTime.make_movietime(timevalue: 6000, timescale: 600)
+    addImageToExporterCommand = CommandModule.make_addimage_frommovie(
+                            exporterObject, movieObject,
+                            frametime: frameTime)
+    theCommands.add_command(addImageToExporterCommand)
+    exportCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportCommand)
+    Smig.perform_commands(theCommands)
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile)
+      # 2. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+#    Open3.capture2("open", origFile) unless origFile.nil?
+  end
+end
+
+# test04
+# 1. Get image frame from the first video track.
+# 2. Compare image obtained with previous obtained image.
+def test04()
+  sourceMovie = File.join($directory, "images/418_clip5_sd.m4v")
+  baseImageName = "movie-trackframe2secs.jpg"
+  begin    
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    movieImporterName = SecureRandom.uuid
+    movieObject = theCommands.make_createmovieimporter(sourceMovie,
+                                                 name: movieImporterName)
+    # Create an image exporter object
+#    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    tempFile = File.join($compareImageDir, baseImageName)
+    exporterObject = theCommands.make_createexporter(tempFile)
+    frameTime = MovieTime.make_movietime_fromseconds(2.0)
+    trackID = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+                                    mediatype: :vide, trackindex: 0)
+    addImageToExporterCommand = CommandModule.make_addimage_frommovie(
+            exporterObject, movieObject,
+#            frametime: {flags:1, value:1200, timescale:600, epoch:0},
+            frametime: frameTime,
+#               tracks: [ { mediatype: :vide, trackindex: 0 } ])
+               tracks: [ trackID ])
+    theCommands.add_command(addImageToExporterCommand)
+    exportCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportCommand)
+    Smig.perform_commands(theCommands)
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile)
+      # 2. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+#    Open3.capture2("open", origFile) unless origFile.nil?
+  end
+end
+
+def LocalTestMain015()
+  begin
+    puts "test01"
+    test01()
+    puts "test02"
+    test02()
+    puts "test03"
+    test03()
+    puts "test04"
+    test04()
+  rescue RuntimeError => e
+    puts e.message
+    # puts e.backtrace
+    puts "Error code: #{$errorcode}"
+    puts "Smig.exitstring: #{Smig.exitstring}"
+    # don't allow the exception to propagate outside of this file.
+  end
+  return $errorcode
+end
+
+exit(LocalTestMain015())
+

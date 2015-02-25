@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Adjusts tone response of the R, G, and B channels of an image. The input points are five x,y values that are interpolated using a spline curve.  The curve is applied in a perceptual (gamma 2) version of the working space.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryColorAdjustment</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryInterlaced</string>
+		<string>CICategoryNonSquarePixels</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Tone Curve</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIToneCurve</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIToneCurve</string>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputPoint0</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[0 0]</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Point 1</string>
+		<key>CIAttributeIdentity</key>
+		<string>[0 0]</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeOffset</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputPoint1</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[0.25 0.25]</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Point 2</string>
+		<key>CIAttributeIdentity</key>
+		<string>[0.25 0.25]</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeOffset</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputPoint2</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[0.5 0.5]</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Point2</string>
+		<key>CIAttributeIdentity</key>
+		<string>[0.5 0.5]</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeOffset</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputPoint3</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[0.75 0.75]</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Point3</string>
+		<key>CIAttributeIdentity</key>
+		<string>[0.75 0.75]</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeOffset</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputPoint4</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[1 1]</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Point4</string>
+		<key>CIAttributeIdentity</key>
+		<string>[1 1]</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeOffset</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

@@ -1,0 +1,34 @@
+{
+  "CIAttributeFilterDisplayName" : "Hue Adjust",
+  "CIAttributeDescription" : "Changes the overall hue, or tint, of the source pixels.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputAngle" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "An angle (in degrees) to use to correct the hue of an image.",
+    "CIAttributeSliderMax" : 3.141592653589793,
+    "CIAttributeDisplayName" : "Angle",
+    "CIAttributeDefault" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : -3.141592653589793
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIHueAdjust",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHueAdjust",
+  "CIAttributeFilterCategories" : [
+    "CICategoryColorAdjustment",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryInterlaced",
+    "CICategoryNonSquarePixels",
+    "CICategoryBuiltIn"
+  ]
+}

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Creates a lozenge-shaped lens and distorts the portion of the image over which the lens is placed.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryDistortionEffect</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Glass Lozenge</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIGlassLozenge</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIGlassLozenge</string>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputPoint0</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[150 150]</string>
+		<key>CIAttributeDescription</key>
+		<string>The x and y position that defines the center of the circle at one end of the lozenge.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Point 1</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputPoint1</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[350 150]</string>
+		<key>CIAttributeDescription</key>
+		<string>The x and y position that defines the center of the circle at the other end of the lozenge.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Point 2</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputRadius</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>100</real>
+		<key>CIAttributeDescription</key>
+		<string>The radius of the lozenge. The larger the radius, wider the extent of the distortion.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Radius</string>
+		<key>CIAttributeIdentity</key>
+		<real>100</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1000</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeDistance</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputRefraction</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>1.7</real>
+		<key>CIAttributeDescription</key>
+		<string>The refraction of the glass.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Refraction</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeMin</key>
+		<real>-5</real>
+		<key>CIAttributeSliderMax</key>
+		<real>5</real>
+		<key>CIAttributeSliderMin</key>
+		<real>-5</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

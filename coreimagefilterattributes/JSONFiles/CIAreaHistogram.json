@@ -1,0 +1,51 @@
+{
+  "CIAttributeFilterDisplayName" : "Area Histogram",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeDescription" : "Calculates a histogram for the specified area in an image, returning the result in a 1D image.",
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image whose histogram you want to calculate.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputScale" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The scale value to use for the histogram values.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Scale",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 1
+  },
+  "CIAttributeFilterName" : "CIAreaHistogram",
+  "inputCount" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The number of bins for the histogram.",
+    "CIAttributeSliderMax" : 1000,
+    "CIAttributeDisplayName" : "Count",
+    "CIAttributeSliderMin" : 10,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 64
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIAreaHistogram",
+  "inputExtent" : {
+    "CIAttributeDisplayName" : "Extent",
+    "CIAttributeDescription" : "A rectangle that specifies the subregion of the image that you want to process.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[0 0 640 80]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypeRectangle"
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryReduction",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ]
+}

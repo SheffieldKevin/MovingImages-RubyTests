@@ -1,0 +1,385 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+# 
+# This script file tests:
+# 1. Drawing paths with Arcs and Arcs to point.
+#      Uses equations and variables for sizing the bitmap context.
+# 2. Add a clipping region and then do some drawing. Make sure drawing is clipped
+# 3. Add a mask image and then do some drawing. Make sure drawing is masked
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MICGDrawing
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$compareImageDir = File.join($directory, "images/test014ForComparison")
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# Returns a path.
+def make_arcpath(contextSize: { width: 600, height: 450 }, radius: 50.0)
+  thePath = MIPath.new
+# startPoint = MIShapes.make_point(2.0 * radius, radius)
+  centerPoint = MIShapes.make_point(contextSize[:width] - 2 * radius,
+                                    2.0 * radius)
+  thePath.add_arc(centerPoint: centerPoint,
+                       radius: radius,
+                   startAngle: -0.5 * Math::PI,
+                     endAngle: 0)
+  tangentPoint1 = MIShapes.make_point(contextSize[:width] - radius,
+                                      contextSize[:height] - radius)
+  tangentPoint2 = MIShapes.make_point(contextSize[:width] - 2.0 * radius,
+                                      contextSize[:height] - radius)
+  thePath.add_arc_topoint_onpath(tangentPoint1: tangentPoint1,
+                                 tangentPoint2: tangentPoint2,
+                                        radius: radius)
+  centerPoint2 = MIShapes.make_point(contextSize[:width] * 0.5,
+                                     contextSize[:height] - 2 * radius)
+  thePath.add_arc(centerPoint: centerPoint2,
+                       radius: radius,
+                   startAngle: 0.5 * Math::PI,
+                     endAngle: 0.75 * Math::PI)
+  centerPoint3 = MIShapes.make_point(radius * 2.0, radius * 2.0)
+  thePath.add_arc(centerPoint: centerPoint3,
+                       radius: radius,
+                   startAngle: 0.75 * Math::PI,
+                     endAngle: -0.5 * Math::PI)
+  return thePath
+end
+
+# Returns a draw element object command
+def create_pathdrawelement(pathDrawnAs: "strokepath",
+                           contextSize: { width: 600, height: 450 } )
+  radius = 50.0
+  startPoint = MIShapes.make_point(2.0 * radius, radius)
+  thePath = make_arcpath(contextSize: contextSize)
+  pathDrawElement = MIDrawElement.new(pathDrawnAs)
+  pathDrawElement.arrayofpathelements = thePath
+  pathDrawElement.startpoint = startPoint
+  pathDrawElement.linewidth = 2.0
+  pathDrawElement.linejoin = 'kCGLineJoinBevel'
+  pathDrawElement.fillcolor = MIColor.make_rgbacolor(0, 1, 1)
+  pathDrawElement.strokecolor = MIColor.make_rgbacolor(0,0,0)
+  pathDrawElement
+end
+
+# 1. Create a bitmap context, use equations and variables.
+# 2. Create a path made up of arcs and arc to points.
+# 3. Stroke the path with a border thickness 4 in black
+# 4. Create an image exporter with filetype public.jpeg and path
+# 5. Export from image exporter
+# 6. Close base object
+# 7. Compare images and report differences.
+
+def test01()
+  baseImageName = "arcshapepaths.jpg"
+  begin
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Make a create bitmap context command, use equations and variables.
+    contextName = SecureRandom.uuid
+    contextSize = MIShapes.make_size(600, 450)
+    widthKey = "test014.test01.bitmapcontext.width"
+    heightKey = "test014.test01.bitmapcontext.height"
+    contextSizeVar = MIShapes.make_size("$#{widthKey}", "$#{heightKey}")
+    theCommands.variables = { widthKey => contextSize[:width],
+                             heightKey => contextSize[:height] }
+    createContextCommand = CommandModule.make_createbitmapcontext(
+                                                      size: contextSizeVar,
+                                                      name: contextName)
+    contextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                             objectname: contextName)
+
+    theCommands.add_command(createContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(contextObject)
+
+    # 2. Create a path made up of lines and arcs.
+    pathDrawElement = create_pathdrawelement(pathDrawnAs: "strokepath",
+                                             contextSize: contextSize)
+    # 3. Create the draw path command and add it to the list of commands
+    drawPathCommand = CommandModule.make_drawelement(contextObject, 
+                                          drawinstructions: pathDrawElement)
+    theCommands.add_command(drawPathCommand)
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+#    tempFile = File.join($compareImageDir, baseImageName)
+
+    # 4. Make the create image exporter object command
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                export_type: :"public.jpeg",
+                                                name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+
+    # 5. Make an add image to the exporter object command.
+    # Add the command to list of commands.
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, contextObject)
+    theCommands.add_command(addImageToExporterCommand)
+
+    # 6. Make an export exporter command and add it to list of commands.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+#    puts JSON.pretty_generate(theCommands.commandshash)
+    $teststring = theCommands.commandshash.to_json
+    theResult = Smig.perform_commands(theCommands)
+#    Smig.close_object(contextObject)
+    origFile = File.join($compareImageDir, baseImageName)
+    # 7. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile)
+      # 8. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+    # Open3.capture2("open", tempFile) unless tempFile.nil?
+  end
+end
+
+
+
+# test02
+# Apply a clipping path and then draw an image to the a bitmap context.
+# 1. import an image
+# 2. create a bitmap context
+# 3. apply a clipping path to the bitmap context.
+# 4. draw the imported image
+# 5. export the image.
+# 6. Compare the output with previously generated output & report if different
+def test02()
+  begin
+    tempFile = nil
+    baseImageName = "clipped-dscn0749.jpg"
+    inputImageFile = File.join($directory, "images/DSCN0749.JPG")
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    # Create the import image command
+    objectName = SecureRandom.uuid
+    pathSubstitutionKey = SecureRandom.uuid
+    importerObject = theCommands.make_createimporter("",
+                                         name: objectName,
+                                         pathsubstitutionkey: pathSubstitutionKey)
+    
+    variablesDict = { pathSubstitutionKey => inputImageFile }
+    contextName = SecureRandom.uuid
+    contextSize = MIShapes.make_size(600, 450)
+    contextObject = theCommands.make_createbitmapcontext(size: contextSize,
+                                                         name: contextName)
+
+    drawImageElement = MIDrawImageElement.new
+    drawImageElement.set_imagefile_imagesource(source_object: importerObject,
+                                               imageindex: 0)
+                                     
+    drawImageElement.destinationrectangle = MIShapes.make_rectangle(
+                                                      size: contextSize)
+    radius = 50
+    theClip = MIClip.new
+    theClip.arrayofpathelements = make_arcpath(contextSize: contextSize,
+                                               radius: radius)
+#   The following line is not needed as the non windingrule is default.
+    theClip.clippingrule = :nonwindingrule
+#   If you want to use the even odd rule for clipping then uncomment following
+#   theClip.clippingrule = :evenoddrule
+    theClip.startpoint = MIShapes.make_point(2.0 * radius, radius)
+    drawImageElement.clip = theClip
+    drawElementCommand = CommandModule.make_drawelement(contextObject,
+                                            drawinstructions: drawImageElement)
+    theCommands.add_command(drawElementCommand)
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+#    tempFile = File.join($compareImageDir, baseImageName)
+#    exporterObject = theCommands.make_createexporter(tempFile)
+    exporterObject = theCommands.make_createexporter("")
+    addImageToExporterCommand = CommandModule.make_addimage(exporterObject, 
+                                                 contextObject, imageindex: 0)
+    theCommands.add_command(addImageToExporterCommand)
+    exportPathSubKey = SecureRandom.uuid
+    assignPathCommand = CommandModule.make_set_object_exportpathproperty(
+                                                               exporterObject,
+                                                propertyvalue: nil,
+                                          pathsubstitutionkey: exportPathSubKey)
+    theCommands.add_command(assignPathCommand)
+    exportCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportCommand)
+    variablesDict[exportPathSubKey] = tempFile
+    theCommands.variables = variablesDict
+#    puts JSON.pretty_generate(theCommands.commandshash)
+    Smig.perform_commands(theCommands)
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+  end
+end
+
+# test03
+# Apply a mask image and then draw an image to the a bitmap context.
+# 1. Import a mask image.
+# 2. Create a grayscale bitmap context
+# 3. Draw mask image to grayscale bitmap context
+# 4. import an image
+# 5. Create a bitmap context
+# 6. Create a draw image element object
+# 7. Apply a MIMaskImage object to the draw image element object
+# 8. Make a draw command from the draw image element object
+# 9. export the image.
+# 10. Compare the output with previously generated output & report if different
+
+def test03()
+  begin
+    tempFile = nil
+    baseImageName = "masked-dscn0749.jpg"
+#    inputMaskImageFile = File.join($directory, "images/mask.png")
+    inputMaskImageFile = File.join($directory, "images/MovingImagesMaskSmall.png")
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    # 1. Importer the mask image
+    importedMask = theCommands.make_createimporter(inputMaskImageFile)
+    
+    # 2. Create the grayscale bitmap.
+    imageDims = SpotlightCommand.get_imagedimensions(inputMaskImageFile)
+    grayscaleContext = theCommands.make_createbitmapcontext(size: imageDims,
+                                                          preset: :Gray8bpcInt)
+    
+    # 3. Draw the mask image to the grayscale bitmap.
+    # I do this because though the image is black & white it is in rgb colorspace
+    drawMaskImageElement = MIDrawImageElement.new
+    drawMaskImageElement.set_imagefile_imagesource(source_object: importedMask)
+#   If you uncomment the following line then the mask is inverted.
+#    drawMaskImageElement.blendmode = :kCGBlendModeDifference
+    drawMaskImageElement.destinationrectangle = MIShapes.make_rectangle(
+                                                            size: imageDims)
+    drawMaskImageCommand = CommandModule.make_drawelement(grayscaleContext,
+                                        drawinstructions: drawMaskImageElement)
+    theCommands.add_command(drawMaskImageCommand)
+
+    # 4. Import the image to be masked when drawn.
+    inputImageFile = File.join($directory, "images/DSCN0749.JPG")
+    importerObject = theCommands.make_createimporter(inputImageFile)
+    
+    # 5. Create the bitmap context
+    contextSize = MIShapes.make_size(600, 450)
+    contextObject = theCommands.make_createbitmapcontext(size: contextSize)
+
+    # 6. Create the draw image command. First make draw element object.
+    drawImageElement = MIDrawImageElement.new
+    drawImageElement.set_imagefile_imagesource(source_object: importerObject,
+                                               imageindex: 0)
+                                     
+    drawImageElement.destinationrectangle = MIShapes.make_rectangle(
+                                                      size: contextSize)
+    # 7. Create a mask image object and apply it to the draw element object.
+    maskWithImage = MIMaskWithImage.new
+    maskWithImage.set_maskimagesource(source_object: grayscaleContext)
+    destRect = MIShapes.make_rectangle(size: imageDims,
+                origin: { x: (contextSize[:width] - imageDims[:width]) * 0.5,
+                          y: (contextSize[:height] - imageDims[:height]) * 0.5 })
+    maskWithImage.destinationrectangle = destRect
+    drawImageElement.mask = maskWithImage
+    
+    # 8. Make the draw image command
+    drawElementCommand = CommandModule.make_drawelement(contextObject,
+                                            drawinstructions: drawImageElement)
+    theCommands.add_command(drawElementCommand)
+
+    # 9. Export the image, first create exporter, add image to it, then export.
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+#    tempFile = File.join($compareImageDir, baseImageName)
+    exporterObject = theCommands.make_createexporter(tempFile)
+    addImageToExporterCommand = CommandModule.make_addimage(exporterObject, 
+                                                 contextObject, imageindex: 0)
+    theCommands.add_command(addImageToExporterCommand)
+    exportCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportCommand)
+
+    Smig.perform_commands(theCommands)
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+  end
+end
+
+def LocalTestMain014()
+  begin
+    puts "test01"
+    test01()
+    puts "test02"
+    test02()
+    puts "test03"
+    test03()
+  rescue RuntimeError => e
+    puts e.message
+    # puts e.backtrace
+    puts "Error code: #{$errorcode}"
+    puts "Smig.exitstring: #{Smig.exitstring}"
+    # don't allow the exception to propagate outside of this file.
+  end
+  return $errorcode
+end
+
+exit(LocalTestMain014())
+

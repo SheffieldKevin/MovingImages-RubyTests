@@ -1,0 +1,91 @@
+{
+  "inputTime" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The duration of the effect.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Time",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0
+  },
+  "inputColor" : {
+    "CIAttributeDisplayName" : "Color",
+    "CIAttributeDescription" : "The color of the sun.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "1 0.5 0 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "CIAttributeDescription" : "Generates a sun effect. You typically use the output of the sunbeams filter as input to a composite filter.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputStriationStrength" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The intensity of the sunbeams. Higher values result in more intensity.",
+    "CIAttributeSliderMax" : 3,
+    "CIAttributeDisplayName" : "Striation Strength",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0.5,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.5
+  },
+  "CIAttributeFilterName" : "CISunbeamsGenerator",
+  "CIAttributeFilterDisplayName" : "Sunbeams",
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The  x and y position to use as the center of the sunbeam pattern",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "inputStriationContrast" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The contrast of the sunbeams. Higher values result in more contrast.",
+    "CIAttributeSliderMax" : 5,
+    "CIAttributeDisplayName" : "Striation Contrast",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 1.375,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 1.375
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISunbeamsGenerator",
+  "inputSunRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius of the sun.",
+    "CIAttributeSliderMax" : 800,
+    "CIAttributeDisplayName" : "Sun Radius",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 40,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 40
+  },
+  "inputMaxStriationRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius of the sunbeams.",
+    "CIAttributeSliderMax" : 10,
+    "CIAttributeDisplayName" : "Maximum Striation Radius",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 2.58,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 2.58
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryGenerator",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ]
+}

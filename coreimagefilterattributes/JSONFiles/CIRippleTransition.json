@@ -1,0 +1,85 @@
+{
+  "inputTargetImage" : {
+    "CIAttributeDisplayName" : "Target Image",
+    "CIAttributeDescription" : "The target image for a transition.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputTime" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The parametric time of the transition. This value drives the transition from start (at time 0) to end (at time 1).",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Time",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeTime",
+    "CIAttributeDefault" : 0
+  },
+  "CIAttributeDescription" : "Transitions from one image to another by creating a circular wave that expands from the center point, revealing the new image in the wake of the wave.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputWidth" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The width of the ripple.",
+    "CIAttributeSliderMax" : 300,
+    "CIAttributeDisplayName" : "Width",
+    "CIAttributeSliderMin" : 10,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 1,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 100
+  },
+  "CIAttributeFilterName" : "CIRippleTransition",
+  "CIAttributeFilterDisplayName" : "Ripple",
+  "inputExtent" : {
+    "CIAttributeDisplayName" : "Extent",
+    "CIAttributeDescription" : "A rectangle that defines the extent of the effect.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[0 0 300 300]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypeRectangle"
+  },
+  "inputScale" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "A value that determines whether the ripple starts as a bulge (higher value) or a dimple (lower value).",
+    "CIAttributeSliderMax" : 50,
+    "CIAttributeDisplayName" : "Scale",
+    "CIAttributeSliderMin" : -50,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : -50,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 50
+  },
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The x and y position to use as the center of the effect",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "inputShadingImage" : {
+    "CIAttributeDisplayName" : "Shading Image",
+    "CIAttributeDescription" : "An image that looks like a shaded sphere enclosed in a square image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIRippleTransition",
+  "CIAttributeFilterCategories" : [
+    "CICategoryTransition",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

@@ -1,0 +1,295 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+# 
+# This script tests drawing a few different objects not covered previously.
+# After drawing the object the script compares the generated image with a 
+# previously generated image.
+# 
+# 1. Create a bitmap context
+# 2. Draw a filled rounded rectangle in a yellow color.
+# 3. Draw a linear gradient fill. (Yellow to Orange)
+# 4. Draw a blue line
+# 5. Draw black lines.
+# 6. Draw the array of elements to the bitmap context
+# 7. Create an image exporter with filetype public.jpeg and path
+# 8. Generate image from bitmap context and add to image exporter.
+# 9. Export from image exporter
+# 10. Close base object
+
+# The second test method test02, tests the drawing of the radial gradient.
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MICGDrawing
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$teststring = ""
+$compareImageDir = File.join($directory, "images/test010ForComparison")
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# 1. Create a bitmap context
+# 2. Draw a filled rounded rectangle in a yellow color.
+# 3. Draw a linear gradient fill. (Yellow to Orange)
+# 4. Draw a blue line, 15 pixels wide
+# 5. Draw black lines. 5 pixels wide
+# 6. Draw the array of elements to the bitmap context
+# 7. Create an image exporter with filetype public.jpeg and path
+# 8. Generate image from bitmap context and add to image exporter.
+# 9. Export from image exporter
+# 10. Close base object
+
+def test01()
+  baseImageName = "objectsdrawn.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create the bitmap context command
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                                  width: 600, height: 450,
+                                                  name: bitmapContextName)
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+
+    # 2. Setup the filled rounded rectangle.
+    roundedRect = MIDrawElement.new("fillroundedrectangle")
+    theOrigin = MIShapes.make_point(40.5, 30.5)
+    theSize = MIShapes.make_size(240.0, 180.0)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    roundedRect.rectangle = theRect
+    yellowColor = MIColor.make_rgbacolor(0.9, 0.8, 0.1)
+    roundedRect.fillcolor = yellowColor
+    radiuses = [ 8.0, 16.0, 32.0, 64.0 ]
+    roundedRect.radiuses = radiuses
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                            drawinstructions: roundedRect)
+    theCommands.add_command(drawCommand)
+
+    # 3. Setup the linear gradient fill
+    linearGradientFill = MILinearGradientFillElement.new()
+    startPoint = MIShapes.make_point(40.5, 330.0)
+    endPoint = MIShapes.make_point(280.0, 330.0)
+    linearGradientFill.line = MIShapes.make_line(startPoint, endPoint)
+    locations = [ 0.0, 1.0 ]
+    colors = [ yellowColor, MIColor.make_rgbacolor(0.95, 0.45, 0.0) ]
+    linearGradientFill.set_arrayoflocations_andarrayofcolors(locations, colors)
+    pathObj = MIPath.new
+    rectOrigin = MIShapes.make_point(40.5, 240.5)
+    rectSize = MIShapes.make_size(240.0, 180.0)
+    roundedRect = MIShapes.make_rectangle(origin: rectOrigin, size: rectSize)
+    pathObj.add_roundedrectangle(roundedRect, radius: 40)
+    linearGradientFill.arrayofpathelements = pathObj
+    # 3. Make draw linear gradient fill command and add it to list of commands
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject, 
+                                        drawinstructions: linearGradientFill)
+    theCommands.add_command(drawCommand)
+
+    # 4. Setup the drawing of a blue line, 15 pixels wide
+    startPoint = MIShapes.make_point(340.5, 210.5)
+    endPoint = MIShapes.make_point(570.5, 30.5)
+    drawLine = MIDrawElement.new("drawline")
+    drawLine.linewidth = 15
+    blueColor = MIColor.make_rgbacolor(0,0,1)
+    drawLine.strokecolor = blueColor
+    drawLine.line = MIShapes.make_line(startPoint, endPoint)
+    # line.set_line(startPoint: startPoint, endPoint: endPoint)
+    # 4. Make the draw line command and add it to list of commands.
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                                  drawinstructions: drawLine)
+    theCommands.add_command(drawCommand)
+
+    # 5. Setup drawing multiple black lines, 5 pixels wide
+    lines = MIDrawElement.new("drawlines")
+    lines.linewidth = 5
+    lines.strokecolor = MIColor.make_rgbacolor(0,0,0)
+    points = []
+    points.push(MIShapes.make_point(450, 220))
+    points.push(MIShapes.make_point(580, 220))
+    points.push(MIShapes.make_point(320, 420))
+    points.push(MIShapes.make_point(380, 320))
+    points.push(MIShapes.make_point(360, 260))
+    points.push(MIShapes.make_point(510, 440))
+    points.push(MIShapes.make_point(550, 220))
+    points.push(MIShapes.make_point(450, 320))
+    lines.points = points
+
+    # 6. Make the draw lines command and add it to list of commands.
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                        drawinstructions: lines)
+    theCommands.add_command(drawCommand)
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    # 7. Make the create image exporter object command
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                            export_type: :"public.jpeg",
+                                            name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+
+    # 8. Make an add image command and add it to list of commands
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+
+    # Make the export image file command and add it to the list of commands.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+
+    commandsHash = theCommands.commandshash
+    $teststring = commandsHash.to_json
+    # puts JSON.pretty_generate(commandsHash)
+    theResult = Smig.perform_commands(commandsHash)
+
+    origFile = File.join($compareImageDir, baseImageName)
+    # 9. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+  end
+end
+
+# 1. Create a bitmap context
+# 2. Draw a radial gradient fill. (Red to Green)
+# 3. Create an image exporter with filetype public.jpeg and path
+# 4. Generate image from bitmap context and add to image exporter.
+# 5. Export from image exporter
+# 6. Close base object
+# 7. Compare images and report if different.
+
+def test02()
+  baseImageName = "radialgradient.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create the bitmap context command
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                                  width: 600, height: 450,
+                                                  name: bitmapContextName)
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+
+    # 3. Setup the radial gradient fill
+    radialGradientFill = MIRadialGradientFillElement.new()
+    centerPoint1 = MIShapes.make_point(40, 30.0)
+    centerPoint2 = MIShapes.make_point(450, 300.0)
+    radialGradientFill.center1 = centerPoint1
+    radialGradientFill.radius1 = 25
+    radialGradientFill.center2 = centerPoint2
+    radialGradientFill.radius2 = 145
+    locations = [ 0.0, 1.0 ]
+    redColor = MIColor.make_rgbacolor(0.95, 0.2, 0.35)
+    greenColor = MIColor.make_rgbacolor(0.3, 0.9, 0.2, a: 0.8)
+    colors = [ redColor, greenColor ]
+    radialGradientFill.set_arrayoflocations_andarrayofcolors(locations, colors)
+    radialGradientFill.add_drawgradient_option(:kCGGradientDrawsBeforeStartLocation)
+    # 3. Make draw radial gradient fill command and add it to list of commands
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject, 
+                                        drawinstructions: radialGradientFill)
+    theCommands.add_command(drawCommand)
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+#    tempFile = File.join($compareImageDir, baseImageName)
+    # 7. Make the create image exporter object command
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                            export_type: :"public.jpeg",
+                                            name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+
+    # 8. Make an add image command and add it to list of commands
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+
+    # Make the export image file command and add it to the list of commands.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+
+    commandsHash = theCommands.commandshash
+    $teststring = commandsHash.to_json
+    # puts JSON.pretty_generate(commandsHash)
+    theResult = Smig.perform_commands(commandsHash)
+
+    origFile = File.join($compareImageDir, baseImageName)
+    # 9. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+  end
+end
+
+def LocalTestMain010()
+  puts "test01"
+  test01()
+  puts "test02"
+  test02()
+  return $errorcode
+end
+
+exit(LocalTestMain010())
+

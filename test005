@@ -1,0 +1,172 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2013-2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+#
+# This scripts tests creating objects with a name option specified.
+# Finding objects using -type and -name.
+# Obtaining the objectname property.
+# Check that an image importer without having the name specified defaults to
+# the full path as the object name.
+
+require 'Open3'
+require 'JSON'
+require 'moving_images'
+
+include MovingImages
+
+$verbose = false
+$smig = "smig"
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$imagefile = $directory + "/images/test002image.jpg"
+$errorcode = 0
+
+# Creating a bitmap context with a name. Access object by names and index
+# 1. Create a bitmap context object with a name.
+# 2. Confirm that there is at least one bitmap context object. Take note.
+# 3. Access the object by type & index and get object reference via getproperty.
+# 4. Close the bitmap context object using name and type to identify.
+
+def test01()
+  objectID = nil
+  begin
+    createBitmapCommand = CommandModule.make_createbitmapcontext(width: 300,
+        height: 200, name: :floatcontext, preset: :AlphaPreMulLastRGB32bpcFloat)
+    objectRef = Smig.perform_command(createBitmapCommand).to_i
+    numObjects = Smig.get_numberofobjects(objecttype: :bitmapcontext).to_i
+    lastIndex = 0
+    if numObjects < 1
+      puts "2: We should have at least 1 bitmap object. We have: #{numObjects}"
+    else
+      lastIndex = numObjects - 1 
+    end
+
+    objectID = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                       objectindex: lastIndex)
+    objRef2 = Smig.get_objectproperty(objectID, property: :objectreference).to_i
+    unless objRef2.eql? objectRef
+      puts "Object reference property different to that returned when created"
+    end
+    
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    Smig.close_object_nothrow(objectID) unless objectID.nil?
+  end
+end
+
+# Check default naming of image importer object is path to imported image file.
+# 1. Get the number of image importer objects.
+# 2. Create a image importer without specifying a name
+# 3. Confirm that the number of image importer objects has increased by 1.
+# 4. Confirm that default name is the full path to the imported image file.
+# 5. Close the image importer object with largest index value (from 3).
+# 6. Confirm that the number of image importer objects has dropped by 1.
+
+def test02()
+  objectID = nil
+  begin
+    getNumImporterCommand = CommandModule.make_get_nonobjectproperty(
+                        property: :numberofobjects, type: :imageimporter)
+    numImporters = Smig.perform_command(getNumImporterCommand).to_i
+    createImporterCommand = CommandModule.make_createimporter($imagefile)
+    importerRef = Smig.perform_command(createImporterCommand).to_i
+    objectID = SmigIDHash.make_objectid(objectreference: importerRef)
+    result = Smig.perform_command(getNumImporterCommand).to_i
+    unless result.eql? numImporters + 1
+      puts "Number of importers did not increase by 1 after creating importer"
+    end
+    
+    importerName = Smig.get_objectproperty(objectID, property: :objectname)
+    unless importerName.eql? $imagefile
+      puts "Importer name should be path to imported image file."
+    end
+    
+    objectID2 = SmigIDHash.make_objectid(objecttype: :imageimporter,
+                                        objectindex: numImporters)
+    Smig.close_object(objectID2)
+    result = Smig.perform_command(getNumImporterCommand).to_i
+    unless result.eql? numImporters
+      puts "We should have same number of open image importers as when we started"
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    Smig.close_object_nothrow(objectID) unless objectID.nil?
+  end
+end
+
+# Access an image importer object in a bitmap context draw element command.
+# Basically if anything goes wrong an exception is thrown and an error is recorded.
+# Not testing of result values is done.
+# 1. Create a image importer object with a name.
+# 2. Create a bitmapcontext with imported image dimensions.
+# 3. Draw image importer image into bitmap context referring to the image
+#     importer by its type and name. Check for error output.
+# 4. Close the image importer
+# 5. Close bitmap context.
+
+def test03()
+  importerObjectID = nil
+  bitmapObjectID = nil
+  begin
+    createImporterCommand = CommandModule.make_createimporter($imagefile,
+                                                  name: "test005.test04")
+    importerRef = Smig.perform_command(createImporterCommand).to_i
+    importerObjectID = SmigIDHash.make_objectid(objectreference: importerRef)
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+      width: 1280, height: 1024, preset: :AlphaPreMulFirstRGB8bpcInt)
+    bitmapRef = Smig.perform_command(createBitmapContextCommand).to_i
+    bitmapObjectID = SmigIDHash.make_objectid(objectreference: bitmapRef)
+    drawImageElement = MICGDrawing::MIDrawImageElement.new
+    drawRect = MIShapes.make_rectangle(width: 1280, height: 1024)
+    drawImageElement.destinationrectangle = drawRect
+    drawImageElement.set_imagefile_imagesource(source_object: importerObjectID)
+    drawImageElement.elementdebugname = "test005.test03.drawimage"
+    drawImageCommand = CommandModule.make_drawelement(bitmapObjectID,
+        drawinstructions: drawImageElement)
+    Smig.perform_command(drawImageCommand)
+    Smig.close_object(importerObjectID) unless importerObjectID.nil?
+    Smig.close_object(bitmapObjectID) unless bitmapObjectID.nil?
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    Smig.close_object_nothrow(importerObjectID) unless importerObjectID.nil?
+    Smig.close_object_nothrow(bitmapObjectID) unless bitmapObjectID.nil?
+  end
+end
+
+def LocalTestMain005()
+  puts "test01"
+  test01()
+  puts "test02"
+  test02()
+  puts "test03"
+  test03()
+  return $errorcode
+end
+
+exit(LocalTestMain005())

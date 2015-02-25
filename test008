@@ -1,0 +1,272 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+
+# This scripts tests drawing paths. After drawing the paths the script compares
+# the generated image with a previously generated image.
+# 
+# Draw the same path 3 times, with different props. Use translate to separate.
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MICGDrawing
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$teststring = ""
+$compareImageDir = File.join($directory, "images/test008ForComparison")
+
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# 1. Create a bitmap context.
+# 2. Create a path made up of lines and triangles.
+# 3. Stroke the path with a border thickness 10 in black
+# 4. Translate the path to a new location.
+# 5. Fill the path with the color cyan.
+# 6. Translate the path to a new location.
+# 7. Stroke and fill the path.
+# 8. Create an image exporter with filetype public.jpeg and path
+# 9. Generate image from bitmap context and add to image exporter.
+# 10. Export from image exporter
+# 11. Close base object
+
+def create_path(startPoint)
+  thePath = MIPath.new
+  triangle1Points = []
+  triangle1Points.push(startPoint)
+  triangle1Points.push(MIShapes.make_point(117.5, 100.5))
+  triangle1Points.push(MIShapes.make_point(183.5, 50.5))
+  thePath.add_triangle(points: triangle1Points)
+  thePath.add_moveto(MIShapes.make_point(50.5, 120.5))
+  thePath.add_lineto(MIShapes.make_point(183.5, 120.5))
+  triangle2Points = []
+  triangle2Points.push(MIShapes.make_point(50.5, 200.5))
+  triangle2Points.push(MIShapes.make_point(117.5, 150.5))
+  triangle2Points.push(MIShapes.make_point(183.5, 200.5))
+  thePath.add_triangle(points: triangle2Points)
+  thePath.add_moveto(MIShapes.make_point(50.5, 220.5))
+  thePath.add_lineto(MIShapes.make_point(183.5, 360.5))
+  triangle3Points = []
+  triangle3Points.push(MIShapes.make_point(50.5, 380.5))
+  triangle3Points.push(MIShapes.make_point(117.5, 430.5))
+  triangle3Points.push(MIShapes.make_point(183.5, 380.5))
+  thePath.add_triangle(points: triangle3Points)
+end
+
+def create_pathdrawelement(pathDrawnAs: "strokepath")
+  startPoint = MIShapes.make_point(50.5, 50.5)
+  thePath = create_path(startPoint)
+  pathDrawElement = MIDrawElement.new(pathDrawnAs)
+  pathDrawElement.arrayofpathelements = thePath
+  pathDrawElement.startpoint = startPoint
+  pathDrawElement.linewidth = 10.0
+  pathDrawElement.linejoin = 'kCGLineJoinBevel'
+  pathDrawElement.fillcolor = MIColor.make_rgbacolor(0, 1, 1)
+  pathDrawElement.strokecolor = MIColor.make_rgbacolor(0,0,0)
+  pathDrawElement
+end
+
+def test01()
+  baseImageName = "shapepaths.jpg"
+  begin
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create the bitmap context command
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                  width: 600, height: 450,
+                                  name: bitmapContextName)
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+
+    # 2. Create a path made up of lines and triangles.
+    pathDrawElement = create_pathdrawelement(pathDrawnAs: "strokepath")
+    # 2. Create the draw path command and add it to the list of commands
+    drawPathCommand = CommandModule.make_drawelement(bitmapContextObject, 
+                                          drawinstructions: pathDrawElement)
+    theCommands.add_command(drawPathCommand)
+
+    # 2. Now do the first context transformation to move where path is drawn.
+    # Also draw the path as a fill, rather than stroke.
+    pathDrawElement = create_pathdrawelement(pathDrawnAs: "fillpath")
+    contextTransformations = MITransformations.make_contexttransformation()
+    offset = MIShapes.make_point(190.0, 0.0)
+    MITransformations.add_translatetransform(contextTransformations, offset)
+    pathDrawElement.contexttransformations = contextTransformations
+    drawPathCommand = CommandModule.make_drawelement(bitmapContextObject, 
+                                            drawinstructions: pathDrawElement)
+    theCommands.add_command(drawPathCommand)
+
+    # 3. Now, create a path which will be filled and stroked.
+    pathDrawElement = create_pathdrawelement(pathDrawnAs: "fillandstrokepath")
+    offset = MIShapes.make_point(380.0, 0.0)
+    contextTransformations = MITransformations.make_contexttransformation()
+    MITransformations.add_translatetransform(contextTransformations, offset)
+    pathDrawElement.contexttransformations = contextTransformations
+    drawPathCommand = CommandModule.make_drawelement(bitmapContextObject, 
+                                            drawinstructions: pathDrawElement)
+    theCommands.add_command(drawPathCommand)
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+
+    # 5. Make the create image exporter object command
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                export_type: :"public.jpeg",
+                                                name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+
+    # 6. Make an add image to the exporter object command.
+    # Add the command to list of commands.
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+
+    # 7. Make an export exporter command and add it to list of commands.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+#    puts JSON.pretty_generate(theCommands.commandshash)
+    $teststring = theCommands.commandshash.to_json
+    theResult = Smig.perform_commands(theCommands)
+
+    origFile = File.join($compareImageDir, baseImageName)
+    # 8. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile)
+      # 9. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+    # Open3.capture2("open", tempFile) unless tempFile.nil?
+  end
+end
+
+def test02()
+  baseImageName = "fillshapewithinnershadow.jpg"
+  begin
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create the bitmap context command
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                  width: 400, height: 450,
+                                  name: bitmapContextName)
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+
+    # 2. Create a path made up of lines and triangles.
+    startPoint = MIShapes.make_point(50.5, 50.5)
+    thePath = create_path(startPoint)
+    pathDrawElement = MIDrawFillPathWithInnerShadowElement.new()
+    pathDrawElement.arrayofpathelements = thePath
+    pathDrawElement.startpoint = startPoint
+    pathDrawElement.fillcolor = MIColor.make_rgbacolor(0, 1, 1)
+
+    # Add the inner shadow.
+    innerShadow = MIShadow.new
+    innerShadow.blur = 10
+    innerShadow.color = MIColor.make_rgbacolor(1,0,0)
+    innerShadow.offset = MIShapes.make_size(6, -6)
+    pathDrawElement.innershadow = innerShadow
+
+    # 2. Create the draw path command and add it to the list of commands
+    drawPathCommand = CommandModule.make_drawelement(bitmapContextObject, 
+                                          drawinstructions: pathDrawElement)
+    theCommands.add_command(drawPathCommand)
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    # tempFile = File.join($compareImageDir, baseImageName)
+
+    # 5. Make the create image exporter object command
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                export_type: :"public.jpeg",
+                                                name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+
+    # 6. Make an add image to the exporter object command.
+    # Add the command to list of commands.
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+
+    # 7. Make an export exporter command and add it to list of commands.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+    theResult = Smig.perform_commands(theCommands)
+
+    origFile = File.join($compareImageDir, baseImageName)
+    # 8. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile)
+      # 9. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+    # Open3.capture2("open", tempFile) unless tempFile.nil?
+  end
+end
+
+def LocalTestMain008()
+  puts "test01"
+  test01()
+  puts "test02"
+  test02()
+  return $errorcode
+end
+
+exit(LocalTestMain008())

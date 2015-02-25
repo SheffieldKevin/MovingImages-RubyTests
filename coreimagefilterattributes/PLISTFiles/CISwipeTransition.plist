@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Transitions from one image to another by simulating a swiping action.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryTransition</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Swipe</string>
+	<key>CIAttributeFilterName</key>
+	<string>CISwipeTransition</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CISwipeTransition</string>
+	<key>inputAngle</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.0</real>
+		<key>CIAttributeDescription</key>
+		<string>The angle of the swipe.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Angle</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>3.1415926535897931</real>
+		<key>CIAttributeSliderMin</key>
+		<real>-3.1415926535897931</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeAngle</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputColor</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>1 1 1 1</string>
+		<key>CIAttributeDescription</key>
+		<string>The color of the swipe.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Color</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeOpaqueColor</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputExtent</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[0 0 300 300]</string>
+		<key>CIAttributeDescription</key>
+		<string>The extent of the effect.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Extent</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeRectangle</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputOpacity</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.0</real>
+		<key>CIAttributeDescription</key>
+		<string>The opacity of the swipe.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Opacity</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputTargetImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The target image for a transition.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Target Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputTime</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.0</real>
+		<key>CIAttributeDescription</key>
+		<string>The parametric time of the transition. This value drives the transition from start (at time 0) to end (at time 1).</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Time</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeMax</key>
+		<real>1</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeTime</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputWidth</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>300</real>
+		<key>CIAttributeDescription</key>
+		<string>The width of the swipe</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Width</string>
+		<key>CIAttributeMin</key>
+		<real>0.10000000000000001</real>
+		<key>CIAttributeSliderMax</key>
+		<real>800</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.10000000000000001</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeDistance</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

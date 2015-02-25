@@ -1,0 +1,665 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+#
+# This scripts tests drawing an image while apply source rect, a destination 
+# rect. Apply context transformations, and applying an affine transform.
+# The context transformation and the affine transform that are applied in
+# this test produce the same resulting transformation being applied to
+# the image when drawn.
+# 
+# This script compares the generated images with images previously generated
+# and makes sure that they are the same. Some margin of error can be allowed.
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MICGDrawing
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$teststring = ""
+$compareImageDir = File.join($directory, "images/test006ForComparison")
+
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    puts "File1: #{filePath1}"
+    puts "File2: #{filePath2}"
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# Draw an image into a bitmap context, save output and compare with previous
+# 1. Import image file
+# 2. Get width and height of image at image index 0.
+# 3. Create a bitmap context with same dimensions as source image
+# 4. Draw the middle quarter of the image into the bitmap context
+# 5. Create an image exporter object
+# 6. Add an image representation of the bitmap to the image exporter object
+# 7. Save the image as jpeg.
+# 8. Compare with previously saved image.
+# 9. Report if different.
+
+def test01()
+  imageFile = $directory + "/images/DSCN0724.JPG"
+  baseImageName = "croppedpaddedimage.jpg"
+  begin
+    # Create the object that will contain the list of the commands
+    theCommands = CommandModule::SmigCommands.new
+    
+    # Set the output of the command to "lastcommandresult" which means when the
+    # list of commands is run, only the result of the last command to be run
+    # is returned. If the command list is set up to stop on failure then we
+    # get the result of the failed command.
+    theCommands.saveresultstype = :lastcommandresult
+
+    # Create the image importer object. First generate its name, 
+    importerName = SecureRandom.uuid
+    # then create the importer with the path to the file and the name
+
+    createImporterCommand = CommandModule.make_createimporter(imageFile,
+                                                        name: importerName)
+
+    # Create the image importer object id so we can refer to it later on.
+    imageImporterObject = SmigIDHash.make_objectid(objecttype: :imageimporter,
+                                                   objectname: importerName)
+    theCommands.add_command(createImporterCommand)
+
+    # The cleanup commands are run after completion of the main command list.
+    # They run whether the main command list ran without error or not.
+    # They return no information, all commands in the cleanup command list are
+    # run no matter whether an earlier command in the clean up list failed or
+    # or not.
+    theCommands.add_tocleanupcommands_closeobject(imageImporterObject)
+
+    # Create the bitmap context object. First generate its name.
+    bitmapContextName = SecureRandom.uuid
+
+    # Use spotlight to find out the dimensions of the original image so
+    # we can create the appropriate sized bitmap context.
+    imageDimensions = SpotlightCommand.get_imagedimensions(imageFile)
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                size: imageDimensions,
+#                                width: imageDimensions[0],
+#                                height: imageDimensions[1],
+                                preset: "AlphaPreMulFirstRGB8bpcInt",
+                                name: bitmapContextName)
+    
+    # Create the bitmap context object id so we can refer it later on.
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+
+    # Now add the create importer and bitmap context commands to command list
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+
+    # Start preparing the drawing element action.
+    theSize = MIShapes.make_size(imageDimensions[:width] * 0.5,
+                                 imageDimensions[:height] * 0.5)
+    theOrigin = MIShapes.make_point(imageDimensions[:width] * 0.25,
+                                    imageDimensions[:height] * 0.25)
+    sourceRect = MIShapes.make_rectangle(size: theSize, origin: theOrigin)
+    destRect = sourceRect
+    drawImageElement = MIDrawImageElement.new()
+    drawImageElement.set_imagefile_imagesource(source_object: imageImporterObject,
+                                               imageindex: 0)
+    drawImageElement.sourcerectangle = sourceRect
+    drawImageElement.destinationrectangle = destRect
+    
+    # With the draw element put together, now create the draw element command
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                    drawinstructions: drawImageElement)
+
+    # Now add the draw element command to the list of commands.
+    theCommands.add_command(drawCommand)
+    
+    # Setup the create image exporter command with a path to export the file
+    # to, within the users temporary directory.
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    imageExporterName = SecureRandom.uuid
+    
+    # Create the image exporter object command.
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                export_type: "public.jpeg",
+                                name: imageExporterName)
+
+    # Create the image exporter object id so we can refer it later on.
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+
+    # Add the create image exporter object command to the list of commands.
+    theCommands.add_command(createExporterCommand)
+    
+    # Now create the add image to image exporter object command.
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    
+    # Add the addimage to exporter object command to the list of commands.
+    theCommands.add_command(addImageToExporterCommand)
+    
+    # Create the export image file command and add it to the list of commands.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+
+    # Everything is set up, now perform the commands.
+    commandsHash = theCommands.commandshash
+    $teststring = commandsHash.to_json
+    theResult = Smig.perform_commands(commandsHash)
+    
+    # We've generated a new image file, now compare it against one we made
+    # earlier.
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile)
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    unless tempFile.nil?
+      FileUtils.rm_f(tempFile)
+    end
+  end
+end
+
+# Draw an image into a bitmap context, save output and compare with previous
+# 1. Importer image file
+# 2. Get width and height of image at image index 0.
+# 3. Create a bitmap context with same dimensions as source image
+# 4. Draw the image scaled down using the destination rectangle. Plus:
+#   1. Translated so centre of image to be drawn is at 0,0
+#   2. Rotated around the centre.
+#   3. Translated back so image is drawn centred.
+# 5. Create an image exporter object
+# 6. Add an image representation of the bitmap to the image exporter object
+# 7. Save the image as jpeg.
+# 8. Compare with previously saved image.
+# 9. Report if different.
+
+def test02()
+  imageFile = $directory + "/images/DSCN0733.JPG"
+  baseImageName = "rotatedimage.jpg"
+  begin
+    # Create the object that will contain the list of commands.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # Create the name for the importer object.
+    importerName = SecureRandom.uuid
+    
+    createImporterCommand = CommandModule.make_createimporter(imageFile,
+                                                    name: importerName)
+    theCommands.add_command(createImporterCommand)
+
+    # Create the image importer object id so we can refer to it later on.
+    imageImporterObject = SmigIDHash.make_objectid(objecttype: :imageimporter,
+                                                   objectname: importerName)
+
+    # Get the dimensions of the image at image index 0 in the image file.
+    # So we can calculate how big the bitmap context can be.
+    imageDimensions = SpotlightCommand.get_imagedimensions(imageFile)
+
+    # Create the bitmap context object command but first make the name
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                      width: imageDimensions[:width],
+                                      height: imageDimensions[:height],
+                                      name: bitmapContextName)
+
+    # Add the create bitmap context to the list of commands
+    theCommands.add_command(createBitmapContextCommand)
+
+    # Create the bitmapcontext object id so we can refer to it later on.
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+
+    # Prepare for the draw element action.
+    # The draw element action will draw a rotated image into the bitmapcontext
+    width = imageDimensions[:width] * 0.5
+    height = imageDimensions[:height] * 0.5
+    x = width * 0.5
+    y = height * 0.5
+    theSize = MIShapes.make_size(width, height)
+    theOrigin = MIShapes.make_point(x, y)
+    sourceRect = MIShapes.make_rectangle(size: theSize, origin: theOrigin)
+    destRect = sourceRect
+    drawImageElement = MIDrawImageElement.new()
+    drawImageElement.set_imagefile_imagesource(source_object: imageImporterObject,
+                                               imageindex: 0)
+    drawImageElement.destinationrectangle = destRect
+    contextTransform = MITransformations.make_contexttransformation()
+    MITransformations.add_translatetransform(contextTransform,
+                                    { :x => width, :y => height })
+    MITransformations.add_rotatetransform(contextTransform, Math::PI / 4.0)
+    MITransformations.add_translatetransform(contextTransform,
+                                    { :x => -width, :y => -height })
+    drawImageElement.contexttransformations = contextTransform
+
+    # Create the drawelement command.
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                    drawinstructions: drawImageElement)
+
+    # Add the draw element command to the list of commands.
+    theCommands.add_command(drawCommand)
+
+    # Prepare for creating the image exporter object command
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    imageExporterName = SecureRandom.uuid
+    
+    # Make the image file export object command.
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                  export_type: "public.jpeg",
+                                                  name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    
+    # Make the add an image to the exporter object command.
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    
+    # Make the do export command
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+
+    # Add close object commands to the cleanup command list.
+    theCommands.add_tocleanupcommands_closeobject(imageImporterObject)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+
+    # now actually carry out the commands.
+    commandsHash = theCommands.commandshash
+    $teststring = commandsHash.to_json
+    theResult = Smig.perform_commands(commandsHash)
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile)
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    unless tempFile.nil?
+      FileUtils.rm_f(tempFile)
+    end
+  end
+end
+
+# Draw an image into a bitmap context, save output and compare with previous
+# 1. Importer image file
+# 2. Get width and height of image at image index 0.
+# 3. Create a bitmap context with same dimensions as source image
+# 4. Draw the image scaled down using the destination rectangle. Plus:
+#   1. Apply an affine transform so the image is rotated 45 around its centre.
+# 5. Create an image exporter object
+# 6. Add an image representation of the bitmap to the image exporter object
+# 7. Save the image as jpeg.
+# 8. Compare with previously saved image.
+# 9. Report if different.
+
+def test03()
+  imageFile = $directory + "/images/DSCN0733.JPG"
+  baseImageName = "rotatedimage2.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    importerName = SecureRandom.uuid
+    createImporterCommand = CommandModule.make_createimporter(imageFile,
+                                                        name: importerName)
+    imageImporterObject = SmigIDHash.make_objectid(objecttype: :imageimporter,
+                                                   objectname: importerName)
+    theCommands.add_command(createImporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(imageImporterObject)
+    imageDimensions = SpotlightCommand.get_imagedimensions(imageFile)
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                          size: imageDimensions,
+                                          name: bitmapContextName)
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                  objectname: bitmapContextName)
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+
+    theSize = MIShapes.make_size(imageDimensions[:width] * 0.5,
+                                 imageDimensions[:height] * 0.5)
+    theOrigin = MIShapes.make_point(imageDimensions[:width] * 0.25,
+                                    imageDimensions[:height] * 0.25)
+    sourceRect = MIShapes.make_rectangle(size: theSize, origin: theOrigin)
+    destRect = sourceRect
+    drawImageElement = MIDrawImageElement.new()
+    drawImageElement.set_imagefile_imagesource(source_object: imageImporterObject,
+                                               imageindex: 0)
+    drawImageElement.destinationrectangle = destRect
+    affineTransform = MITransformations.make_affinetransform(
+                      m11: 0.707, m12: 0.707, m21: -0.707,
+                      m22: 0.707, tX: 373.74, tY: -221.29)
+    drawImageElement.affinetransform = affineTransform
+    # With the draw element put together, now create the draw element command
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                          drawinstructions: drawImageElement)
+    theCommands.add_command(drawCommand)
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                  export_type: "public.jpeg",
+                                                  name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+    addImageToExporterCommand = CommandModule.make_addimage(exporterObject, 
+                                                            bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+    commandsHash = theCommands.commandshash
+    $teststring = commandsHash.to_json
+    theResult = Smig.perform_commands(commandsHash)
+    puts "The result is: " + theResult unless theResult.length.zero?
+
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile, 28)
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+  end
+end
+
+# Draw an image into a window context, save output and compare with previous
+# 1. Import image file
+# 2. Get width and height of image at image index 0.
+# 3. Create a bitmap context with same dimensions as source image
+# 4. Draw the image scaled down using the destination rectangle. Plus:
+#   1. Apply an affine transform so the image is rotated 45 around its centre.
+# 5. Create an image exporter object
+# 6. Add an image representation of the bitmap to the image exporter object
+# 7. Save the image as jpeg.
+# 8. Compare with previously saved image.
+# 9. Report if different.
+
+def test04()
+  imageFile = $directory + "/images/DSCN0733.JPG"
+  baseImageName = "rotatedimage2.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    importerName = SecureRandom.uuid
+    createImporterCommand = CommandModule.make_createimporter(imageFile,
+                                                        name: importerName)
+    imageImporterObject = SmigIDHash.make_objectid(objecttype: :imageimporter,
+                                                   objectname: importerName)
+    theCommands.add_command(createImporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(imageImporterObject)
+    imageDimensions = SpotlightCommand.get_imagedimensions(imageFile)
+    windowContextName = SecureRandom.uuid
+    createWindowContextCommand = CommandModule.make_createwindowcontext(
+                                              width: imageDimensions[:width],
+                                              height: imageDimensions[:height],
+                                              name: windowContextName)
+    windowContextObject = SmigIDHash.make_objectid(
+                                              objecttype: :nsgraphicscontext,
+                                              objectname: windowContextName)
+    theCommands.add_command(createWindowContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(windowContextObject)
+
+    # Need to initialize the window to having a white background.
+    windowRect = MIShapes.make_rectangle(size: imageDimensions,
+                                         origin: { :x => 0, :y => 0 } )
+    whiteColor = MIColor.make_rgbacolor(1.0, 1.0, 1.0)
+    drawBackgroundElement = MIDrawElement.new(:fillrectangle)
+    drawBackgroundElement.rectangle = windowRect
+    drawBackgroundElement.fillcolor = whiteColor
+    
+    theSize = MIShapes.make_size(imageDimensions[:width] * 0.5,
+                                 imageDimensions[:height] * 0.5)
+    theOrigin = MIShapes.make_point(imageDimensions[:width] * 0.25,
+                                    imageDimensions[:height] * 0.25)
+    sourceRect = MIShapes.make_rectangle(size: theSize, origin: theOrigin)
+    destRect = sourceRect
+    drawImageElement = MIDrawImageElement.new()
+    drawImageElement.set_imagefile_imagesource(source_object: imageImporterObject,
+                                               imageindex: 0)
+    drawImageElement.destinationrectangle = destRect
+    affineTransform = MITransformations.make_affinetransform(
+                      m11: 0.707, m12: 0.707, m21: -0.707,
+                      m22: 0.707, tX: 373.74, tY: -221.29)
+    drawImageElement.affinetransform = affineTransform
+    drawElements = MIDrawElement.new(:arrayofelements)
+    drawElements.add_drawelement_toarrayofelements(drawBackgroundElement)
+    drawElements.add_drawelement_toarrayofelements(drawImageElement)
+    # With the draw element put together, now create the draw element command
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                              drawinstructions: drawElements)
+    theCommands.add_command(drawCommand)
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                  export_type: "public.jpeg",
+                                                  name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, windowContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+    commandsHash = theCommands.commandshash
+    $teststring = commandsHash.to_json
+    theResult = Smig.perform_commands(commandsHash)
+    puts "The result is: " + theResult unless theResult.length.zero?
+
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile, 31)
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+    # Open3.capture2("open", tempFile)
+  end
+end
+
+# Draw an image into a bitmap context with an alpha of 0.5, save output and
+# compare with previous
+# 1. Importer image file
+# 2. Get width and height of image at image index 0.
+# 3. Create a bitmap context with same dimensions as source image
+# 4. Draw the image scaled down using the destination rectangle. Plus:
+#   1. Translated so centre of image to be drawn is at 0,0
+#   2. Rotated around the centre.
+#   3. Translated back so image is drawn centred.
+# 5. Create an image exporter object
+# 6. Add an image representation of the bitmap to the image exporter object
+# 7. Save the image as jpeg.
+# 8. Compare with previously saved image.
+# 9. Report if different.
+
+def test05()
+  imageFile = $directory + "/images/DSCN0733.JPG"
+  baseImageName = "rotatedimage_a05.jpg"
+  begin
+    # Create the object that will contain the list of commands.
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # Create the name for the importer object.
+    importerName = SecureRandom.uuid
+    
+    createImporterCommand = CommandModule.make_createimporter(imageFile,
+                                                    name: importerName)
+    theCommands.add_command(createImporterCommand)
+
+    # Create the image importer object id so we can refer to it later on.
+    imageImporterObject = SmigIDHash.make_objectid(objecttype: :imageimporter,
+                                                   objectname: importerName)
+
+    # Get the dimensions of the image at image index 0 in the image file.
+    # So we can calculate how big the bitmap context can be.
+    imageDimensions = SpotlightCommand.get_imagedimensions(imageFile)
+
+    # Create the bitmap context object command but first make the name
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                      width: imageDimensions[:width],
+                                      height: imageDimensions[:height],
+                                      name: bitmapContextName)
+
+    # Add the create bitmap context to the list of commands
+    theCommands.add_command(createBitmapContextCommand)
+
+    # Create the bitmapcontext object id so we can refer to it later on.
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+
+    # Prepare for the draw element action.
+    # The draw element action will draw a rotated image into the bitmapcontext
+    width = imageDimensions[:width] * 0.5
+    height = imageDimensions[:height] * 0.5
+    x = width * 0.5
+    y = height * 0.5
+    theSize = MIShapes.make_size(width, height)
+    theOrigin = MIShapes.make_point(x, y)
+    sourceRect = MIShapes.make_rectangle(size: theSize, origin: theOrigin)
+    destRect = sourceRect
+    drawImageElement = MIDrawImageElement.new()
+    drawImageElement.set_imagefile_imagesource(source_object: imageImporterObject,
+                                               imageindex: 0)
+    drawImageElement.destinationrectangle = destRect
+    drawImageElement.contextalpha = 0.5
+    contextTransform = MITransformations.make_contexttransformation()
+    MITransformations.add_translatetransform(contextTransform,
+                                    { :x => width, :y => height })
+    MITransformations.add_rotatetransform(contextTransform, Math::PI / 4.0)
+    MITransformations.add_translatetransform(contextTransform,
+                                    { :x => -width, :y => -height })
+    drawImageElement.contexttransformations = contextTransform
+
+    # Create the drawelement command.
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                    drawinstructions: drawImageElement)
+
+    # Add the draw element command to the list of commands.
+    theCommands.add_command(drawCommand)
+
+    # Prepare for creating the image exporter object command
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    # tempFile = File.join($compareImageDir, baseImageName)
+    imageExporterName = SecureRandom.uuid
+    
+    # Make the image file export object command.
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                  export_type: "public.jpeg",
+                                                  name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    
+    # Make the add an image to the exporter object command.
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    
+    # Make the do export command
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+
+    # Add close object commands to the cleanup command list.
+    theCommands.add_tocleanupcommands_closeobject(imageImporterObject)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+
+    # now actually carry out the commands.
+    commandsHash = theCommands.commandshash
+    $teststring = commandsHash.to_json
+    theResult = Smig.perform_commands(commandsHash)
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile)
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    unless tempFile.nil?
+      FileUtils.rm_f(tempFile)
+#      Open3.capture2("open", tempFile)
+    end
+  end
+end
+
+def LocalTestMain006()
+  puts "test01"
+  test01()
+  puts "test02"
+  test02()
+  puts "test03"
+  test03()
+  puts "test04"
+  test04()
+  puts "test05"
+  test05()
+  return $errorcode
+end
+
+exit(LocalTestMain006())
+

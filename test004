@@ -1,0 +1,153 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2013-2014 Kevin Meaney
+# Script for testing smig and moving images importer objects.
+# Requires file test002image.jpg
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+
+# Testing core image filter properties.
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'moving_images'
+
+include MovingImages
+
+$verbose = false
+$smig = "smig"
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+
+$coreimagefilternames = "CIAccordionFoldTransition CIAdditionCompositing CIAffineClamp CIAffineTile CIAffineTransform CIAreaAverage CIAreaHistogram CIAreaMaximum CIAreaMaximumAlpha CIAreaMinimum CIAreaMinimumAlpha CIAztecCodeGenerator CIBarsSwipeTransition CIBlendWithAlphaMask CIBlendWithMask CIBloom CIBoxBlur CIBumpDistortion CIBumpDistortionLinear CICheckerboardGenerator CICircleSplashDistortion CICircularScreen CICircularWrap CICMYKHalftone CICode128BarcodeGenerator CIColorBlendMode CIColorBurnBlendMode CIColorClamp CIColorControls CIColorCrossPolynomial CIColorCube CIColorCubeWithColorSpace CIColorDodgeBlendMode CIColorInvert CIColorMap CIColorMatrix CIColorMonochrome CIColorPolynomial CIColorPosterize CIColumnAverage CIComicEffect CIConstantColorGenerator CIConvolution3X3 CIConvolution5X5 CIConvolution7X7 CIConvolution9Horizontal CIConvolution9Vertical CICopyMachineTransition CICrop CICrystallize CIDarkenBlendMode CIDepthOfField CIDifferenceBlendMode CIDiscBlur CIDisintegrateWithMaskTransition CIDisplacementDistortion CIDissolveTransition CIDivideBlendMode CIDotScreen CIDroste CIEdges CIEdgeWork CIEightfoldReflectedTile CIExclusionBlendMode CIExposureAdjust CIFalseColor CIFlashTransition CIFourfoldReflectedTile CIFourfoldRotatedTile CIFourfoldTranslatedTile CIGammaAdjust CIGaussianBlur CIGaussianGradient CIGlassDistortion CIGlassLozenge CIGlideReflectedTile CIGloom CIHardLightBlendMode CIHatchedScreen CIHeightFieldFromMask CIHexagonalPixellate CIHighlightShadowAdjust CIHistogramDisplayFilter CIHoleDistortion CIHueAdjust CIHueBlendMode CIKaleidoscope CILanczosScaleTransform CILenticularHaloGenerator CILightenBlendMode CILinearBurnBlendMode CILinearDodgeBlendMode CILinearGradient CILinearToSRGBToneCurve CILineOverlay CILineScreen CILuminosityBlendMode CIMaskedVariableBlur CIMaskToAlpha CIMaximumComponent CIMaximumCompositing CIMedianFilter CIMinimumComponent CIMinimumCompositing CIModTransition CIMotionBlur CIMultiplyBlendMode CIMultiplyCompositing CINoiseReduction CIOpTile CIOverlayBlendMode CIPageCurlTransition CIPageCurlWithShadowTransition CIParallelogramTile CIPerspectiveCorrection CIPerspectiveTile CIPerspectiveTransform CIPhotoEffectChrome CIPhotoEffectFade CIPhotoEffectInstant CIPhotoEffectMono CIPhotoEffectNoir CIPhotoEffectProcess CIPhotoEffectTonal CIPhotoEffectTransfer CIPinchDistortion CIPinLightBlendMode CIPixellate CIPointillize CIQRCodeGenerator CIRadialGradient CIRandomGenerator CIRippleTransition CIRowAverage CISaturationBlendMode CIScreenBlendMode CISepiaTone CIShadedMaterial CISharpenLuminance CISixfoldReflectedTile CISixfoldRotatedTile CISoftLightBlendMode CISourceAtopCompositing CISourceInCompositing CISourceOutCompositing CISourceOverCompositing CISpotColor CISpotLight CISRGBToneCurveToLinear CIStarShineGenerator CIStraightenFilter CIStretchCrop CIStripesGenerator CISubtractBlendMode CISunbeamsGenerator CISwipeTransition CITemperatureAndTint CIToneCurve CITorusLensDistortion CITriangleTile CITwelvefoldReflectedTile CITwirlDistortion CIUnsharpMask CIVibrance CIVignette CIVignetteEffect CIVortexDistortion CIWhitePointAdjust CIZoomBlur YVSChromaKeyFilter"
+
+$errorcode = 0
+
+# Has the list of filter names changed.
+def test01()
+  begin
+    getFilterListCommand = CommandModule.make_get_nonobjectproperty(
+                                  property: :imagefilters,
+                                  type: :imagefilterchain)
+    filters = Smig.perform_command(getFilterListCommand)
+    unless filters.eql? $coreimagefilternames
+      puts "List of core image filters different: #{filters}"
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# Have the filter attributes saved as json files changed?
+# 1. Convert the string of filter names into an array of filter names.
+# 2. Save the attributes of a particular filter in a temporary file as json.
+# 3. Compare contents of file with previously saved filter attributes.
+# 4. Delete the temporary file.
+# 5. If different report.
+def test02()
+  begin
+    filters = $coreimagefilternames.split(" ")
+    # puts Dir.tmpdir()
+    originalPath = File.join($directory, 
+                               "coreimagefilterattributes/JSONFiles/")
+    filters.each do |filterName|
+      fileName = filterName + ".json"
+      tempFilePath = File.join(Dir.tmpdir(), fileName)
+      
+      getFilterAttributesCommand = CommandModule.make_get_nonobjectproperty(
+                        property: :filterattributes, type: :imagefilterchain)
+      
+      getFilterAttributesCommand.add_option(key: :filtername, value: filterName)
+      getFilterAttributesCommand.add_option(key: :saveresultsto, value: tempFilePath)
+      getFilterAttributesCommand.add_option(key: :saveresultstype, value: :jsonfile)
+      result = Smig.perform_command(getFilterAttributesCommand)
+      origFilePath = originalPath + fileName
+      if File.exists? origFilePath
+        unless FileUtils.identical?(tempFilePath, origFilePath)
+            puts " Saved json differed from returned."
+        end
+      else
+        puts " Missing original file: " + origFilePath
+      end
+
+      FileUtils.remove_file(tempFilePath, true)
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# Have the filter attributes saved as property list files files changed?
+# 1. Convert the string of filter names into an array of filter names.
+# 2. Save the attributes of a particular filter in a temporary property file.
+# 3. Compare contents of file with previously saved filter attributes.
+# 4. Delete the temporary file.
+# 5. If different report.
+def test03()
+  begin
+    filters = $coreimagefilternames.split(" ")
+    # puts Dir.tmpdir()
+    originalPath = File.join($directory, 
+                               "coreimagefilterattributes/PLISTFiles/")
+    filters.each do |filterName|
+      fileName = filterName + ".plist"
+      tempFilePath = File.join(Dir.tmpdir(), fileName)
+      
+      getFilterAttributesCommand = CommandModule.make_get_nonobjectproperty(
+                        property: :filterattributes, type: :imagefilterchain)
+      
+      getFilterAttributesCommand.add_option(key: :filtername, value: filterName)
+      getFilterAttributesCommand.add_option(key: :saveresultsto, value: tempFilePath)
+      getFilterAttributesCommand.add_option(key: :saveresultstype, value: :propertyfile)
+      result = Smig.perform_command(getFilterAttributesCommand)
+      origFilePath = originalPath + fileName
+      if File.exists? origFilePath
+        unless FileUtils.identical?(tempFilePath, origFilePath)
+            puts " Saved json differed from returned."
+        end
+      else
+        puts " Missing original file: " + origFilePath
+      end
+
+      FileUtils.remove_file(tempFilePath, true)
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+
+def LocalTestMain004()
+  puts "test01"
+  test01()
+  puts "test02"
+  test02()
+  puts "test03"
+  test03()
+  return $errorcode
+end
+
+exit(LocalTestMain004())

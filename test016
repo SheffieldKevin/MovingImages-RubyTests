@@ -1,0 +1,510 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability. Please include the link to the documentation:
+#
+# test016
+# This script file tests:
+# 1. Add, access and remove image to the image collection from a movie frame.
+# 2. Add, access and remove image to the image collection from imported image file
+#    Work with images in collection in bitmap context, window context and importer.
+# 3. Process movie frames. Local context, reused imageidentifier.
+#    Close objects and removes images from image cache before closing local context
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MIMovie
+include MICGDrawing
+include CommandModule
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$compareImageDir = File.join($directory, "images/test016ForComparison")
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# test01
+# 1. Get image frame from a movie and add it to the image collection.
+# 2. Create a window context
+# 3. Draw the image in image collection to bitmap context.
+# 4. Close the movie importer. This happens automatically. Create new command list
+# 5. Draw the image in image collection to the window context.
+# 6. Remove the image from the image collection.
+# 7. Attempt to draw the image to the window context
+# 8. Close the window context.
+def test01()
+  sourceMovie = File.join($directory, "images/418_clip5_SD.m4v")
+  begin    
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create movie importer and assign frame to image collection.
+    # Basically after the first block of commands is run, the movie importer
+    # is closed automatically in the cleanup commands.
+    movieImporterName = SecureRandom.uuid
+    movieObject = theCommands.make_createmovieimporter(sourceMovie,
+                                                 name: movieImporterName)
+
+    frameTime = MovieTime.make_movietime(timescale: 600, timevalue: 900)
+    trackID = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+                                      mediatype: :vide, trackindex: 0)
+    
+    imageId = SecureRandom.uuid
+    assignFrameCommand = CommandModule.make_assignimage_frommovie_tocollection(
+        movieObject, frametime: frameTime, tracks: [trackID], identifier: imageId)
+    theCommands.add_command(assignFrameCommand)
+    
+    # 2. Create the window context
+    winRect = MIShapes.make_rectangle(origin: { x: 100, y: 50 },
+                                      size: { width: 400, height: 252 })
+    windowObject = theCommands.make_createwindowcontext(rect: winRect,
+                      addtocleanup: false)
+    
+    # 3. Draw the image in the image collection to the window context.
+    drawImageElement = MIDrawImageElement.new()
+    drawImageElement.set_imagecollection_imagesource(identifier: imageId)
+    drawImageElement.destinationrectangle = MIShapes.make_rectangle(width: 400,
+                                                                    height: 252)
+    drawElementCommand = CommandModule.make_drawelement(
+      windowObject, drawinstructions: drawImageElement, createimage: false)
+    theCommands.add_command(drawElementCommand)
+    Smig.perform_commands(theCommands)
+    
+    # The first lot of commands to be run have run. I've split up the performing
+    # of commands so that we get to see the content actually drawn to the window.
+    # 4. Create the new command list.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    
+    # 5. Draw the image in image collection to the window context
+    theCommands.add_command(drawElementCommand)
+    
+    # 6. Remove the image from the image collection
+    removeCommand = CommandModule.make_removeimage_fromcollection(imageId)
+    theCommands.add_command(removeCommand)
+    Smig.perform_commands(theCommands)
+    
+    # 7. Now attempt to draw the image again.
+    begin
+      Smig.perform_command(drawElementCommand)
+      puts "We shouldn't get here as perform command should have an exception"
+      puts "File: #{$filename}, Line: #{__LINE__}"
+    rescue
+    end
+    
+    # 8. Now close the window context.
+    Smig.close_object(windowObject)
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# test02
+# 1. Import an image file.
+# 2. Create a bitmap context.
+# 3. Draw the image from image importer to bitmap context.
+# 4. Assign to the image collection an image generated from the bitmap context
+# 5. Create window context
+# 6. Draw the image in the image collection to the window context.
+# 7. Close the bitmap context. Happens automatically.
+# 8. Attempt to draw the image from collection again to window context.
+# 9. Remove image from image collection.
+# 10. Attempt to draw with image again. Catch.
+# 11. Assign to the image colection an image generated from the image importer.
+# 12. Draw the image in the collection to the window context.
+# 13. Close the image importer.
+# 14. Draw the image in the collection to the window context again.
+# 15. Remove the image from the image collection
+# 16. Attempt to draw the image in the collection again. Catch
+# 17. Assign an image from the window context to the image collection.
+# 18. Close the window context.
+# 19. Remove the image from the image collection.
+def test02()
+  sourceImage = File.join($directory, "images/test002image.jpg")
+  begin    
+    # Create the list of commands object, ready to have commands added to it.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create image importer
+    importerName = SecureRandom.uuid
+    imageImporterObject = theCommands.make_createimporter(sourceImage,
+                                      name: importerName, addtocleanup: false)
+
+    # 2. Create bitmap context.
+    imageSize = MIShapes.make_size(336, 600)
+    destRect = MIShapes.make_rectangle(size: imageSize)
+    bitmapObject = theCommands.make_createbitmapcontext(size: imageSize)
+    
+    # 3. Draw the image in the image collection to the window context.
+    drawImageElement = MIDrawImageElement.new()
+    drawImageElement.set_imagefile_imagesource(source_object: imageImporterObject)
+    drawImageElement.destinationrectangle = destRect
+    drawElementCommand = CommandModule.make_drawelement(bitmapObject,
+                        drawinstructions: drawImageElement, createimage: false)
+    theCommands.add_command(drawElementCommand)
+
+    # 4. Assign to the image collection an image generated from the bitmap context
+    imageId = SecureRandom.uuid
+    assignBitmapImageCommand = CommandModule.make_assignimage_tocollection(
+                                          bitmapObject, identifier: imageId)
+    theCommands.add_command(assignBitmapImageCommand)
+
+    # 5. Create window context.
+    winRect = MIShapes.make_rectangle(origin: { x: 100, y: 50 },
+                                      size: imageSize)
+    windowObject = theCommands.make_createwindowcontext(rect: winRect,
+                              addtocleanup: false)
+    
+    # 6. Draw the image in the image collection to the window context.
+    drawImageElement = MIDrawImageElement.new()
+    drawImageElement.set_imagecollection_imagesource(identifier: imageId)
+    drawImageElement.destinationrectangle = destRect
+    
+    drawElementCommand = CommandModule.make_drawelement(
+      windowObject, drawinstructions: drawImageElement, createimage: false)
+    theCommands.add_command(drawElementCommand)
+    # 7 will happen here in the cleanup commands.
+    Smig.perform_commands(theCommands)
+    
+    # 8. Attempt to draw the image from collection again to window context.
+    # The first lot of commands to be run have run. I've split up the performing
+    # of commands so that we get to see the content actually drawn to the window.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    theCommands.add_command(drawElementCommand)
+    
+    # 9. Remove the image from the image collection
+    removeCommand = CommandModule.make_removeimage_fromcollection(imageId)
+    theCommands.add_command(removeCommand)
+    Smig.perform_commands(theCommands)
+    
+    # 10. Now attempt to draw the image again and catch the error.
+    begin
+      Smig.perform_command(drawElementCommand)
+      puts "We shouldn't get here as perform command should have an exception"
+      puts "File: #{$filename}, Line: #{__LINE__}"
+    rescue
+    end
+
+    # 11. Assign to the image colection an image generated from the image importer.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    imageId2 = SecureRandom.uuid
+    assignImageCommand = CommandModule.make_assignimage_fromimporter_tocollection(
+                    imageImporterObject, imageindex: 0, identifier: imageId2)
+    theCommands.add_command(assignImageCommand)
+
+    # 12. Draw the new image in the image collection to the window object
+    drawImageElement = MIDrawImageElement.new()
+    drawImageElement.set_imagecollection_imagesource(identifier: imageId2)
+    drawImageElement.destinationrectangle = destRect
+    
+    drawElementCommand = CommandModule.make_drawelement(
+      windowObject, drawinstructions: drawImageElement, createimage: false)
+    theCommands.add_command(drawElementCommand)
+    Smig.perform_commands(theCommands)
+    
+    # 13. Close the image importer after creating a new command list.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    closeCommand = CommandModule.make_close(imageImporterObject)
+    theCommands.add_command(closeCommand)
+    
+    # 14. Draw the image in the image collection to window object again.
+    theCommands.add_command(drawElementCommand)
+    
+    # 15. Remove the image from the image collection.
+    removeCommand = CommandModule.make_removeimage_fromcollection(imageId2)
+    theCommands.add_command(removeCommand)
+    
+    Smig.perform_commands(theCommands)
+
+    # 16. Attempt to draw the removed image again, and catch failure.
+    begin
+      Smig.perform_command(drawElementCommand)
+      puts "We shouldn't get here as perform command should have an exception"
+      puts "File: #{$filename}, Line: #{__LINE__}"
+    rescue
+    end
+
+    # 17. Assign an image from the window context to the image collection.
+    imageId3 = SecureRandom.uuid
+    assignCommand = CommandModule.make_assignimage_tocollection(windowObject,
+                                                          identifier: imageId3)
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    theCommands.add_command(assignCommand)
+    
+    # 18. Now close the window context.
+    theCommands.add_command(CommandModule.make_close(windowObject))
+    
+    # 19. Now remove the image from the image collection.
+    removeCommand = CommandModule.make_removeimage_fromcollection(imageId2)
+    theCommands.add_command(removeCommand)
+    Smig.perform_commands(theCommands)
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# test03 Process Movie Frames. All video tracks. Local context. Common imageid.
+# 1. Create the commands object.
+# 2. Add a make a movie importer object command to the commands object
+# 3. Create and configure the process movie frames command.
+# 4. Make a pre-process command list.
+# 5. Make a create bitmap context object command.
+# 6. Add the create bitmap context object command to the pre-process command list.
+# 7. Make a create exporter object command and add it to the pre-process list.
+# 8. Assign the pre-process commands to the process movie frames command.
+# 9. Add a close bitmap object command to cleanup commands.
+# 10. Add a close exporter object command to cleanup commands.
+# 11. Add a remove image from collection command to cleanup commands.
+# 12. Prepare for looping to get frames. Then once per iteration within loop.
+# 13.   Create a ProcessMovieFrameInstruction object
+# 14.   Calculate the frame time and set it.
+# 15.   Determine the frame number on the page & destination rectangle.
+# 16.   Create the draw image element to draw the frame onto the bitmap.
+# 17.   Create and add the draw image command to the list of commands.
+# 18.   Create and add the draw text label command to the list of commands.
+# 19.   If the twelth frame is drawn on the page then export.
+# 20.     Redraw the bitmap context so ready to be used again.
+# 21.   Add the frame processing intructions to the process frames command.
+# 22. Add the process frames command to the list of commands.
+# 23. Compare the two coversheet image files created, with previously created.
+def test03()
+  sourceMovie = File.join($directory, "images/604_sd_clip.mov") # 576x360
+  width = 576
+  height = 360
+  movieLength = 300.0 # seconds.
+  borderWidth = 32
+  bitmapWidth = (3.0 * width.to_f * 0.5 + (3+1) * borderWidth).to_i
+  bitmapHeight = (4.0 * height.to_f * 0.5 + (4+1) * borderWidth).to_i
+  bitmapSize = MIShapes.make_size(bitmapWidth, bitmapHeight)
+  baseFileName = "coversheet"
+  begin
+    # 1. Create the list of commands object, ready to have commands added to it.
+    theCommands = SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 2. Create movie importer and assign to list of commands.
+    # Basically after the first block of commands is run, the movie importer
+    # is closed automatically in the cleanup commands.
+    movieImporterName = SecureRandom.uuid
+    movieObject = theCommands.make_createmovieimporter(sourceMovie,
+                                                 name: movieImporterName)
+    
+    # 3. Create the process movie frames command and configure.
+    imageIdentifier = SecureRandom.uuid
+
+    processFramesCommand = ProcessFramesCommand.new(movieObject)
+    processFramesCommand.create_localcontext = false
+    processFramesCommand.imageidentifier = imageIdentifier
+
+    track_id = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+                                                mediatype: :vide, trackindex: 0)
+    
+    processFramesCommand.videotracks = [ track_id ]
+
+    # 4. Make a pre-process command list.
+    preProcessCommands = []
+    
+    # 5. Make a create a bitmap context command.
+    bitmapName = SecureRandom.uuid
+    createBitmapCommand = CommandModule.make_createbitmapcontext(
+                                            name: bitmapName, size: bitmapSize)
+
+    bitmapObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                            objectname: bitmapName)
+
+    # 6. Add the create bitmap context object command to the pre-process list.
+    preProcessCommands.push(createBitmapCommand.commandhash)
+
+    # 7. Make a create exporter object command and add it to the pre-process list
+    exporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(
+              "~/placeholder.jpg", export_type: 'public.jpeg', name: exporterName)
+    preProcessCommands.push(createExporterCommand.commandhash)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: exporterName)
+
+    # 8. Assign the pre-process commands to the process movie frames command.
+    processFramesCommand.preprocesscommands = preProcessCommands
+    
+    # 9. Add a close bitmap object command to cleanup commands.
+    processFramesCommand.add_tocleanupcommands_closeobject(bitmapObject)
+    
+    # 10. Add a close exporter object command to cleanup commands.
+    processFramesCommand.add_tocleanupcommands_closeobject(exporterObject)
+
+    # 11. Add a remove image from collection command to cleanup commands.
+    processFramesCommand.add_tocleanupcommands_removeimage(imageIdentifier)
+
+    # 12. Prepare and start looping for creating process frame instrutions.
+    numFrames = 24
+    framesPerPage = 12 # 3 x 4
+    frameDuration = movieLength / (numFrames - 1)
+    pageNumber = 0
+    x = 0
+    y = 0
+    halfWidth = width / 2
+    halfHeight = height / 2
+    drawnFrameSize = MIShapes.make_size(halfWidth, halfHeight)
+    textBoxSize = MIShapes.make_size(halfWidth, borderWidth * 3 / 4)
+    filesToCompare = []
+    numFrames.times do |i|
+      # 13. Create a ProcessMovieFrameInstruction object
+      frameInstructions = ProcessMovieFrameInstructions.new
+      
+      # 14. Calculate the frame time and assign it.
+      time = i.to_f * frameDuration
+      frameTime = MovieTime.make_movietime_fromseconds(time)
+      frameInstructions.frametime = frameTime
+      
+      # 15. Determine the frame number on the page & destination rectangle.
+      frameNumber = i % framesPerPage
+      x = frameNumber % 3
+      y = 3 - (frameNumber / 3)
+      xloc = x * halfWidth + (x + 1) * borderWidth
+      yloc = y * halfHeight + (y + 1) * borderWidth
+      origin = MIShapes.make_point(xloc, yloc)
+      drawnFrameRect = MIShapes.make_rectangle(size: drawnFrameSize,
+                                             origin: origin)
+      
+      # 16. Create the draw image element to draw the frame onto the bitmap.
+      drawImageElement = MIDrawImageElement.new()
+      drawImageElement.destinationrectangle = drawnFrameRect
+      drawImageElement.set_imagecollection_imagesource(identifier: imageIdentifier)
+      
+      # 17. Create the draw image command and add it to the frame instructions.
+      drawImageCommand = CommandModule.make_drawelement(bitmapObject,
+                        drawinstructions: drawImageElement, createimage: false)
+      frameInstructions.add_command(drawImageCommand)
+      
+      # 18. Prepare drawing the text with the time.
+      timeString = "Frame time: %.3f secs" % time
+      drawStringElement = MIDrawBasicStringElement.new()
+      drawStringElement.stringtext = timeString
+      drawStringElement.userinterfacefont = "kCTFontUIFontLabel"
+      drawStringElement.textalignment = "kCTTextAlignmentCenter"
+      drawStringElement.fillcolor = MIColor.make_rgbacolor(0.0, 0.0, 0.0)
+      boxOrigin = MIShapes.make_point(xloc, yloc - borderWidth)
+      boundingBox = MIShapes.make_rectangle(size: textBoxSize, origin: boxOrigin)
+      drawStringElement.boundingbox = boundingBox
+      drawTextCommand = CommandModule.make_drawelement(bitmapObject,
+                      drawinstructions: drawStringElement, createimage: false)
+      frameInstructions.add_command(drawTextCommand)
+
+      # 19. If this was the last frame to be drawn then export the page.
+      if (frameNumber == framesPerPage - 1) || i == numFrames - 1
+        addImageCommand = CommandModule.make_addimage(exporterObject, bitmapObject)
+        frameInstructions.add_command(addImageCommand)
+        pageNum = (i / 12).to_s.rjust(3, '0')
+        fileName = baseFileName + pageNum + ".jpg"
+        filesToCompare.push(fileName)
+#        filePath = File.join($compareImageDir, fileName)
+        filePath = File.join(Dir.tmpdir(), fileName)
+        setExportPathCommand = CommandModule.make_set_objectproperty(
+                                                               exporterObject,
+                                                  propertykey: :exportfilepath,
+                                                propertyvalue: filePath)
+        frameInstructions.add_command(setExportPathCommand)
+        exportCommand = CommandModule.make_export(exporterObject)
+        frameInstructions.add_command(exportCommand)
+        # 20. Now redraw the bitmap context with a white rectangle.
+        redrawBitmapElement = MIDrawElement.new(:fillrectangle)
+        redrawBitmapElement.fillcolor = MIColor.make_rgbacolor(1.0, 1.0, 1.0)
+        redrawBitmapElement.rectangle = MIShapes.make_rectangle(size: bitmapSize)
+        redrawCommand = CommandModule.make_drawelement(bitmapObject,
+                                     drawinstructions: redrawBitmapElement)
+        frameInstructions.add_command(redrawCommand)
+      end
+      # 21. Set the frame processing intructions to the process frames command.
+      processFramesCommand.add_processinstruction(frameInstructions)
+    end
+    
+    # 22. Add the process frames command to the list of commands.
+    theCommands.add_command(processFramesCommand)
+    Smig.perform_commands(theCommands)
+
+    filesToCompare.each do |fileName|
+      origFile = File.join($compareImageDir, fileName)
+      tempFile = File.join(Dir.tmpdir(), fileName)
+#      tempFile = File.join($compareImageDir, fileName)
+      compareResult = AreImageFilesSame(origFile, tempFile, 80)
+      FileUtils.rm_f(tempFile)
+      unless compareResult
+        # 2. Report if different.
+        raise "Different image files: " + origFile + " and " + tempFile
+      end
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+def LocalTestMain016()
+  begin
+    puts "test01 - tests trying to draw an image removed from collection"
+    test01()
+    puts "test02 - tests trying to draw an image removed from collection"
+    test02()
+    puts "test03"
+    test03()
+  rescue RuntimeError => e
+    puts e.message
+    # puts e.backtrace
+    puts "Error code: #{$errorcode}"
+    puts "Smig.exitstring: #{Smig.exitstring}"
+    # don't allow the exception to propagate outside of this file.
+  end
+  return $errorcode
+end
+
+exit(LocalTestMain016())
+

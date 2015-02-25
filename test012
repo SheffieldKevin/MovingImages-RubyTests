@@ -1,0 +1,423 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+# 
+# This script tests:
+# 1. the taking, drawing and clearing of snapshots
+# 2. That cleanup commands work.
+# 3. That the perform command works.
+# After drawing the object the script compares the generated image with a 
+# previously generated image.
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MICGDrawing
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$compareImageDir = File.join($directory, "images/test012ForComparison")
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# 2. Try and draw a snap shot
+# 3. Check for an error after step 2. trying to draw a non-existent snapshot
+# 4. Draw some stuff into the bitmap context
+# 5. Take a snap shot
+# 6. Draw the snap shot into the bitmap context. Make sure not error
+# 7. Draw some more stuff into it
+# 8. Export an image from the bitmap - dropped for now, causing problems.
+# 9. Draw the snap shot into the bitmap context
+# 10. Save the bitmap context to an image file.
+# 11. Report if different.
+
+# called by test01 and test02.
+def testsnapshot(onwindow: false)
+  baseImageName = "AfterDrawSnapshot.jpg"
+  begin
+  # 1. Create window or bitmap context. width: 800, height: 600
+    bitmapObject =  if onwindow
+                      SmigHelpers.create_window(width: 800, height: 600)
+                    else
+                      SmigHelpers.create_bitmapcontext(width: 800, height: 600)
+                    end
+
+    # 2. Try and draw a snapshot
+    didThrow = false
+    begin
+      Smig.perform_command(CommandModule.make_snapshot(bitmapObject,
+                                                   snapshottype: :drawsnapshot))
+    rescue RuntimeError => e
+      # 3. Take note that drawing the snapshot failed.
+      didThrow = true
+    end
+
+    # 3. Continued. Raise an exception if snapshot failed & exception not thrown
+    unless didThrow
+      raise "Draw shapshot should have failed as no snapshot has been taken"
+    end
+
+    # 4. Draw some stuff into the bitmap context.
+    points = []
+    points.push(MIShapes.make_point(100, 50))
+    points.push(MIShapes.make_point(700, 50))
+    points.push(MIShapes.make_point(400, 550))
+    newPath = MIPath.new
+    newPath.add_triangle(points: points)
+    drawElement = MIDrawElement.new(:fillpath)
+    drawElement.fillcolor = MIColor.make_rgbacolor(0.8, 0.2, 0.1)
+    drawElement.arrayofpathelements = newPath
+    drawElement.startpoint = points[0]
+    drawElementCommand = CommandModule.make_drawelement(bitmapObject, 
+                                                  drawinstructions: drawElement)
+    Smig.perform_command(drawElementCommand)
+    # 5. Take a snapshot
+    Smig.perform_command(CommandModule.make_snapshot(bitmapObject,
+                                                 snapshottype: :takesnapshot))
+    # 6. Draw the snapshot into the bitmap context.
+    Smig.perform_command(CommandModule.make_snapshot(bitmapObject,
+                                                 snapshottype: :drawsnapshot))
+    # 7. Draw some more stuff into it
+    points = []
+    points.push(MIShapes.make_point(100, 550))
+    points.push(MIShapes.make_point(700, 550))
+    points.push(MIShapes.make_point(400, 50))
+    newPath = MIPath.new
+    newPath.add_triangle(points: points)
+    drawElement = MIDrawElement.new(:fillpath)
+    drawElement.fillcolor = MIColor.make_rgbacolor(0.2, 0.7, 0.1)
+    drawElement.arrayofpathelements = newPath
+    drawElement.startpoint = points[0]
+    drawElementCommand = CommandModule.make_drawelement(bitmapObject,
+                                                  drawinstructions: drawElement)
+    Smig.perform_command(drawElementCommand)
+    # 8. Export an image from the bitmap
+    tempFile2 = File.join(Dir.tmpdir(), "BeforeSnapshot.jpg")
+    SmigHelpers.save_image(imagesource: bitmapObject, pathtofile: tempFile2)
+    # 9. Draw the snap shot into the bitmap context
+    Smig.perform_command(CommandModule.make_snapshot(bitmapObject,
+                                                 snapshottype: :drawsnapshot))
+    # 10. Save the bitmap context to an image file.
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    SmigHelpers.save_image(imagesource: bitmapObject, pathtofile: tempFile)
+    origFile = File.join($compareImageDir, baseImageName)
+    compareValue = 0
+    compareValue = 35 if onwindow
+    unless AreImageFilesSame(origFile, tempFile, compareValue)
+      # 11. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    Smig.close_object_nothrow(bitmapObject)
+    FileUtils.rm_f(tempFile)
+    FileUtils.rm_f(tempFile2)
+  end
+end
+
+# 1. Create a bitmap context
+# 2. Try and draw a snap shot
+# 3. Check for an error after step 2. trying to draw a non-existent snapshot
+# 4. Draw some stuff into the bitmap context
+# 5. Take a snap shot
+# 6. Draw the snap shot into the bitmap context. Make sure not error
+# 7. Draw some more stuff into it
+# 8. Export an image from the bitmap - dropped for now, causing problems.
+# 9. Draw the snap shot into the bitmap context
+# 10. Save the bitmap context to an image file.
+# 11. Report if different.
+
+def test01()
+  testsnapshot(onwindow: false)
+end
+
+# 1. Create a window context
+# 2. Try and draw a snap shot
+# 3. Check for an error after step 2. trying to draw a non-existent snapshot
+# 4. Draw some stuff into the window context
+# 5. Take a snap shot
+# 6. Draw the snap shot into the window context. Make sure not error
+# 7. Draw some more stuff into it
+# 8. Export an image from the bitmap - dropped for now, causing problems.
+# 9. Draw the snap shot into the window context
+# 10. Save the window context to an image file.
+# 11. Report if different.
+
+def test02()
+    testsnapshot(onwindow: true)
+end
+
+# test03
+# Test that cleanup commands work.
+# I'm going to assume that cleanup commands are used to close objects.
+# That the cleanup commands happen no matter what happened when running the
+# commands in the command list.
+# 1. Make a bunch of create object commands. (No errors)
+# 2. Add close commands for each of those object to the cleanup commands.
+# 3. Perform the commands
+# 4. Check that all the objects sent closed command from cleanup list are closed
+#     I'll check that an object has been closed by asking it what type it is.
+# 5. Make a bunch of create objects commands.
+# 6. Add a command that will fail to the command list.
+# 7. Add all the close object commands to the cleanup list.
+# 8. Perform the commands
+# 9. Check that all the objects sent closed commands have been closed.
+#     I'll check that an object has been closed by asking it what type it is.
+def test03()
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Make create object commands and 2. add close commands for each object
+    name1 = SecureRandom.uuid
+    createBitmapContextCommand1 = CommandModule.make_createbitmapcontext(
+                                                                  name: name1)
+    bitmapContextObject1 = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                   objectname: name1)
+    theCommands.add_command(createBitmapContextCommand1)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject1)
+
+    name2 = SecureRandom.uuid
+    createBitmapContextCommand2 = CommandModule.make_createbitmapcontext(
+                                                                  name: name2)
+    bitmapContextObject2 = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                    objectname: name2)
+    theCommands.add_command(createBitmapContextCommand2)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject2)
+
+    name3 = SecureRandom.uuid
+    createWindowContextCommand = CommandModule.make_createwindowcontext(
+                                                              name: name3)
+    windowObject = SmigIDHash.make_objectid(objecttype: :nsgraphicscontext,
+                                            objectname: name3)
+    theCommands.add_command(createWindowContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(windowObject)
+
+    name4 = SecureRandom.uuid
+    pdfFile = File.join(Dir.tmpdir(), name4) + ".pdf"
+    createPDFContextCommand = CommandModule.make_createpdfcontext(name: name4,
+                                                            filepath: pdfFile)
+    pdfObject = SmigIDHash.make_objectid(objecttype: :pdfcontext,
+                                            objectname: name4)
+    theCommands.add_command(createPDFContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(pdfObject)
+    # 3. Perform the commands
+    Smig.perform_commands(theCommands)
+
+    # 4. Make sure all objects sent close messages from cleanup commands
+    # are closed. I make sure an object is closed by asking an object what
+    # type it is. If the object has been closed it won't respond to the 
+    # request and an error will be thrown.
+
+    exceptionThrown = false
+    begin
+      theType = Smig.get_objectproperty(bitmapContextObject1,
+                                        property: :objecttype)
+    rescue RuntimeError => e
+#      puts "Exception 1 thrown with message: " + e.message
+      exceptionThrown = true
+    end
+    raise "1. Bitmap object exists" unless exceptionThrown
+
+    exceptionThrown = false
+    begin
+      theType = Smig.get_objectproperty(bitmapContextObject2,
+                                        property: :objecttype)
+    rescue RuntimeError => e
+#      puts "Exception 2 thrown with message: " + e.message
+      exceptionThrown = true
+    end
+    raise "2. Bitmap object exists" unless exceptionThrown
+
+    exceptionThrown = false
+    begin
+      theType = Smig.get_objectproperty(windowObject, 
+                                        property: :objecttype)
+    rescue RuntimeError => e
+#      puts "Exception 3 thrown with message: " + e.message
+      exceptionThrown = true
+    end
+    raise "3. Bitmap object exists" unless exceptionThrown
+
+    exceptionThrown = false
+    begin
+      theType = Smig.get_objectproperty(pdfObject,
+                                        property: :objecttype)
+    rescue RuntimeError => e
+#      puts "Exception 4 thrown with message: " + e.message
+      exceptionThrown = true
+    end
+    raise "4. PDF Context object exists" unless exceptionThrown
+    FileUtils.rm_f(pdfFile)
+
+    # 5. Just reuse the commands last used and add a command that will fail.
+    # 6. Add a command that will fail to the command list. In this case
+    # I'm sending the add image to exporter command to a bitmap context object.
+    addImageToExporterCommand = CommandModule.make_addimage(windowObject,
+                                                      bitmapContextObject2)
+    
+    # 7. Perform the commands with the failure.
+    theCommands.add_command(addImageToExporterCommand)
+    # puts JSON.pretty_generate(theCommands.commandshash)
+    # 8. Perform the commands knowing an exception will be raised.
+    exceptionThrown = false
+    begin
+      Smig.perform_commands(theCommands)
+    rescue
+      exceptionThrown = true
+    end
+    raise "4.5. Window object shouldn't handle add image" unless exceptionThrown
+
+    exceptionThrown = false
+    begin
+      theType = Smig.get_objectproperty(bitmapContextObject1,
+                                        property: :objecttype)
+    rescue 
+      exceptionThrown = true
+    end
+    raise "5. Bitmap object exists" unless exceptionThrown
+
+    exceptionThrown = false
+    begin
+      # theType = Smig.get_objectproperty(bitmapContextObject2,
+      #                                   property: :objecttype)
+      getPropCommand = CommandModule.make_get_objectproperty(
+                                          bitmapContextObject2,
+                                          property: :objecttype)
+      theType = Smig.perform_command(getPropCommand)
+    rescue 
+      exceptionThrown = true
+    end
+    raise "6. Bitmap object exists" unless exceptionThrown
+
+    exceptionThrown = false
+    begin
+      theType = Smig.get_objectproperty(windowObject,
+                                        property: :objecttype)
+    rescue 
+      exceptionThrown = true
+    end
+    raise "7. Bitmap object exists" unless exceptionThrown
+
+    exceptionThrown = false
+    begin
+      theType = Smig.get_objectproperty(pdfObject,
+                                        property: :objecttype)
+    rescue 
+      exceptionThrown = true
+    end
+    raise "8. PDF Context object exists" unless exceptionThrown
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(pdfFile)
+  end
+end
+
+# Test that the perform command subcommand works.
+# Only tests a json string and a json file. Leave plist till when its used.
+def test04()
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    name = SecureRandom.uuid
+    createBitmapContextCommand1 = CommandModule.make_createbitmapcontext(
+                                                                  name: name)
+    bitmapContextObject1 = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                   objectname: name)
+    theCommands.add_command(createBitmapContextCommand1)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject1)
+
+    jsonString = theCommands.commandshash.to_json
+    tempDir = Dir.tmpdir()
+    fileName = SecureRandom.uuid + ".json"
+    fullPath = File.join(tempDir, fileName)
+    open(fullPath, 'w') { |f|
+      f.puts jsonString
+    }
+    result, exitVal = Open3.capture2("smig", "performcommand",
+                                            "-jsonfile", fullPath)
+    FileUtils.rm_f(fullPath)
+    unless exitVal.exitstatus.zero?
+      raise "test012:test04 smig performcommand -jsonfile " + fullPath
+    end
+
+    result, exitVal = Open3.capture2("smig", "performcommand",
+                                           "-jsonstring", jsonString)
+
+    unless exitVal.exitstatus.zero?
+      raise "test012:test04 smig performcommand -jsonstring " + jsonString
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(fullPath)
+  end
+end
+
+def LocalTestMain012()
+  begin
+    puts "test01"
+    test01()
+    puts "test02"
+    test02()
+    puts "test03"
+    test03()
+    puts "test04"
+    test04()
+  rescue RuntimeError => e
+    puts e.message
+    # puts e.backtrace
+    puts "Error code: #{$errorcode}"
+    puts "Smig.exitstring: #{Smig.exitstring}"
+    # don't allow the exception to propagate outside of this file.
+  end
+  return $errorcode
+end
+
+exit(LocalTestMain012())
+

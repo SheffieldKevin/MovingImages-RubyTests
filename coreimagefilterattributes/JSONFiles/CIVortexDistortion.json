@@ -1,0 +1,52 @@
+{
+  "CIAttributeFilterDisplayName" : "Vortex Distortion",
+  "CIAttributeDescription" : "Rotates pixels around a point to simulate a vortex. You can specify the number of rotations as well the center and radius of the effect. ",
+  "inputAngle" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The angle (in degrees) of the vortex.",
+    "CIAttributeSliderMax" : 94.24777960769379,
+    "CIAttributeDisplayName" : "Angle",
+    "CIAttributeDefault" : 56.54866776461628,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : -94.24777960769379
+  },
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIVortexDistortion",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIVortexDistortion",
+  "CIAttributeFilterCategories" : [
+    "CICategoryDistortionEffect",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius determines how many pixels are used to create the distortion. The larger the radius, wider the extent of the distortion.",
+    "CIAttributeSliderMax" : 800,
+    "CIAttributeDisplayName" : "Radius",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 300,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 300
+  },
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The x and y position to use as the center of the distortion.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  }
+}

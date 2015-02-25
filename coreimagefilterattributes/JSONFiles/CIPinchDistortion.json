@@ -1,0 +1,53 @@
+{
+  "CIAttributeFilterDisplayName" : "Pinch Distortion",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeDescription" : "Creates a rectangular-shaped area that pinches source pixels inward, distorting those pixels closest to the rectangle the most.",
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputScale" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The amount of pinching. A value of 0.0 has no effect. A value of 1.0 is the maximum pinch.",
+    "CIAttributeSliderMax" : 2,
+    "CIAttributeDisplayName" : "Scale",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.5
+  },
+  "CIAttributeFilterName" : "CIPinchDistortion",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIPinchDistortion",
+  "CIAttributeFilterCategories" : [
+    "CICategoryDistortionEffect",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius determines how many pixels are used to create the distortion. The larger the radius, wider the extent of the distortion.",
+    "CIAttributeSliderMax" : 1000,
+    "CIAttributeDisplayName" : "Radius",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 300
+  },
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The x and y position to use as the center of the distortion.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  }
+}

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Applies a directional spotlight effect to an image.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryStylize</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Spot Light</string>
+	<key>CIAttributeFilterName</key>
+	<string>CISpotLight</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CISpotLight</string>
+	<key>inputBrightness</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>3</real>
+		<key>CIAttributeDescription</key>
+		<string>The brightness of the spotlight.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Brightness</string>
+		<key>CIAttributeIdentity</key>
+		<real>1</real>
+		<key>CIAttributeMin</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>10</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeDistance</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputColor</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>1 1 1 1</string>
+		<key>CIAttributeDescription</key>
+		<string>The color of the spotlight.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Color</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeOpaqueColor</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputConcentration</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.10000000000000001</real>
+		<key>CIAttributeDescription</key>
+		<string>The spotlight size. The smaller the value, the more tightly focused the light beam.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Concentration</string>
+		<key>CIAttributeIdentity</key>
+		<real>20</real>
+		<key>CIAttributeMin</key>
+		<real>0.001</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1.5</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.001</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeScalar</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputLightPointsAt</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[200 200 0]</string>
+		<key>CIAttributeDescription</key>
+		<string>The x and y position that the spotlight points at.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Light Points At</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition3</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputLightPosition</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[400 600 150]</string>
+		<key>CIAttributeDescription</key>
+		<string>The x and y position of the spotlight.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Light Position</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition3</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

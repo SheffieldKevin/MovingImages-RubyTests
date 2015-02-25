@@ -1,0 +1,59 @@
+{
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The center of the area, as x and y coordinates, to filter.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeFilterDisplayName" : "Radial Gradient",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputRadius1" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius of the ending circle to use in the gradient.",
+    "CIAttributeSliderMax" : 800,
+    "CIAttributeDisplayName" : "Radius 2",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 100
+  },
+  "inputColor0" : {
+    "CIAttributeDisplayName" : "Color 1",
+    "CIAttributeDescription" : "The first color to use in the gradient.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "1 1 1 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "CIAttributeFilterName" : "CIRadialGradient",
+  "CIAttributeDescription" : "Generates a gradient that varies radially between two circles having the same center. It is valid for one of the two circles to have a radius of 0.",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIRadialGradient",
+  "CIAttributeFilterCategories" : [
+    "CICategoryGradient",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputColor1" : {
+    "CIAttributeDisplayName" : "Color 2",
+    "CIAttributeDescription" : "The second color to use in the gradient.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "0 0 0 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "inputRadius0" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius of the starting circle to use in the gradient.",
+    "CIAttributeSliderMax" : 800,
+    "CIAttributeDisplayName" : "Radius 1",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 5
+  }
+}

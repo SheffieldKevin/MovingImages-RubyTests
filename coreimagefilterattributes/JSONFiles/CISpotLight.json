@@ -1,0 +1,69 @@
+{
+  "inputLightPointsAt" : {
+    "CIAttributeDisplayName" : "Light Points At",
+    "CIAttributeDescription" : "The x and y position that the spotlight points at.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[200 200 0]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition3"
+  },
+  "CIAttributeDescription" : "Applies a directional spotlight effect to an image.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputColor" : {
+    "CIAttributeDisplayName" : "Color",
+    "CIAttributeDescription" : "The color of the spotlight.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "1 1 1 1",
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeOpaqueColor"
+  },
+  "inputConcentration" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The spotlight size. The smaller the value, the more tightly focused the light beam.",
+    "CIAttributeSliderMax" : 1.5,
+    "CIAttributeDisplayName" : "Concentration",
+    "CIAttributeSliderMin" : 0.001,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0.001,
+    "CIAttributeIdentity" : 20,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.1
+  },
+  "CIAttributeFilterName" : "CISpotLight",
+  "CIAttributeFilterDisplayName" : "Spot Light",
+  "inputBrightness" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The brightness of the spotlight.",
+    "CIAttributeSliderMax" : 10,
+    "CIAttributeDisplayName" : "Brightness",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 1,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 3
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISpotLight",
+  "CIAttributeFilterCategories" : [
+    "CICategoryStylize",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputLightPosition" : {
+    "CIAttributeDisplayName" : "Light Position",
+    "CIAttributeDescription" : "The x and y position of the spotlight.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[400 600 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition3"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

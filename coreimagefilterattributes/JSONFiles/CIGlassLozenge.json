@@ -1,0 +1,61 @@
+{
+  "CIAttributeFilterDisplayName" : "Glass Lozenge",
+  "CIAttributeDescription" : "Creates a lozenge-shaped lens and distorts the portion of the image over which the lens is placed.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIGlassLozenge",
+  "inputPoint1" : {
+    "CIAttributeDisplayName" : "Point 2",
+    "CIAttributeDescription" : "The x and y position that defines the center of the circle at the other end of the lozenge.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[350 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIGlassLozenge",
+  "CIAttributeFilterCategories" : [
+    "CICategoryDistortionEffect",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius of the lozenge. The larger the radius, wider the extent of the distortion.",
+    "CIAttributeSliderMax" : 1000,
+    "CIAttributeDisplayName" : "Radius",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 100,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 100
+  },
+  "inputRefraction" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The refraction of the glass.",
+    "CIAttributeSliderMax" : 5,
+    "CIAttributeDisplayName" : "Refraction",
+    "CIAttributeSliderMin" : -5,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : -5,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 1.7
+  },
+  "inputPoint0" : {
+    "CIAttributeDisplayName" : "Point 1",
+    "CIAttributeDescription" : "The x and y position that defines the center of the circle at one end of the lozenge.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  }
+}

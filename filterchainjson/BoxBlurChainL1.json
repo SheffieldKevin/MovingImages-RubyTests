@@ -1,0 +1,28 @@
+{
+  "cirenderdestination" : 
+  {
+    "objecttype" : "bitmapcontext",
+    "objectname" : "boxblurchain.destination"
+  },
+  "cifilterlist" :
+  [
+    {
+      "cifiltername" : "CIBoxBlur",
+      "cifilterproperties" :
+      [
+        {
+          "cifilterkey" : "inputImage",
+          "cifiltervalueclass" : "CIImage",
+          "cifiltervalue" :
+          {
+            "objectname" : "boxblurchain.source",
+            "objecttype" : "bitmapcontext",
+            "_comment1" : "Another key is: imageindex"
+          },
+          "_comment1" : "Another key is: cisourceimagekeepstatic"
+        }
+      ]
+    }
+  ]
+}
+

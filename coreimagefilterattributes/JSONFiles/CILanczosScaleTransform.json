@@ -1,0 +1,45 @@
+{
+  "CIAttributeFilterDisplayName" : "Lanczos Scale Transform",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeDescription" : "Produces a high-quality, scaled version of a source image. You typically use this filter to scale down an image.",
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputScale" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The scaling factor to use on the image. Values less than 1.0 scale down the images. Values greater than 1.0 scale up the image.",
+    "CIAttributeSliderMax" : 1.5,
+    "CIAttributeDisplayName" : "Scale",
+    "CIAttributeSliderMin" : 0.05,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 1
+  },
+  "CIAttributeFilterName" : "CILanczosScaleTransform",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CILanczosScaleTransform",
+  "CIAttributeFilterCategories" : [
+    "CICategoryGeometryAdjustment",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputAspectRatio" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The aspect ratio of the image.",
+    "CIAttributeSliderMax" : 2,
+    "CIAttributeDisplayName" : "Aspect Ratio",
+    "CIAttributeSliderMin" : 0.5,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 1
+  }
+}

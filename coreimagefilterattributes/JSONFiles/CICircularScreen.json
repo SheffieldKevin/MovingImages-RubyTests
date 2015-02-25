@@ -1,0 +1,51 @@
+{
+  "CIAttributeFilterDisplayName" : "Circular Screen",
+  "CIAttributeDescription" : "Simulates a circular-shaped halftone screen.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CICircularScreen",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CICircularScreen",
+  "inputWidth" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The distance between each circle in the pattern.",
+    "CIAttributeSliderMax" : 50,
+    "CIAttributeDisplayName" : "Width",
+    "CIAttributeSliderMin" : 2,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 1,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 6
+  },
+  "inputSharpness" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The sharpness of the circles. The larger the value, the sharper the circles.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Sharpness",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.7
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryHalftoneEffect",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "The x and y position to use as the center of the circular screen pattern",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  }
+}

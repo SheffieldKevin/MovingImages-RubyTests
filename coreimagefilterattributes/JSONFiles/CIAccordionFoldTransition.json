@@ -1,0 +1,70 @@
+{
+  "inputNumberOfFolds" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 10,
+    "CIAttributeSliderMin" : 1,
+    "CIAttributeDisplayName" : "NumberOfFolds",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 1,
+    "CIAttributeMax" : 50,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 3
+  },
+  "inputTime" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The duration of the effect.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Time",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeTime",
+    "CIAttributeDefault" : 0
+  },
+  "CIAttributeDescription" : "Transitions from one image to another of a differing dimensions by unfolding.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputTargetImage" : {
+    "CIAttributeDisplayName" : "Target Image",
+    "CIAttributeDescription" : "The target image for a transition.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIAccordionFoldTransition",
+  "CIAttributeFilterDisplayName" : "Accordion Fold Transition",
+  "inputBottomHeight" : {
+    "CIAttributeDisplayName" : "BottomHeight",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDefault" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance"
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIAccordionFoldTransition",
+  "CIAttributeFilterCategories" : [
+    "CICategoryTransition",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputFoldShadowAmount" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeDisplayName" : "FoldShadowAmount",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.1
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

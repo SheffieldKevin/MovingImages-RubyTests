@@ -1,0 +1,81 @@
+{
+  "CIAttributeDescription" : "Creates a sketch that outlines the edges of an image in black, leaving the non-outlined portions of the image transparent. The result has alpha and is rendered in black, so it won't look like much until you render it over another image using source over compositing.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputNRNoiseLevel" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The noise level of the image (used with camera data) that gets removed before tracing the edges of the image. Increasing the noise level helps to clean up the traced edges of the image.",
+    "CIAttributeSliderMax" : 0.1,
+    "CIAttributeDisplayName" : "NR Noise Level",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.07000000000000001
+  },
+  "inputContrast" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The amount of anti-aliasing to use on the edges produced by this filter. Higher values produce higher contrast edges (they are less anti-aliased).",
+    "CIAttributeSliderMax" : 200,
+    "CIAttributeDisplayName" : "Contrast",
+    "CIAttributeSliderMin" : 0.25,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0.25,
+    "CIAttributeIdentity" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 50
+  },
+  "inputThreshold" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "This value determines edge visibility. Larger values thin out the edges.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Threshold",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.1
+  },
+  "CIAttributeFilterName" : "CILineOverlay",
+  "CIAttributeFilterDisplayName" : "Line Overlay",
+  "inputEdgeIntensity" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The accentuation factor of the Sobel gradient information when tracing the edges of the image. Higher values find more edges, although typically a low value (such as 1.0) is used.",
+    "CIAttributeSliderMax" : 200,
+    "CIAttributeDisplayName" : "Edge Intensity",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 1
+  },
+  "inputNRSharpness" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The amount of sharpening done when removing noise in the image before tracing the edges of the image. This improves the edge acquisition.",
+    "CIAttributeSliderMax" : 2,
+    "CIAttributeDisplayName" : "NR Sharpness",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.71
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CILineOverlay",
+  "CIAttributeFilterCategories" : [
+    "CICategoryStylize",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

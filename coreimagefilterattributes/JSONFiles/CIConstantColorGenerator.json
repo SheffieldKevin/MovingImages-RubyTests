@@ -1,0 +1,22 @@
+{
+  "CIAttributeFilterDisplayName" : "Constant Color",
+  "CIAttributeDescription" : "Generates a solid color. You typically use the output of this filter as the input to another filter.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIConstantColorGenerator",
+  "CIAttributeFilterCategories" : [
+    "CICategoryGenerator",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIConstantColorGenerator",
+  "inputColor" : {
+    "CIAttributeDisplayName" : "Color",
+    "CIAttributeDescription" : "The color to generate.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "1 0 0 1",
+    "CIAttributeClass" : "CIColor"
+  }
+}

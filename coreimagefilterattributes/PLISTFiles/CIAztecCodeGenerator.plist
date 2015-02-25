@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Aztec Code Generator</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryGenerator</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>CIAztecCodeGenerator</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIAztecCodeGenerator</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIAztecCodeGenerator</string>
+	<key>inputCompactStyle</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDescription</key>
+		<string>Aztec force compact style @YES or @NO. Set to nil for automatic.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>CompactStyle</string>
+		<key>CIAttributeMax</key>
+		<true/>
+		<key>CIAttributeMin</key>
+		<false/>
+		<key>CIAttributeSliderMax</key>
+		<true/>
+		<key>CIAttributeSliderMin</key>
+		<false/>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputCorrectionLevel</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<integer>23</integer>
+		<key>CIAttributeDescription</key>
+		<string>Aztec error correction value between 5 and 95</string>
+		<key>CIAttributeDisplayName</key>
+		<string>CorrectionLevel</string>
+		<key>CIAttributeMax</key>
+		<integer>95</integer>
+		<key>CIAttributeMin</key>
+		<integer>5</integer>
+		<key>CIAttributeSliderMax</key>
+		<integer>95</integer>
+		<key>CIAttributeSliderMin</key>
+		<integer>5</integer>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputLayers</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDescription</key>
+		<string>Aztec layers value between 1 and 32. Set to nil for automatic.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Layers</string>
+		<key>CIAttributeMax</key>
+		<integer>32</integer>
+		<key>CIAttributeMin</key>
+		<integer>1</integer>
+		<key>CIAttributeSliderMax</key>
+		<integer>32</integer>
+		<key>CIAttributeSliderMin</key>
+		<integer>1</integer>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputMessage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSData</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Message</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

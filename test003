@@ -1,0 +1,290 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2013-2014 Kevin Meaney
+# Script for testing smig and moving images importer objects.
+# Requires file test002image.jpg
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+
+# This script tests information about bitmap presets. Creating and closing
+# of objects. Getting properties of objects. Tests calculating of string
+# dimensions.
+
+require 'Open3'
+require 'JSON'
+require 'moving_images'
+
+include MovingImages
+
+$verbose = false
+$smig = "smig"
+
+$is_yosemite = `sw_vers -productVersion`.start_with? "10.10"
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$imagefile = $directory + "/images/test002image.jpg"
+if $is_yosemite
+  $imagefile = File.join($directory, "yosemite/images/test002image.jpg")
+end
+$errorcode = 0
+
+# Get the list of bit map context presets.
+def test01()
+  thePresets = "AlphaOnly8bpcInt Gray8bpcInt Gray16bpcInt Gray32bpcFloat AlphaSkipFirstRGB8bpcInt AlphaSkipLastRGB8bpcInt AlphaPreMulFirstRGB8bpcInt AlphaPreMulBGRA8bpcInt AlphaPreMulLastRGB8bpcInt AlphaPreMulLastRGB16bpcInt AlphaSkipLastRGB16bpcInt AlphaSkipLastRGB32bpcFloat AlphaPreMulLastRGB32bpcFloat CMYK8bpcInt CMYK16bpcInt CMYK32bpcFloat PlatformDefaultBitmapContext"
+  begin
+    result = MIMeta.listpresets
+    if result != thePresets
+      puts "MIMeta.listpresets returned #{result}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# Find out how many bitmap context objects there are
+# 1. Get the number of bitmap context objects
+# 2. Create a bitmap object.
+# 3. Find out how many bitmap objects there are
+# 4. Check to make sure that there is one more than previously.
+# 5. Close the created bitmap context object.
+def test02()
+  begin
+    result = Smig.get_numberofobjects(objecttype: :bitmapcontext)
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                            width: 600,
+                                           height: 499,
+                                           preset: :AlphaOnly8bpcInt)
+    objectRef = Smig.perform_command(createBitmapContextCommand).to_i
+    objectID = SmigIDHash.make_objectid(objectreference: objectRef)
+    result2 = Smig.get_numberofobjects(objecttype: :bitmapcontext)
+
+    unless result + 1 == result2
+      puts "Don't have one more bitmap after creating bitmap context #{result2}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    Smig.close_object_nothrow(objectID)
+  end
+end
+
+def AreBitmapPropertiesHashDiff(hash1, hash2)
+# This function ignores the "objectreference" attribute/key.
+  if hash1['height'] != hash2['height']
+    return true
+  end
+  
+  if hash1['width'] != hash2['width']
+    return true
+  end
+  
+  if hash1['objecttype'] != hash2['objecttype']
+    return true
+  end
+
+  if hash1['bitspercomponent'] != hash2['bitspercomponent']
+    return true
+  end
+
+  if hash1['colorspacename'] != hash2['colorspacename']
+    return true
+  end
+  
+  if hash1['preset'] != hash2['preset']
+    return true
+  end
+
+  if hash1['alphaandbitmapinfo'] != hash2['alphaandbitmapinfo']
+    return true
+  end
+
+  if hash1['bitsperpixel'] != hash2['bitsperpixel']
+    return true
+  end
+  
+  if hash1['bytesperrow'] != hash2['bytesperrow']
+    return true
+  end
+  
+  return false
+end
+
+# Get various properties of a bitmapcontext.
+# 1. Create a bitmap graphics context object.
+# 2. Get the object type "objecttype",
+# 3. Get the width of the bitmap context "width",
+# 4. Get the height of the bitmap context "height",
+# 5. Get the number of bits per componenet. "bitspercomponent"
+# 6. Get the number of bits per pixel. "bitsperpixel",
+# 7. Get the number of bytes per row. "bytesperrow",
+# 8. Get the name of the context's colorspace. "colorspacename",
+# 9. Get the CGBitmapInfo and alpha info. "alphaandbitmapinfo".
+# 10. Get the context's preset "preset".
+# 11. Close bitmap graphics context.
+
+def test03()
+  begin
+    createBitmapCommand = CommandModule.make_createbitmapcontext(
+                                            width: 512,
+                                           height: 342,
+                                           preset: :AlphaPreMulLastRGB32bpcFloat)
+    objectRef = Smig.perform_command(createBitmapCommand).to_i
+    objectID = SmigIDHash.make_objectid(objectreference: objectRef)
+    objectType = Smig.get_objectproperty(objectID, property: :objecttype)
+    unless objectType.eql? "bitmapcontext"
+      puts "1: Returned object type is: #{objectType}"
+    end
+    getObjectPropertiesCommand = CommandModule.make_get_objectproperties(objectID)
+    result = Smig.perform_command(getObjectPropertiesCommand)
+    bitmapContextProperties = '{"height":342,"objecttype":"bitmapcontext","bitspercomponent":32,"colorspacename":"kCGColorSpaceSRGB","preset":"AlphaPreMulLastRGB32bpcFloat","width":512,"alphaandbitmapinfo":8450,"bitsperpixel":128,"bytesperrow":8192,"objectreference":0,"objectname":""}'
+    contextPropHash = JSON.parse(bitmapContextProperties)
+    resultHash = JSON.parse(result)
+    if AreBitmapPropertiesHashDiff(contextPropHash, resultHash)
+      puts "2: Bitmap properties different. String: #{result}"
+    end
+
+    width = Smig.get_objectproperty(objectID, property: :width).to_i
+    unless width.eql? 512
+      puts "3: Width returned from bitmap contex different: #{width}"
+    end
+
+    height = Smig.get_objectproperty(objectID, property: :height).to_i
+    unless height.eql? 342
+      puts "4: Height returned from bitmap contex different: #{height}"
+    end
+
+    bitsPerComponent = Smig.get_objectproperty(objectID,
+                                               property: :bitspercomponent).to_i
+    unless bitsPerComponent.eql? 32
+      puts "5: Bits per component returned from bitmap contex different: #{bitsPerComponent}"
+    end
+
+    bitsPerPixel = Smig.get_objectproperty(objectID, property: :bitsperpixel).to_i
+    unless bitsPerPixel.eql? 128
+      puts "6: Bits per pixel returned from bitmap contex different: #{bitsPerPixel}"
+    end
+
+    bytesPerRow = Smig.get_objectproperty(objectID, property: :bytesperrow).to_i
+    unless bytesPerRow.eql? 8192
+      puts "7: Bytes per row returned from bitmap contex different: #{bytesPerRow}"
+    end
+
+    colorSpaceName = Smig.get_objectproperty(objectID, property: :colorspacename)
+    unless colorSpaceName.eql? "kCGColorSpaceSRGB"
+      puts "8: Colorspace name returned from bitmap contex different: #{colorSpaceName}"
+    end
+
+    alphaBitmapInfo = Smig.get_objectproperty(objectID, property: :alphaandbitmapinfo)
+    unless alphaBitmapInfo.eql? "8450"
+      puts "9: Alpha & Bitmap info returned from bitmap contex different: #{alphaBitmapInfo}"
+    end
+
+    preset = Smig.get_objectproperty(objectID, property: :preset)
+    unless preset.eql? "AlphaPreMulLastRGB32bpcFloat"
+      puts "10: Preset returned from bitmap contex different: #{preset}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    Smig.close_object_nothrow(objectID)
+  end
+end
+
+# Get string dimensions.
+# Tries out 3 different cases for calculating string dimensions.
+def test04()
+  begin
+    calcTextSizeCommand = CommandModule.make_calculategraphicsizeoftext(
+        text: "How long is this string drawn using the Arial bold font at size 15",
+        postscriptfontname: "Arial-BoldMT", fontsize: 15)
+    stringDims = Smig.perform_command(calcTextSizeCommand)
+    unless stringDims.eql? '{"width":456.14501953125,"height":13.5791015625}'
+      puts "1: String size different. Returned: #{stringDims}"
+    end
+    
+    calcTextSizeCommand = CommandModule.make_calculategraphicsizeoftext(
+        text: "How long is a piece of string",
+        userinterfacefont: :kCTFontUIFontMiniEmphasizedSystem)
+    stringDims = Smig.perform_command(calcTextSizeCommand)
+    unless stringDims.eql? '{"width":134.5518292682926,"height":8.698150634765625}'
+      puts "2: String size different. Returned: #{stringDims}"
+    end
+
+    calcTextSizeCommand = CommandModule.make_calculategraphicsizeoftext(
+   text: "How long is a piece of string drawn using a user interface font at size 24",
+   userinterfacefont: :kCTFontUIFontMiniEmphasizedSystem, fontsize: 24.0)
+   
+    stringDims = Smig.perform_command(calcTextSizeCommand)
+    unless stringDims.eql? '{"width":815.6341463414639,"height":23.195068359375}'
+      puts "3: String size different. Returned: #{stringDims}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+# Get the list of user interface fonts
+def test05()
+  theUserInterfaceFonts = "kCTFontUIFontMiniEmphasizedSystem kCTFontUIFontSmallToolbar kCTFontUIFontWindowTitle kCTFontUIFontMenuTitle kCTFontUIFontSystem kCTFontUIFontMenuItem kCTFontUIFontEmphasizedSystem kCTFontUIFontToolbar kCTFontUIFontMessage kCTFontUIFontEmphasizedSystemDetail kCTFontUIFontSmallEmphasizedSystem kCTFontUIFontUserFixedPitch kCTFontUIFontMiniSystem kCTFontUIFontLabel kCTFontUIFontControlContent kCTFontUIFontSystemDetail kCTFontUIFontViews kCTFontUIFontUser kCTFontUIFontSmallSystem kCTFontUIFontApplication kCTFontUIFontToolTip"
+  begin
+    result = MIMeta.listuserinterfacefonts
+    unless result.eql? theUserInterfaceFonts
+      puts "User interface fonts different: #{result}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  end
+end
+
+def LocalTestMain003()
+  puts "test01"
+  test01()
+  puts "test02"
+  test02()
+  puts "test03"
+  test03()
+  puts "test04"
+  test04()
+  puts "test05"
+  test05()
+  return $errorcode
+end
+
+exit(LocalTestMain003())

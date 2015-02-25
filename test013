@@ -1,0 +1,567 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+#
+# This script file tests:
+# 1. Using equations and variables for specifying position & sizes of shapes
+# 2. Using equations and variables for specifying color component values
+# 3. Using equations and variables for specifying shadow blur
+# 4. Using equations for destination/source rectangles rendering filter chains
+# After drawing objects the script compares the generated image with a 
+# previously generated image.
+# 5. Get pixel values from a bitmap context and compare.
+# 6. Test that getting image properties from an image in an image file works.
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+
+require 'moving_images'
+
+include MovingImages
+include MICGDrawing
+include MICoreImage
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$compareImageDir = File.join($directory, "images/test013ForComparison")
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# test01 - tests 1, 2, and 3 of the above list.
+def test01()
+  tempFile1 = nil
+  tempFile2 = nil
+  
+  begin
+    windowObject = nil
+    bitmapObject = nil
+    baseName1 = "formularesultwindow.jpg"
+    baseName2 = "formularesultbitmap.jpg"
+
+    theRect = MIShapes.make_rectangle(xloc: "100 + $horizontalposition",
+                                      yloc: "60 + $verticalposition",
+                                      size: { :width => 200.0,
+                                              :height => "100 + $extraheight" })
+    theRect2 = MIShapes.make_rectangle(xloc: "100 + $horizontalposition2",
+                                      yloc: "60 + $verticalposition2",
+                                      size: { :width => 200.0,
+                                              :height => "100 + $extraheight2" })
+
+    theColor = MIColor.make_rgbacolor("0.6 + $coloroffset", # red component
+                                      "0.2 + $coloroffset", # green component
+                                      "$coloroffset") # blue component
+
+    theColor2 = MIColor.make_rgbacolor("0.6 + $coloroffset2", # red component
+                                      "0.2 + $coloroffset2", # green component
+                                      "$coloroffset2") # blue component
+
+    theShadow = MIShadow.new
+    theShadow.color = MIColor.make_rgbacolor(0.3, 0.1, 0.05)
+    theShadow.offset = { :width => "5 + $shadowhorizontaloffset",
+                           :height => -10.0 }
+    theShadow.blur = "4 + $shadowblur"
+
+    variables = {}
+    variables[:horizontalposition] = 50.0
+    variables[:verticalposition] = 100.0
+    variables[:extraheight] = 150
+    variables[:coloroffset] = 0.3
+    variables[:shadowblur] = 20
+    variables[:shadowhorizontaloffset] = 25
+
+    drawElement = MIDrawElement.new(:fillrectangle)
+    drawElement.rectangle = theRect
+    drawElement.fillcolor = theColor
+    drawElement.shadow = theShadow
+    windowObject = SmigHelpers.create_window()
+    drawCommand = CommandModule.make_drawelement(windowObject,
+                                             drawinstructions: drawElement)
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.add_command(drawCommand)
+
+    variables[:horizontalposition2] = 350.0
+    variables[:verticalposition2] = 10.0
+    variables[:extraheight2] = 250
+    variables[:coloroffset2] = 0.0
+    variables[:strokewidthadjustment2] = 20.0
+    drawElement2 = MIDrawElement.new(:strokeoval)
+    drawElement2.rectangle = theRect2
+    drawElement2.strokecolor = theColor2
+    drawElement2.linewidth = "2 + $strokewidthadjustment2"
+    drawCommand2 = CommandModule.make_drawelement(windowObject,
+                                          drawinstructions: drawElement2,
+                                          createimage: true)
+    theCommands.add_command(drawCommand2)
+    theCommands.variables = variables
+    Smig.perform_commands(theCommands)
+    tempFile1 = File.join(Dir.tmpdir(), baseName1)
+    SmigHelpers.save_image(imagesource: windowObject, pathtofile: tempFile1)
+    bitmapObject = SmigHelpers.create_bitmapcontext()
+    drawCommand.receiver = bitmapObject
+    drawCommand2.receiver = bitmapObject
+    variables[:verticalposition2] = 120.0
+    theCommands.variables = variables
+    Smig.perform_commands(theCommands)
+    tempFile2 = File.join(Dir.tmpdir(), baseName2)
+    SmigHelpers.save_image(imagesource: bitmapObject, pathtofile: tempFile2)
+    origFile1 = File.join($compareImageDir, baseName1)
+    origFile2 = File.join($compareImageDir, baseName2)
+    unless AreImageFilesSame(origFile1, tempFile1, 30)
+      # 10. Report if different.
+      raise "Different image files: " + origFile1 + " and " + tempFile1
+    end
+    unless AreImageFilesSame(origFile2, tempFile2, 20)
+      # 10. Report if different.
+      raise "Different image files: " + origFile2 + " and " + tempFile2
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    Smig.close_object(windowObject) unless windowObject.nil?
+    Smig.close_object(bitmapObject) unless bitmapObject.nil?
+    FileUtils.rm_f(tempFile1) unless tempFile1.nil?
+    FileUtils.rm_f(tempFile2) unless tempFile2.nil?
+#    Open3.capture2("open", tempFile1)
+#    Open3.capture2("open", tempFile2)
+  end
+end
+
+# test02
+# Test that formulas work when specifying source and destination rectangles
+# when rendering a filter chain. This time I'm going to queue all the commands
+# up to be performed in one go.
+# 1. import an image
+# 2. create a window context
+# 3. create a filter chain.
+# 4. create a render filter chain command which takes variables for dest/source
+# 5. Perform the render filter chain command.
+# 6. Compare the output with previously generated output & report if different
+def test02()
+  begin
+    tempFile = nil
+    baseImageName = "DSCN0749-Bloom.jpg"
+    inputImageFile = File.join($directory, "images/DSCN0749.JPG")
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    objectName = SecureRandom.uuid
+    makeImporterCommand = CommandModule.make_createimporter(inputImageFile,
+                                                    name: objectName)
+    importerObject = SmigIDHash.make_objectid(objecttype: :imageimporter,
+                                              objectname: objectName)
+    theCommands.add_command(makeImporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(importerObject)
+    
+    objectName = SecureRandom.uuid
+    imageDims = SpotlightCommand.get_imagedimensions(inputImageFile)
+    makeWindowContextCommand = CommandModule.make_createwindowcontext(
+                                                    width: imageDims[:width],
+                                                    height: imageDims[:height],
+                                                    borderlesswindow: true,
+                                                    name: objectName)
+    windowObject = SmigIDHash.make_objectid(objecttype: :nsgraphicscontext,
+                                            objectname: objectName)
+    theCommands.add_command(makeWindowContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(windowObject)
+    drawImageElement = MIDrawImageElement.new
+    drawImageElement.set_imagefile_imagesource(source_object: importerObject,
+                                     imageindex: 0)
+    imageDims = SpotlightCommand.get_imagedimensions(inputImageFile)
+    destRect = MIShapes.make_rectangle(size: imageDims)
+    drawImageElement.destinationrectangle = destRect
+    drawElementCommand = CommandModule.make_drawelement(windowObject,
+                                            drawinstructions: drawImageElement)
+    theCommands.add_command(drawElementCommand)
+    filterChain = MIFilterChain.new(windowObject)
+    
+    filter = MIFilter.new(:CIBloom)
+    radiusProperty = MIFilterProperty.make_cinumberproperty(key: :inputRadius,
+                                                            value: 20.0)
+    filter.add_property(radiusProperty)
+    intensityProperty = MIFilterProperty.make_cinumberproperty(
+                                    key: :inputIntensity, value: 0.6)
+    filter.add_property(intensityProperty)
+    importerObject[:imageindex] = 0
+    inputImageProp= MIFilterProperty.make_ciimageproperty(value: importerObject)
+    filter.add_property(inputImageProp)
+    filterChain.add_filter(filter)
+    filterChainObjectName = SecureRandom.uuid
+    filterChainObject = SmigIDHash.make_objectid(objecttype: :imagefilterchain,
+                                             objectname: filterChainObjectName)
+    makeFilterChainCommand = CommandModule.make_createimagefilterchain(
+                                                  filterChain,
+                                                  name: filterChainObjectName)
+    theCommands.add_command(makeFilterChainCommand)
+    theCommands.add_tocleanupcommands_closeobject(filterChainObject)
+    renderFilterChain = MIFilterChainRender.new
+    theRect = MIShapes.make_rectangle(xloc: "0.25 * $imagewidth",
+                                      yloc: "0.33 * $imageheight",
+                                      width: "0.5 * $imagewidth",
+                                      height: "0.4 * $imageheight")
+    variables = { :imagewidth => imageDims[:width],
+                  :imageheight => imageDims[:height] }
+    renderFilterChain.sourcerectangle = theRect
+    renderFilterChain.destinationrectangle = theRect
+#    renderFilterChain.variables = variables
+    makeRenderFilterChainCommand = CommandModule.make_renderfilterchain(
+                      filterChainObject, renderinstructions: renderFilterChain,
+                      createimage: true)
+    theCommands.add_command(makeRenderFilterChainCommand)
+    theCommands.variables = variables
+    exporterName = SecureRandom.uuid
+    pathtofile = File.join(Dir.tmpdir(), baseImageName)
+    createExporterCommand = CommandModule.make_createexporter(pathtofile,
+                                                    export_type: :"public.jpeg",
+                                                    name: exporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: exporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+    addImageToExporterCommand = CommandModule.make_addimage(exporterObject, 
+                                                 windowObject, imageindex: 0)
+    theCommands.add_command(addImageToExporterCommand)
+    exportCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportCommand)
+    Smig.perform_commands(theCommands)
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile, 67)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+  end
+end
+
+# Test that using CommandModule.make_calculategraphicsizeoftext works for
+# calculating text size.
+def test03()
+  begin
+    calculateTextSizeCommand = CommandModule.make_calculategraphicsizeoftext(
+                            text: "This is the text to calculate dimensions of",
+                            postscriptfontname: "AmericanTypewriter",
+                            userinterfacefont: nil,
+                            fontsize: 32)
+    theResult = Smig.perform_command(calculateTextSizeCommand)
+    original = '{"width":633.248,"height":28.92822265625}'
+    unless theResult.eql? original
+      raise "Calculated text sizes differ: #{theResult}"
+    end
+
+    calculateTextSizeCommand = CommandModule.make_calculategraphicsizeoftext(
+                            text: "This is the text to calculate dimensions of",
+                            userinterfacefont: "kCTFontUIFontMiniSystem")
+    theResult = Smig.perform_command(calculateTextSizeCommand)
+    original2 = '{"width":184.8018292682927,"height":8.698150634765625}'
+    unless theResult.eql? original2
+      raise "Calculated text sizes differ: #{theResult}"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: #{Smig.get_exitstring}"
+    end
+    puts e.message
+    puts e.backtrace.to_s
+    puts #{Smig.exitstring}"
+#    exit 240
+  end
+end
+
+# Test various of the methods of MIMeta
+def test04()
+  begin
+    origModes = "kCGBlendModeNormal kCGBlendModeMultiply kCGBlendModeScreen "+
+    "kCGBlendModeOverlay kCGBlendModeDarken kCGBlendModeLighten " + 
+    "kCGBlendModeColorDodge kCGBlendModeColorBurn kCGBlendModeSoftLight " +
+    "kCGBlendModeHardLight kCGBlendModeDifference kCGBlendModeExclusion " +
+    "kCGBlendModeHue kCGBlendModeSaturation kCGBlendModeColor " +
+    "kCGBlendModeLuminosity kCGBlendModeClear kCGBlendModeCopy " +
+    "kCGBlendModeSourceIn kCGBlendModeSourceOut kCGBlendModeSourceAtop " +
+    "kCGBlendModeDestinationOver kCGBlendModeDestinationIn " +
+    "kCGBlendModeDestinationOut kCGBlendModeDestinationAtop kCGBlendModeXOR " +
+    "kCGBlendModePlusDarker kCGBlendModePlusLighter"
+    blendModes = MIMeta.listcgblendmodes
+    unless origModes.eql? blendModes
+      raise "Blend modes are different, new:" + blendModes
+    end
+
+    origPresets = "AlphaOnly8bpcInt Gray8bpcInt Gray16bpcInt Gray32bpcFloat " +
+    "AlphaSkipFirstRGB8bpcInt AlphaSkipLastRGB8bpcInt "+
+    "AlphaPreMulFirstRGB8bpcInt AlphaPreMulBGRA8bpcInt AlphaPreMulLastRGB8bpcInt " +
+    "AlphaPreMulLastRGB16bpcInt AlphaSkipLastRGB16bpcInt " +
+    "AlphaSkipLastRGB32bpcFloat AlphaPreMulLastRGB32bpcFloat " +
+    "CMYK8bpcInt CMYK16bpcInt CMYK32bpcFloat PlatformDefaultBitmapContext"
+    presets = MIMeta.listpresets
+    unless origPresets.eql? presets
+      raise "Presets are different, new:" + presets
+    end
+
+    origCommands = [:getproperty, :setproperty, :getproperties,
+                      :setproperties, :create, :close, :closeall, :addimage, 
+                      :export, :drawelement, :snapshot, :finalizepage, 
+                      :getpixeldata, :calculategraphicsizeoftext,
+                      :renderfilterchain,  :assignimagetocollection,
+                      :removeimagefromcollection, :processframes, :createtrack,
+                      :addinputtowriter, :addimagesampletowriter,
+                      :finishwritingframes]
+
+    commands = MIMeta.listallcommands
+    unless origCommands.eql? commands
+      raise "Command lists are different, new:" + commands.to_s
+    end
+
+    origObjects = [:bitmapcontext, :imageimporter, :imageexporter,
+                   :imagefilterchain, :pdfcontext, :nsgraphiccontext,
+                   :movieimporter, :movieeditor, :videoframeswriter]
+    objectTypes = MIMeta.listobjecttypes
+
+    unless origObjects.eql? objectTypes
+      raise "List of objects is different, new:" + commands.to_s
+    end
+
+    origInputVideoWriterPresets = "h264preset_sd jpegpreset h264preset_hd " +
+    "prores4444preset prores422preset"
+    
+    videoWriterPresets = MIMeta.listvideoframewriterpresets
+    unless origInputVideoWriterPresets.eql? videoWriterPresets
+      raise "List of video writer presets is different, new:" + videoWriterPresets.to_s
+    end
+
+    origUserInterfaceFonts = "kCTFontUIFontMiniEmphasizedSystem " +
+    "kCTFontUIFontSmallToolbar kCTFontUIFontWindowTitle " +
+    "kCTFontUIFontMenuTitle kCTFontUIFontSystem kCTFontUIFontMenuItem " +
+    "kCTFontUIFontEmphasizedSystem kCTFontUIFontToolbar kCTFontUIFontMessage " +
+    "kCTFontUIFontEmphasizedSystemDetail kCTFontUIFontSmallEmphasizedSystem " +
+    "kCTFontUIFontUserFixedPitch kCTFontUIFontMiniSystem kCTFontUIFontLabel " +
+    "kCTFontUIFontControlContent kCTFontUIFontSystemDetail kCTFontUIFontViews "+
+    "kCTFontUIFontUser kCTFontUIFontSmallSystem kCTFontUIFontApplication" +
+    "kCTFontUIFontToolTip"
+    
+    userInterfaceFonts = MIMeta.listuserinterfacefonts
+    unless userInterfaceFonts.eql? userInterfaceFonts
+      raise "User iterface fonts are different, new:" + userInterfaceFonts
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: #{Smig.get_exitstring}"
+    end
+    puts e.message
+    puts e.backtrace.to_s
+    puts #{Smig.exitstring}"
+#    exit 240
+  end
+end
+
+# Test that getting pixel data works.
+# 1. Create a float based bitmap context
+# 2. Draw a linear gradient into the bitmap context
+# 3. Get the pixel data and save to disk.
+# 4. Compare the result with previously saved.
+# 5. If different report error.
+def test05()
+  begin
+    pixelDataSavePath = nil
+    theCommands = CommandModule::SmigCommands.new
+    theSize = MIShapes.make_size(200,200)
+    bitmapObject = theCommands.make_createbitmapcontext(
+                                    size: theSize,
+                                    addtocleanup: true,
+                                    preset: "AlphaPreMulLastRGB32bpcFloat")
+    drawGradientFill = MILinearGradientFillElement.new
+    drawGradientFill.startpoint = MIShapes.make_point(0, 0)
+    locations = [0, 1]
+    colors = [MIColor.make_rgbacolor(1,0,0), MIColor.make_rgbacolor(0,1,0)]
+    drawGradientFill.set_arrayoflocations_andarrayofcolors(locations, colors)
+    thePath = MIPath.new
+    thePath.add_rectangle(MIShapes.make_rectangle(size: theSize))
+    drawGradientFill.arrayofpathelements = thePath.patharray
+    startPoint = MIShapes.make_point(0, 100)
+    endPoint = MIShapes.make_point(200, 100)
+    drawGradientFill.line = MIShapes.make_line(startPoint, endPoint)
+    drawCommand = CommandModule.make_drawelement(
+                                            bitmapObject,
+                                            drawinstructions: drawGradientFill)
+    theCommands.add_command(drawCommand)
+    pixelDataRect = MIShapes.make_rectangle(xloc: 0, yloc: 100,
+                                            width: 200, height: 1)
+    pixelDataSavePath = File.join(Dir.tmpdir, SecureRandom.uuid + ".json")
+    # pixelDataSavePath = File.expand_path("~/pixeldata.json")
+    getPixelDataCommand = CommandModule.make_getpixeldata(
+                                                bitmapObject,
+                                                rectangle: pixelDataRect,
+                                                resultstype: :jsonfile,
+                                                savelocation: pixelDataSavePath)
+    theCommands.add_command(getPixelDataCommand)
+    theResult = Smig.perform_commands(theCommands)
+    originalPath = File.join($directory, "miscellaneous", "test013",
+                              "pixeldata.json")
+    unless FileUtils.identical?(pixelDataSavePath, originalPath)
+      raise "Pixel data has changed."
+    end
+    
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: #{Smig.exitstring}"
+    end
+    puts e.message
+    puts e.backtrace.to_s
+    puts #{Smig.exitstring}"
+#    exit 240
+  ensure
+    FileUtils.rm_f(pixelDataSavePath) unless pixelDataSavePath.nil?
+    # Open3.capture2("open", pixelDataSavePath)
+    # Open3.capture2("open", originalPath)
+  end
+end
+
+# Test that getting pixel data from a integer pixel map works.
+# 1. Create a integer based bitmap context
+# 2. Draw a blue color into the bitmap context
+# 3. Get the pixel data for one pixel.
+# 4. Compare the result with previously saved.
+# 5. If different report error.
+def test055()
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theSize = MIShapes.make_size(4, 1)
+    bitmapObject = theCommands.make_createbitmapcontext(
+                                    size: theSize,
+                                    addtocleanup: true,
+                                    preset: "AlphaPreMulFirstRGB8bpcInt")
+    fillRect = MIDrawElement.new(:fillrectangle)
+    fillRect.rectangle = MIShapes.make_rectangle(size: theSize)
+    fillRect.fillcolor = MIColor.make_rgbacolor(1,0,0)
+
+    drawCommand = CommandModule.make_drawelement(bitmapObject,
+                                                 drawinstructions: fillRect)
+    theCommands.add_command(drawCommand)
+    pixelDataRect = MIShapes.make_rectangle(xloc: 0, yloc: 0,
+                                            width: 1, height: 1)
+    getPixelDataCommand = CommandModule.make_getpixeldata(
+                                                bitmapObject,
+                                                rectangle: pixelDataRect)
+    theCommands.add_command(getPixelDataCommand)
+    theResult = Smig.perform_commands(theCommands)
+    previousResult = '{"pixeldata":[[0,0,255,255,0,0]],"contextinfo":{"alphainfo":16386,"bitspercomponent":8,"colorspace":"kCGColorSpaceSRGB","bitsperpixel":32},"columnnames":["x","y","Alpha","Red","Green","Blue"]}'
+    if theResult != previousResult
+      puts theResult
+      raise "Pixel data has changed."
+    end
+    
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: #{Smig.exitstring}"
+    end
+    puts e.message
+    puts e.backtrace.to_s
+    puts #{Smig.exitstring}"
+  ensure
+  end
+end
+
+# Test that getting image properties from an image in an image file works.
+# 1. Import an image file
+# 2. getproperties
+# 3. compare properties with previously saved properties.
+# 5. If different report error.
+def test06()
+  begin
+    imagefilepath = File.join($directory, "images", "DSCN0751.JPG")
+    create_imageimporter_command = CommandModule.make_createimporter(
+                                                              imagefilepath)
+    object_ref = Smig.perform_command(create_imageimporter_command).to_i
+    importer_object = SmigIDHash.make_objectid(objectreference: object_ref)
+    getproperties_command = CommandModule.make_get_objectproperties(
+                                                  importer_object,
+                                                  imageindex: 0,
+                                                  saveresultstype: :jsonstring)
+    new_json = Smig.perform_command(getproperties_command)
+    old_json = '{"{TIFF}":{"ResolutionUnit":2,"Software":"E4500v1.1","DateTime":"2004:01:16 15:17:17","XResolution":300,"ImageDescription":"          ","Orientation":1,"YResolution":300,"Model":"E4500","Make":"NIKON"},"Depth":8,"{IPTC}":{"Caption\/Abstract":"          "},"PixelHeight":681,"{Exif}":{"DateTimeOriginal":"2004:01:16 15:17:17","MeteringMode":5,"ComponentsConfiguration":[1,2,3,0],"MaxApertureValue":2.8,"DigitalZoomRatio":0,"Saturation":0,"FNumber":3.6,"CompressedBitsPerPixel":3,"FocalLength":17.7,"SceneType":1,"FileSource":3,"SceneCaptureType":0,"Sharpness":0,"ColorSpace":1,"GainControl":0,"SubjectDistRange":0,"Contrast":0,"PixelYDimension":681,"WhiteBalance":0,"LightSource":0,"FlashPixVersion":[1,0],"DateTimeDigitized":"2004:01:16 15:17:17","ISOSpeedRatings":[100],"ExposureMode":0,"PixelXDimension":908,"ExifVersion":[2,2],"CustomRendered":0,"ExposureProgram":2,"Flash":24,"ExposureTime":0.007336757153338224,"FocalLenIn35mmFilm":85,"ExposureBiasValue":0},"{JFIF}":{"DensityUnit":1,"YDensity":300,"JFIFVersion":[1,0,1],"XDensity":300},"ProfileName":"sRGB IEC61966-2.1","DPIWidth":300,"DPIHeight":300,"ColorModel":"RGB","Orientation":1,"PixelWidth":908}'
+    unless new_json.eql?(old_json)
+      puts "Old JSON: #{old_json}"
+      puts "New JSON: #{new_json}"
+      raise "Image file metadata or our obtaining of it has changed."
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: #{Smig.exitstring}"
+    end
+    puts e.message
+    puts e.backtrace.to_s
+    puts #{Smig.exitstring}"
+#    exit 240
+  ensure
+    Smig.close_object(importer_object)
+  end
+end
+
+def LocalTestMain013()
+  begin
+    puts "test01"
+    test01()
+    puts "test02"
+    test02()
+    puts "test03"
+    test03()
+    puts "test04"
+    test04()
+    puts "test05"
+    test05()
+    puts "test055"
+    test055()
+    puts "test06"
+    test06()
+  rescue RuntimeError => e
+    puts e.message
+    # puts e.backtrace
+    puts "Error code: #{$errorcode}"
+    puts "Smig.exitstring: #{Smig.exitstring}"
+    # don't allow the exception to propagate outside of this file.
+  end
+  return $errorcode
+end
+
+exit(LocalTestMain013())
+

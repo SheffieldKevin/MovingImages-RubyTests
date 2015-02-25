@@ -1,0 +1,41 @@
+{
+  "inputRedCoefficients" : {
+    "CIAttributeDisplayName" : "RedCoefficients",
+    "CIAttributeDescription" : "Polynomial coefficients for red channel",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIVector"
+  },
+  "CIAttributeFilterDisplayName" : "Color Cross Polynomial",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeDescription" : "Adjusts the color of an image with polynomials.",
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIColorCrossPolynomial",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorCrossPolynomial",
+  "inputGreenCoefficients" : {
+    "CIAttributeDisplayName" : "GreenCoefficients",
+    "CIAttributeDescription" : "Polynomial coefficients for green channel",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIVector"
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryColorEffect",
+    "CICategoryVideo",
+    "CICategoryInterlaced",
+    "CICategoryNonSquarePixels",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputBlueCoefficients" : {
+    "CIAttributeDisplayName" : "BlueCoefficients",
+    "CIAttributeDescription" : "Polynomial coefficients for blue channel",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIVector"
+  }
+}

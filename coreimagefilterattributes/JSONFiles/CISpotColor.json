@@ -1,0 +1,129 @@
+{
+  "inputCenterColor2" : {
+    "CIAttributeDisplayName" : "Center Color 2",
+    "CIAttributeDescription" : "The center value of the second color range to replace.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "0.5255 0.3059 0.3451 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "inputContrast3" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The contrast of the third replacement color.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Contrast 3",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.99
+  },
+  "CIAttributeDescription" : "Replaces one or more color ranges with spot colors.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputCloseness2" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "A value that indicates how close the second color must match before it is replaced.",
+    "CIAttributeSliderMax" : 0.5,
+    "CIAttributeDisplayName" : "Closeness 2",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.15
+  },
+  "inputContrast1" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The contrast of the first replacement color.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Contrast 1",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.98
+  },
+  "inputCenterColor1" : {
+    "CIAttributeDisplayName" : "Center Color 1",
+    "CIAttributeDescription" : "The center value of the first color range to replace.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "0.0784 0.0627 0.0706 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "inputReplacementColor2" : {
+    "CIAttributeDisplayName" : "Replacement Color 2",
+    "CIAttributeDescription" : "A replacement color for the second color range.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "0.9137 0.5608 0.5059 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "CIAttributeFilterName" : "CISpotColor",
+  "inputCloseness1" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "A value that indicates how close the first color must match before it is replaced.",
+    "CIAttributeSliderMax" : 0.5,
+    "CIAttributeDisplayName" : "Closeness 1",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.22
+  },
+  "CIAttributeFilterDisplayName" : "Spot Color",
+  "inputContrast2" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The contrast of the second replacement color.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Contrast 2",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.98
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISpotColor",
+  "inputReplacementColor1" : {
+    "CIAttributeDisplayName" : "Replacement Color 1",
+    "CIAttributeDescription" : "A replacement color for the first color range.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "0.4392 0.1922 0.1961 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryStylize",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputCenterColor3" : {
+    "CIAttributeDisplayName" : "Center Color 3",
+    "CIAttributeDescription" : "The center value of the third color range to replace.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "0.9216 0.4549 0.3333 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "inputCloseness3" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "A value that indicates how close the third color must match before it is replaced.",
+    "CIAttributeSliderMax" : 0.5,
+    "CIAttributeDisplayName" : "Closeness 3",
+    "CIAttributeSliderMin" : 0,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeDefault" : 0.5
+  },
+  "inputReplacementColor3" : {
+    "CIAttributeDisplayName" : "Replacement Color 3",
+    "CIAttributeDescription" : "A replacement color for the third color range.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "0.9098 0.7529 0.6078 1",
+    "CIAttributeClass" : "CIColor"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

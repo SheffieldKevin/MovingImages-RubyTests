@@ -1,0 +1,41 @@
+{
+  "inputCubeDimension" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDisplayName" : "Cube Dimension",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 2,
+    "CIAttributeMax" : 128,
+    "CIAttributeIdentity" : 2,
+    "CIAttributeType" : "CIAttributeTypeCount",
+    "CIAttributeDefault" : 2
+  },
+  "CIAttributeFilterDisplayName" : "Color Cube",
+  "CIAttributeDescription" : "Uses a three-dimensional color table to transform the source image pixels. The color table must be  composed of floating-point RGBA cells that use premultiplied alpha. The cells are organized in a standard ordering. The columns and rows of the data are indexed by red and green, respectively. Each data plane is followed by the next higher plane in the data, with planes indexed by blue.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIColorCube",
+  "inputCubeData" : {
+    "CIAttributeDisplayName" : "Cube Data",
+    "CIAttributeIdentity" : "AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAAAAAAIA\/AACAPwAAgD8AAAAAAACAPwAAAAAAAAAAAACAPwAAgD8AAIA\/AAAAAAAAgD8AAIA\/AAAAAAAAgD8AAIA\/AACAPwAAgD8AAIA\/AACAPwAAgD8=",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAAAAAAIA\/AACAPwAAgD8AAAAAAACAPwAAAAAAAAAAAACAPwAAgD8AAIA\/AAAAAAAAgD8AAIA\/AAAAAAAAgD8AAIA\/AACAPwAAgD8AAIA\/AACAPwAAgD8=",
+    "CIAttributeClass" : "NSData",
+    "CIAttributeDescription" : "This is a color table of floating-point RGBA cells that use premultiplied alpha. The cells are organized in a standard ordering. The columns and rows of the data are indexed by red and green, respectively. Each data plane is followed by the next higher plane in the data, with planes indexed by blue."
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorCube",
+  "CIAttributeFilterCategories" : [
+    "CICategoryColorEffect",
+    "CICategoryVideo",
+    "CICategoryInterlaced",
+    "CICategoryNonSquarePixels",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ]
+}

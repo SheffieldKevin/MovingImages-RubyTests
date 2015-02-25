@@ -1,0 +1,29 @@
+{
+  "CIAttributeFilterDisplayName" : "Saturation Blend Mode",
+  "CIAttributeDescription" : "Uses the luminance and hue values of the background with the saturation of the source image. Areas of the background that have no saturation (that is, pure gray areas) do not produce a change.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CISaturationBlendMode",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISaturationBlendMode",
+  "CIAttributeFilterCategories" : [
+    "CICategoryCompositeOperation",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryInterlaced",
+    "CICategoryNonSquarePixels",
+    "CICategoryBuiltIn"
+  ],
+  "inputBackgroundImage" : {
+    "CIAttributeDisplayName" : "Background Image",
+    "CIAttributeDescription" : "The image to use as a background image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

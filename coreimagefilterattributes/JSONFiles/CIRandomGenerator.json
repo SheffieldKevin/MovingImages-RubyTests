@@ -1,0 +1,15 @@
+{
+  "CIAttributeFilterDisplayName" : "Random Generator",
+  "CIAttributeDescription" : "Generates an image of infinite extent whose pixel values are made up of four independent, uniformly-distributed random numbers in the 0 to 1 range.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIRandomGenerator",
+  "CIAttributeFilterName" : "CIRandomGenerator",
+  "CIAttributeFilterCategories" : [
+    "CICategoryGenerator",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ]
+}

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeDescription</key>
+	<string>Performs an affine transform on a source image and then clamps the pixels at the edge of the transformed image, extending them outwards. This filter performs similarly to the CIAffineTransform filter except that it produces an image with infinite extent. You can use this filter when you need to blur an image but you want to avoid a soft, black fringe along the edges.</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryTileEffect</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Affine Clamp</string>
+	<key>CIAttributeFilterName</key>
+	<string>CIAffineClamp</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CIAffineClamp</string>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>inputTransform</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSAffineTransform</string>
+		<key>CIAttributeDefault</key>
+		<dict>
+			<key>m11</key>
+			<real>0.40000000000000002</real>
+			<key>m12</key>
+			<real>0.0</real>
+			<key>m21</key>
+			<real>0.0</real>
+			<key>m22</key>
+			<real>0.40000000000000002</real>
+			<key>tX</key>
+			<real>0.0</real>
+			<key>tY</key>
+			<real>0.0</real>
+		</dict>
+		<key>CIAttributeDescription</key>
+		<string>The transform to apply to the image.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Transform</string>
+		<key>CIAttributeIdentity</key>
+		<dict>
+			<key>m11</key>
+			<real>1</real>
+			<key>m12</key>
+			<real>0.0</real>
+			<key>m21</key>
+			<real>0.0</real>
+			<key>m22</key>
+			<real>1</real>
+			<key>tX</key>
+			<real>0.0</real>
+			<key>tY</key>
+			<real>0.0</real>
+		</dict>
+		<key>CIUIParameterSet</key>
+		<string>CIUISetBasic</string>
+	</dict>
+	<key>outputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+	</dict>
+</dict>
+</plist>

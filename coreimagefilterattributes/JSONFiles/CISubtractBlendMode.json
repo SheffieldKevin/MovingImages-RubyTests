@@ -1,0 +1,29 @@
+{
+  "CIAttributeFilterDisplayName" : "Subtract Blend Mode",
+  "CIAttributeDescription" : "Subtract Blend Mode",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CISubtractBlendMode",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISubtractBlendMode",
+  "CIAttributeFilterCategories" : [
+    "CICategoryCompositeOperation",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryInterlaced",
+    "CICategoryNonSquarePixels",
+    "CICategoryBuiltIn"
+  ],
+  "inputBackgroundImage" : {
+    "CIAttributeDisplayName" : "Background Image",
+    "CIAttributeDescription" : "The image to use as a background image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  }
+}

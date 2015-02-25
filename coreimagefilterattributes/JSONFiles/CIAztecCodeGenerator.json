@@ -1,0 +1,50 @@
+{
+  "inputCompactStyle" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "Aztec force compact style @YES or @NO. Set to nil for automatic.",
+    "CIAttributeSliderMax" : true,
+    "CIAttributeDisplayName" : "CompactStyle",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : false,
+    "CIAttributeMax" : true,
+    "CIAttributeSliderMin" : false
+  },
+  "CIAttributeFilterDisplayName" : "CIAztecCodeGenerator",
+  "inputCorrectionLevel" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "Aztec error correction value between 5 and 95",
+    "CIAttributeSliderMax" : 95,
+    "CIAttributeDisplayName" : "CorrectionLevel",
+    "CIAttributeDefault" : 23,
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 5,
+    "CIAttributeMax" : 95,
+    "CIAttributeSliderMin" : 5
+  },
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIAztecCodeGenerator",
+  "inputLayers" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "Aztec layers value between 1 and 32. Set to nil for automatic.",
+    "CIAttributeSliderMax" : 32,
+    "CIAttributeDisplayName" : "Layers",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeMin" : 1,
+    "CIAttributeMax" : 32,
+    "CIAttributeSliderMin" : 1
+  },
+  "inputMessage" : {
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Message",
+    "CIAttributeClass" : "NSData"
+  },
+  "CIAttributeDescription" : "Aztec Code Generator",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIAztecCodeGenerator",
+  "CIAttributeFilterCategories" : [
+    "CICategoryGenerator",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ]
+}

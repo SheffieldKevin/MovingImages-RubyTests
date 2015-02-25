@@ -1,0 +1,1214 @@
+#!/usr/bin/env ruby
+# Copyright (C) 2014 Kevin Meaney
+# Script for testing smig and moving images.
+# Please refer to the file LICENSE for the license agreement.
+# You are granted the rights to modify this file for your own purposes
+# or for distribution to third parties. In either case you accept all
+# responsibility for liability.
+#
+# This scripts tests drawing text. After drawing the text the script compares
+# the generated image with a previously generated image.
+# 
+# 1. Draw the text in a rectangle, a circle, a path.
+# 2. Try drawing text with different fonts and sizes.
+# 3. Draw text using an outline only. Draw text a fill and an outline.
+# 6. Tests drawing text with an inner shadow.
+
+require 'Open3'
+require 'JSON'
+require 'tmpdir'
+require 'securerandom'
+require 'pdf-reader'
+
+require 'moving_images'
+
+include MovingImages
+include MICGDrawing
+
+$errorcode = 0
+
+$filename = File.basename(__FILE__)
+$directory = File.expand_path(File.dirname(__FILE__))
+$teststring = ""
+$compareImageDir = File.join($directory, "images/test007ForComparison")
+
+$compareImages = File.join($directory, "compareimages")
+
+def AreImageFilesSame(filePath1, filePath2, distance=0)
+  # assume paths already expanded.
+  # distance is a integer that will need to be a string. Default value
+  # assumes that we want the difference to be zero.
+  result, exitVal = Open3.capture2($compareImages, "-file1", filePath1,
+                              "-file2", filePath2, "-distance", distance.to_s)
+  unless exitVal.exitstatus.zero?
+    raise "failed to compare files"
+  end
+  return result.eql? "SAME"
+end
+
+# Draw the text in a rectangle, a circle, a path.
+# 1. Create a bitmap context command with dimensions 800x600
+# 2. Draw text in a rectangle with bounds: {:x=100, :y=310,
+#                                           :width=250, :height=280 }
+# 3. Draw text in a circle with bounds: {:x=100, :y=25,
+#                                           :width=250, :height=250 }
+# 4. Draw text in a path with bounds: {:x=450, :y=50,
+#                                           :width=300, :height=500 }
+# 5. Create an image exporter object
+# 6. Add an image representation of the bitmap to the image exporter object
+# 7. Save the image as jpeg.
+# 8. Compare with previously saved image.
+# 9. Report if different.
+
+def test01()
+  baseImageName = "justifiedtext.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create the bitmap context command
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                      width: 800, height: 600,
+                                      preset: "AlphaPreMulFirstRGB8bpcInt",
+                                      name: bitmapContextName)
+
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+    
+    # 2. Setup the draw string object for drawing text in a rectangle.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.stringtext = "Draw justified text using the postscript font " + 
+                              "Baskerville at a size of 22 points in " +
+                              "a black color in a rectangle over a number " +
+                              "of lines demonstrating drawing text in a " +
+                              "shape. This is some extra text to test the " +
+                              "text overflowing the box."
+    drawString.postscriptfontname= 'Baskerville'
+    drawString.fontsize = 22
+    drawString.textalignment = 'kCTTextAlignmentJustified'
+    drawString.fillcolor = MIColor.make_rgbacolor(0,0,0)
+    pathElementList = MIPath.new
+    rectOrigin = MIShapes.make_point(100, 310)
+    rectSize = MIShapes.make_size(250, 280)
+    pathRect = MIShapes.make_rectangle(origin: rectOrigin, size: rectSize)
+    pathElementList.add_rectangle(pathRect)
+    drawString.arrayofpathelements = pathElementList
+    drawString.point_textdrawnfrom = rectOrigin
+    # 2. Create the draw basic string element command
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 3. Setup the draw string object for drawing text in a circle.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.stringtext = "Draw justified text using the postscript font " + 
+                              "Baskerville at a size of 22 points in " +
+                              "a black color in a rectangle over a number " +
+                              "of lines demonstrating drawing text in a " +
+                              "shape. This is some extra text to test the " +
+                              "text overflowing the box."
+    drawString.postscriptfontname = 'Baskerville'
+    drawString.fontsize = 22
+    drawString.textalignment = 'kCTTextAlignmentJustified'
+    drawString.fillcolor = MIColor.make_rgbacolor(0,0,0)
+    pathElementList = MIPath.new
+    ovalOrigin = MIShapes.make_point(100, 25)
+    ovalSize = MIShapes.make_size(250,250)
+    pathOval = MIShapes.make_rectangle(origin: ovalOrigin, size: ovalSize)
+    pathElementList.add_oval(pathOval)
+    drawString.arrayofpathelements = pathElementList
+    drawString.point_textdrawnfrom = ovalOrigin
+
+    # 3. Create the draw basic string element command.
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                              drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 4. Setup the draw string element for drawing text within a path.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Baskerville-Bold'
+    drawString.stringtext = "Draw justified text using the postscript font " + 
+                              "Baskerville-Bold at a size of 24 points in " +
+                              "a black color constrained within a path over " +
+                              "a number of lines demonstrating drawing text " +
+                              "in a path. This is some extra text to test " +
+                              "the text overflowing the box which is needed"
+    drawString.fontsize = 24
+    drawString.textalignment = 'kCTTextAlignmentJustified'
+    drawString.fillcolor = MIColor.make_rgbacolor(0,0,0)
+    drawString.point_textdrawnfrom = MIShapes.make_point(450, 50)
+    pathElementList = MIPath.new
+    cp1 = MIShapes.make_point(450, 150)
+    endPoint = MIShapes.make_point(475, 250)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(500, 350)
+    endPoint = MIShapes.make_point(475, 450)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(467, 470)
+    endPoint = MIShapes.make_point(475, 500)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(482, 520)
+    endPoint = MIShapes.make_point(510, 530)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(600, 550)
+    endPoint = MIShapes.make_point(670, 530)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(718, 520)
+    endPoint = MIShapes.make_point(725, 500)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(733, 470)
+    endPoint = MIShapes.make_point(725, 450)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(700, 350)
+    endPoint = MIShapes.make_point(725, 250)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(750, 150)
+    endPoint = MIShapes.make_point(750, 50)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    pathElementList.add_lineto(MIShapes.make_point(450,0))
+    drawString.arrayofpathelements = pathElementList
+    # 4. Create the draw string element command and add it to list of commands.
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                        drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    # 5. Make the create image exporter object command
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                        export_type: "public.jpeg",
+                                        name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+    # 6. Make an add image command and add it to list of commands
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    # 7. Save the image as jpeg.
+    # Create the export image file command and add it to the list of commands.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+
+    commandsHash = theCommands.commandshash
+    $teststring = commandsHash.to_json
+    # puts JSON.pretty_generate(commandsHash)
+    theResult = Smig.perform_commands(commandsHash)
+
+    origFile = File.join($compareImageDir, baseImageName)
+    # 8. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile)
+      # 9. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+  end
+end
+
+# Draw the text with different fonts and fontsizes, and colors.
+# 1. Create a bitmap context with dimensions 800x600
+# 2. Draw text with five different fonts each with 2 different font sizes
+#   1. Frilly, sans serif fonts, a serif font, Chalkboard, plus one UIFont.
+# 3. Draw with different colors the fonts are drawn with.
+# 4. Draw text stroking only, no fill.
+# 5. Draw text stroking and filling the text.
+# 6. Create an image exporter object
+# 7. Add an image representation of the bitmap to the image exporter object
+# 8. Save the image as jpeg.
+# 9. Compare with previously saved image.
+# 10. Report if different.
+
+def test02()
+  baseImageName = "differentfontstext.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    # 1. Create the bitmap context
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                      width: 800, height: 600,
+                                      name: bitmapContextName)
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+                                      
+    # 2/3. Setup the draw string object for drawing the text.
+    # First font to draw is a Frilly font.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.stringtext = "Draw text with the font SavoyeLetPlain. " + 
+                              "At a size of 30 points in a dark red color."
+    drawString.postscriptfontname = 'SavoyeLetPlain'
+    drawString.fontsize = 30
+    darkRedColor = MIColor.make_rgbacolor(0.6, 0.1, 0.05)
+    drawString.fillcolor = darkRedColor
+    textOrigin = MIShapes.make_point(10, 560)
+    drawString.point_textdrawnfrom = textOrigin
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.stringtext = "Draw text with the font SavoyeLetPlain. " + 
+                              "At a size of 18 points in a black color."
+    drawString.postscriptfontname = 'SavoyeLetPlain'
+    textOrigin = MIShapes.make_point(10, 520)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 18
+    blackColor = MIColor.make_rgbacolor(0,0,0)
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                          drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Verdana'
+    text = "Draw text with the font Verdana. At size 26 points in a cyan color."
+    drawString.stringtext = "Draw text with the font Verdana. "
+    textSubsKey = "test007.test02.drawverdanatext"
+    drawString.textsubstitutionkey = textSubsKey
+    theCommands.variables = { textSubsKey => text }
+    textOrigin = MIShapes.make_point(10, 480)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 26
+    cyan = MIColor.make_rgbacolor(0,1,1)
+    drawString.fillcolor = cyan
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                                drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Verdana'
+    drawString.stringtext = "Draw text with the font Verdana. " + 
+                              "At size 10 points in a black color."
+    textOrigin = MIShapes.make_point(10, 440)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 10
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'SIL-Kai-Reg-Jian'
+    drawString.stringtext = "Draw text with the font SIL-Kai-Reg-Jian. " + 
+                              "At size 24 points in a green color."
+    textOrigin = MIShapes.make_point(10, 400)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 24
+    greenColor = MIColor.make_rgbacolor(0.05, 0.5, 0.1)
+    drawString.fillcolor = greenColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'SIL-Kai-Reg-Jian'
+    drawString.stringtext = "Draw text with the font SIL-Kai-Reg-Jian. " + 
+                              "At size 8 points in a black color."
+    textOrigin = MIShapes.make_point(10, 360)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 8
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                          drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Chalkboard'
+    drawString.stringtext = "Draw text with the font Chalkboard. " + 
+                              "At size 23 points in a blue color."
+    textOrigin = MIShapes.make_point(10, 320)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 23
+    blueColor = MIColor.make_rgbacolor(0, 0.05, 0.6)
+    drawString.fillcolor = blueColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Chalkboard'
+    drawString.stringtext = "Draw text with the font Chalkboard. " + 
+                              "At size 11 points in a black color."
+    textOrigin = MIShapes.make_point(10, 280)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 11
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                                drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.userinterfacefont = 'kCTFontUIFontLabel'
+    drawString.stringtext = "Draw text using user interface font. " + 
+                              "kCTFontUIFontLabel in a black color."
+    textOrigin = MIShapes.make_point(10, 240)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.elementhash.delete(:fontsize)
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject, 
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Verdana-Bold'
+    drawString.stringtext = "Draw outline text using using font " +
+                              "Verdana-Bold with a black outline. "
+    textOrigin = MIShapes.make_point(10, 200)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 20
+    drawString.strokecolor = blackColor
+    drawString.stringstrokewidth = 4
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                              drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 4. Draw the text along a line stroking the text.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Verdana-Bold'
+    drawString.stringtext = "Draw text using font Verdana-Bold " +
+                              "with a black outline & red fill."
+    textOrigin = MIShapes.make_point(10, 160)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 20
+    drawString.strokecolor = blackColor
+    redColor = MIColor.make_rgbacolor(0.9, 0.2, 0.1)
+    drawString.fillcolor = redColor
+    drawString.stringstrokewidth = -8
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject, 
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 5. Draw the text along a line stroking and filling the tex.
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    # 6. Create an image exporter object
+    
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                  export_type: :"public.jpeg", 
+                                                  name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+    # 7. Add an image representation of the bitmap to the image exporter object
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    # 8. Save the image as jpeg.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+    $teststring = theCommands.commandshash.to_json
+    Smig.perform_commands(theCommands.commandshash)
+    origFile = File.join($compareImageDir, baseImageName)
+    # 9. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile, 26)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    FileUtils.mv(tempFile, origFile)
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+#    Open3.capture2("open", origFile)
+  end
+end
+
+# Draw shapes into the bitmap context
+# 1. Create a bitmap context with dimension 800x600
+# 2. Draw a rectangle with a border with a thickness of 3. Black
+# 3. Draw a rectangle with a blue fill.
+# 4. Draw a rectangle with a green fill and a red border with thickness 10.
+# 5. Rotate the rectangle drawn with a border thrice.
+# 6. Draw an oval with a black border with a thickness of 10.
+# 7. Draw an oval with with a cyan fill. Cyan
+# 8. Draw an oval with a red fill and green border with thickness 5.
+# 9. Scale the oval drawn with a border down. Centre scaling on oval centre.
+# 10. Create an image exporter object
+# 11. Add an image representation of the bitmap to the image exporter object
+# 12. Save the image as jpeg.
+# 13. Compare with previously saved image.
+# 14. Report if different.
+
+def test03()
+  baseImageName = "shapedrawing.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    bitmapContextName = SecureRandom.uuid
+    createBitmapContextCommand = CommandModule.make_createbitmapcontext(
+                                      width: 600, height: 450,
+                                      preset: "AlphaPreMulFirstRGB8bpcInt", 
+                                      name: bitmapContextName)
+    bitmapContextObject = SmigIDHash.make_objectid(objecttype: :bitmapcontext,
+                                                 objectname: bitmapContextName)
+    theCommands.add_command(createBitmapContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(bitmapContextObject)
+
+# 2. Draw a rectangle with a border with a thickness of 5. Black
+    strokeRectangle = MIDrawElement.new(:strokerectangle)
+    theOrigin = MIShapes.make_point(30.5, 30.5)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    strokeRectangle.rectangle = theRect
+    blackColor = MIColor.make_rgbacolor(0,0,0)
+    strokeRectangle.strokecolor = blackColor
+    strokeRectangle.linewidth = 3.0
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                         drawinstructions: strokeRectangle)
+    theCommands.add_command(drawCommand)
+
+# 2.5 Rotate the stroked rectangle by PI / 6 and draw.
+    transformations = MITransformations.make_contexttransformation()
+    centre = MIShapes.make_point(30.5 + 75, 30.5 + 100)
+    MITransformations.add_translatetransform(transformations, centre)
+    MITransformations.add_rotatetransform(transformations, Math::PI / 6.0)
+    moveBack = MIShapes.make_point(-105.5, -130.5)
+    MITransformations.add_translatetransform(transformations, moveBack)
+    strokeRectangle = MIDrawElement.new(:strokerectangle)
+    theOrigin = MIShapes.make_point(30.5, 30.5)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    strokeRectangle.rectangle = theRect
+    blackColor = MIColor.make_rgbacolor(0,0,0)
+    strokeRectangle.strokecolor = blackColor
+    strokeRectangle.linewidth = 3.0
+    strokeRectangle.contexttransformations = transformations
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                          drawinstructions: strokeRectangle)
+    theCommands.add_command(drawCommand)
+
+    strokeRectangle = MIDrawElement.new(:strokerectangle)
+    theOrigin = MIShapes.make_point(30.5, 30.5)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    strokeRectangle.rectangle = theRect
+    blackColor = MIColor.make_rgbacolor(0,0,0)
+    strokeRectangle.strokecolor = blackColor
+    strokeRectangle.linewidth = 3.0
+    transformations = MITransformations.make_contexttransformation()
+    centre = MIShapes.make_point(30.5 + 75, 30.5 + 100)
+    MITransformations.add_translatetransform(transformations, centre)
+    MITransformations.add_rotatetransform(transformations, Math::PI / 3.0)
+    moveBack = MIShapes.make_point(-105.5, -130.5)
+    MITransformations.add_translatetransform(transformations, moveBack)
+    strokeRectangle.contexttransformations = transformations
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                        drawinstructions: strokeRectangle)
+    theCommands.add_command(drawCommand)
+
+    strokeRectangle = MIDrawElement.new(:strokerectangle)
+    theOrigin = MIShapes.make_point(30.5, 30.5)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    strokeRectangle.rectangle = theRect
+    blackColor = MIColor.make_rgbacolor(0,0,0)
+    strokeRectangle.strokecolor = blackColor
+    strokeRectangle.linewidth = 3.0
+    transformations = MITransformations.make_contexttransformation()
+    centre = MIShapes.make_point(30.5 + 75, 30.5 + 100)
+    MITransformations.add_translatetransform(transformations, centre)
+    MITransformations.add_rotatetransform(transformations, Math::PI / 2.0)
+    moveBack = MIShapes.make_point(-105.5, -130.5)
+    MITransformations.add_translatetransform(transformations, moveBack)
+    strokeRectangle.contexttransformations = transformations
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                            drawinstructions: strokeRectangle)
+    theCommands.add_command(drawCommand)
+
+# 3. Draw a rectangle with a blue fill.
+    fillRectangle = MIDrawElement.new(:fillrectangle)
+    theOrigin = MIShapes.make_point(30.0, 240.0)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    fillRectangle.rectangle = theRect
+    blueColor = MIColor.make_rgbacolor(0,0,1)
+    fillRectangle.fillcolor = blueColor
+    fillRectangle.linewidth = 3.0
+    fillRectangleJSON = fillRectangle.elementhash.to_json
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                        drawinstructions: fillRectangle)
+    theCommands.add_command(drawCommand)
+
+# 4. Draw a rectangle with a green fill and a red border with thickness 10.
+    fillRectangle = MIDrawElement.new(:fillrectangle)
+    theOrigin = MIShapes.make_point(210.5, 30.5)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    fillRectangle.rectangle = theRect
+    greenColor = MIColor.make_rgbacolor(0.1,0.8,0)
+    fillRectangle.fillcolor = greenColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                        drawinstructions: fillRectangle)
+    theCommands.add_command(drawCommand)
+
+    strokeRectangle = MIDrawElement.new(:strokerectangle)
+    strokeRectangle.rectangle = theRect
+    strokeRectangle.linewidth = 10.0
+    redColor = MIColor.make_rgbacolor(0.8, 0.2, 0.1)
+    strokeRectangle.strokecolor = redColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                          drawinstructions: strokeRectangle)
+    theCommands.add_command(drawCommand)
+
+# 6. Draw an oval with a black border with a thickness of 10.
+    strokeOval = MIDrawElement.new(:strokeoval)
+    theOrigin = MIShapes.make_point(210.5, 240.5)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    strokeOval.rectangle = theRect
+    strokeOval.linewidth = 10.0
+    strokeOval.strokecolor = blackColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                            drawinstructions: strokeOval)
+    theCommands.add_command(drawCommand)
+
+# 7. Draw an oval with with a cyan fill. Cyan
+    fillOval = MIDrawElement.new(:filloval)
+    theOrigin = MIShapes.make_point(420.0, 30.0)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    fillOval.rectangle = theRect
+    cyanColor = MIColor.make_rgbacolor(0,1,1)
+    fillOval.fillcolor = cyanColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                              drawinstructions: fillOval)
+    theCommands.add_command(drawCommand)
+
+# 8. Draw an oval with a red fill and green border with thickness 5.
+    oval = MIDrawElement.new(:filloval)
+    theOrigin = MIShapes.make_point(420.0, 30.0)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    oval.rectangle = theRect
+    cyanColor = MIColor.make_rgbacolor(0,1,1)
+    oval.fillcolor = redColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                              drawinstructions: oval)
+    theCommands.add_command(drawCommand)
+
+    oval = MIDrawElement.new(:strokeoval)
+    oval.rectangle = theRect
+    oval.linewidth = 5.0
+    oval.strokecolor = greenColor
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                                 drawinstructions: oval)
+    theCommands.add_command(drawCommand)
+
+# 9. Scale the oval drawn with a border down. Centre scaling on oval centre.
+    centrePoint = MIShapes.make_point(285.5, 335.5)
+    invertCentrePoint = MIShapes.make_point(-285.5, -335.5)
+    transformations= MITransformations.make_contexttransformation()
+    MITransformations.add_translatetransform(transformations, centrePoint)
+    MITransformations.add_scaletransform(transformations, {:x=>0.6, :y=>0.6})
+    MITransformations.add_translatetransform(transformations, invertCentrePoint)
+    strokeOval = MIDrawElement.new(:strokeoval)
+    theOrigin = MIShapes.make_point(210.5, 240.5)
+    theSize = MIShapes.make_size(150, 190)
+    theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
+    strokeOval.rectangle = theRect
+    strokeOval.linewidth = 10.0
+    strokeOval.strokecolor = blackColor
+    strokeOval.contexttransformations = transformations
+    drawCommand = CommandModule.make_drawelement(bitmapContextObject,
+                                              drawinstructions: strokeOval)
+    theCommands.add_command(drawCommand)
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                  export_type: :"public.jpeg",
+                                                  name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, bitmapContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+    commandsHash = theCommands.commandshash
+    # puts JSON.pretty_generate(commandsHash)
+    $teststring = commandsHash.to_json
+    Smig.perform_commands(commandsHash)
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile)
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+  end
+end
+
+# This is basically a repeat of test01 but drawn into a pdf context instead.
+# Draw the text in a rectangle, a circle, a path.
+# 1. Create a pdf context command with dimensions 800x600
+# 2. Draw text in a rectangle with bounds: {:x=100, :y=310,
+#                                           :width=250, :height=280 }
+# 3. Draw text in a circle with bounds: {:x=100, :y=25,
+#                                           :width=250, :height=250 }
+# 4. Draw text in a path with bounds: {:x=450, :y=50,
+#                                           :width=300, :height=500 }
+# 5. Close the pdf context object, which saves the pdf file.
+# 6. Compare with previously saved image.
+# 7. Report if different.
+
+def test04()
+#  baseImageName = "justifiedtext.jpg"
+  pdfFileName = "justifiedtext.pdf"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+
+    # 1. Create the pdf context command
+    tempFile = File.join(Dir.tmpdir(), pdfFileName)
+    # tempFile = File.join(Dir.home(), pdfFileName)
+    pdfContextName = SecureRandom.uuid
+    createPDFContextCommand = CommandModule.make_createpdfcontext(
+            width: 800, height: 600, name: pdfContextName, filepath: tempFile)
+    pdfContextObject = SmigIDHash.make_objectid(objecttype: :pdfcontext,
+                                                objectname: pdfContextName)
+    theCommands.add_command(createPDFContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(pdfContextObject)
+    
+    # 2. Setup the draw string object for drawing text in a rectangle.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.stringtext = "Draw justified text using the postscript font " + 
+                              "Baskerville at a size of 22 points in " +
+                              "a black color in a rectangle over a number " +
+                              "of lines demonstrating drawing text in a " +
+                              "shape. This is some extra text to test the " +
+                              "text overflowing the box."
+    drawString.postscriptfontname = 'Baskerville'
+    drawString.fontsize = 22
+    drawString.textalignment = 'kCTTextAlignmentJustified'
+    drawString.fillcolor = MIColor.make_rgbacolor(0,0,0)
+    pathElementList = MIPath.new
+    rectOrigin = MIShapes.make_point(100, 310)
+    rectSize = MIShapes.make_size(250, 280)
+    pathRect = MIShapes.make_rectangle(origin: rectOrigin, size: rectSize)
+    pathElementList.add_rectangle(pathRect)
+    drawString.arrayofpathelements = pathElementList
+    drawString.point_textdrawnfrom = rectOrigin
+    # 2. Create the draw basic string element command
+    drawCommand = CommandModule.make_drawelement(pdfContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 3. Setup the draw string object for drawing text in a circle.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.stringtext = "Draw justified text using the postscript font " + 
+                              "Baskerville at a size of 22 points in " +
+                              "a black color in a rectangle over a number " +
+                              "of lines demonstrating drawing text in a " +
+                              "shape. This is some extra text to test the " +
+                              "text overflowing the box."
+    drawString.postscriptfontname = 'Baskerville'
+    drawString.fontsize = 22
+    drawString.textalignment = 'kCTTextAlignmentJustified'
+    drawString.fillcolor = MIColor.make_rgbacolor(0,0,0)
+    pathElementList = MIPath.new
+    ovalOrigin = MIShapes.make_point(100, 25)
+    ovalSize = MIShapes.make_size(250,250)
+    pathOval = MIShapes.make_rectangle(origin: ovalOrigin, size: ovalSize)
+    pathElementList.add_oval(pathOval)
+    drawString.arrayofpathelements = pathElementList
+    drawString.point_textdrawnfrom = ovalOrigin
+
+    # 3. Create the draw basic string element command.
+    drawCommand = CommandModule.make_drawelement(pdfContextObject,
+                                              drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 4. Setup the draw string element for drawing text within a path.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Baskerville-Bold'
+    drawString.stringtext = "Draw justified text using the postscript font " + 
+                              "Baskerville-Bold at a size of 24 points in " +
+                              "a black color constrained within a path over " +
+                              "a number of lines demonstrating drawing text " +
+                              "in a path. This is some extra text to test " +
+                              "the text overflowing the box which is needed"
+    drawString.fontsize = 24
+    drawString.textalignment = 'kCTTextAlignmentJustified'
+    drawString.fillcolor = MIColor.make_rgbacolor(0,0,0)
+    drawString.point_textdrawnfrom = MIShapes.make_point(450, 50)
+    pathElementList = MIPath.new
+    cp1 = MIShapes.make_point(450, 150)
+    endPoint = MIShapes.make_point(475, 250)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(500, 350)
+    endPoint = MIShapes.make_point(475, 450)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(467, 470)
+    endPoint = MIShapes.make_point(475, 500)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(482, 520)
+    endPoint = MIShapes.make_point(510, 530)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(600, 550)
+    endPoint = MIShapes.make_point(670, 530)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(718, 520)
+    endPoint = MIShapes.make_point(725, 500)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(733, 470)
+    endPoint = MIShapes.make_point(725, 450)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(700, 350)
+    endPoint = MIShapes.make_point(725, 250)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    cp1 = MIShapes.make_point(750, 150)
+    endPoint = MIShapes.make_point(750, 50)
+    pathElementList.add_quadraticpath(controlPoint1: cp1, endPoint: endPoint)
+    pathElementList.add_lineto(MIShapes.make_point(450,0))
+    drawString.arrayofpathelements = pathElementList
+    # 4. Create the draw string element command and add it to list of commands.
+    drawCommand = CommandModule.make_drawelement(pdfContextObject,
+                                              drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    commandsHash = theCommands.commandshash
+    $teststring = commandsHash.to_json
+    # puts JSON.pretty_generate(commandsHash)
+    theResult = Smig.perform_commands(commandsHash)
+
+    origFile = File.join($compareImageDir, pdfFileName)
+    # 8. Compare with previously saved image.
+    
+    ofPDFReader = PDF::Reader.new(origFile)
+    tfPDFReader = PDF::Reader.new(tempFile)
+    areEqual = true
+    areEqual = false unless ofPDFReader.pages.count.eql? tfPDFReader.pages.count
+    if areEqual
+      ofPDFReader.pages.each_index { |i|
+        ofPage = ofPDFReader.pages[i]
+        tfPage = tfPDFReader.pages[i]
+        ofFont1 = ofPage.fonts[:TT1][:FontDescriptor]
+        tfFont1 = tfPage.fonts[:TT1][:FontDescriptor]
+        ofFont1Name = ofFont1[:FontName].to_s.split("+")[1]
+        tfFont1Name = tfFont1[:FontName].to_s.split("+")[1]
+        areFontsEqual = ofFont1Name.eql? tfFont1Name
+        areFontsEqual = ofFont1[:Flags].eql? tfFont1[:Flags]
+        areFontsEqual &= ofFont1[:FontBBox].eql? tfFont1[:FontBBox]
+        areFontsEqual &= ofFont1[:ItalicAngle].eql? tfFont1[:ItalicAngle]
+        areFontsEqual &= ofFont1[:Ascent].eql? tfFont1[:Ascent]
+        areFontsEqual &= ofFont1[:Descent].eql? tfFont1[:Descent]
+        ofFont2 = ofPage.fonts[:TT2][:FontDescriptor]
+        tfFont2 = tfPage.fonts[:TT2][:FontDescriptor]
+        ofFont2Name = ofFont2[:FontName].to_s.split("+")[1]
+        tfFont2Name = tfFont2[:FontName].to_s.split("+")[1]
+        areFontsEqual &= ofFont2Name.eql? tfFont2Name
+        areFontsEqual &= ofFont2[:Flags].eql? tfFont2[:Flags]
+        areFontsEqual &= ofFont2[:FontBBox].eql? tfFont2[:FontBBox]
+        areFontsEqual &= ofFont2[:ItalicAngle].eql? tfFont2[:ItalicAngle]
+        areFontsEqual &= ofFont2[:Ascent].eql? tfFont2[:Ascent]
+        areFontsEqual &= ofFont2[:Descent].eql? tfFont2[:Descent]
+        puts "Fonts are not equal" unless areFontsEqual
+        textEqual = ofPage.text.eql? tfPage.text
+        puts "Text is not equal" unless textEqual
+        rawContentEqual = ofPage.raw_content.eql? tfPage.raw_content
+        puts "Raw content is not equal" unless rawContentEqual
+        areEqual = areFontsEqual && textEqual && rawContentEqual
+        break unless areEqual
+      }
+    end
+    # FileUtils.compare_file returns true if the files are the same
+    unless areEqual
+      # 9. Report if different.
+      # puts "Need a fix for comparing pdf files, see " + 
+      # "http://www.emoticode.net/ruby/how-to-read-pdf-files-with-ruby.html"
+      raise "Different pdf files: " + origFile + " and " + tempFile
+    end
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+  rescue RuntimeError => e
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+  end
+end
+
+# Draw the text with different fonts and fontsizes, and colors.
+# 1. Create a bitmap context with dimensions 800x600
+# 2. Draw text with five different fonts each with 2 different font sizes
+#   1. Frilly, sans serif fonts, a serif font, Chalkboard, plus one UIFont.
+# 3. Draw with different colors the fonts are drawn with.
+# 4. Draw text stroking only, no fill.
+# 5. Draw text stroking and filling the text.
+# 6. Create an image exporter object
+# 7. Add an image representation of the bitmap to the image exporter object
+# 8. Save the image as jpeg.
+# 9. Compare with previously saved image.
+# 10. Report if different.
+
+def test05()
+  baseImageName = "differentfontstextwindowcontext.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    # 1. Create the bitmap context
+    windowContentName = SecureRandom.uuid
+    createWindowContextCommand = CommandModule.make_createwindowcontext(
+                                              width: 800, height: 600,
+                                              xloc: 100, yloc: 100,
+                                              name: windowContentName)
+    windowContextObject = SmigIDHash.make_objectid(
+                                              objecttype: :nsgraphicscontext,
+                                              objectname: windowContentName)
+    theCommands.add_command(createWindowContextCommand)
+    theCommands.add_tocleanupcommands_closeobject(windowContextObject)
+
+    # Need to initialize the window to having a white background.
+    windowRect = MIShapes.make_rectangle(size:{ :width => 800,
+                                                :height => 600 },
+                                         origin: { :x => 0, :y => 0 } )
+    whiteColor = MIColor.make_rgbacolor(1.0, 1.0, 1.0)
+    drawBackgroundElement = MIDrawElement.new(:fillrectangle)
+    drawBackgroundElement.rectangle = windowRect
+    drawBackgroundElement.fillcolor = whiteColor
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                       drawinstructions: drawBackgroundElement)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Setup the draw string object for drawing the text.
+    # First font to draw is a Frilly font.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.stringtext = "Draw text with the font SavoyeLetPlain. " + 
+                              "At a size of 30 points in a dark red color."
+    drawString.postscriptfontname = 'SavoyeLetPlain'
+    drawString.fontsize = 30
+    darkRedColor = MIColor.make_rgbacolor(0.6, 0.1, 0.05)
+    drawString.fillcolor = darkRedColor
+    textOrigin = MIShapes.make_point(10, 560)
+    drawString.point_textdrawnfrom = textOrigin
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.stringtext = "Draw text with the font SavoyeLetPlain. " + 
+                              "At a size of 18 points in a black color."
+    drawString.postscriptfontname = 'SavoyeLetPlain'
+    textOrigin = MIShapes.make_point(10, 520)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 18
+    blackColor = MIColor.make_rgbacolor(0,0,0)
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Verdana'
+    drawString.stringtext = "Draw text with the font Verdana. " + 
+                              "At size 26 points in a cyan color."
+    textOrigin = MIShapes.make_point(10, 480)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 26
+    cyan = MIColor.make_rgbacolor(0,1,1)
+    drawString.fillcolor = cyan
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                                drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Verdana'
+    drawString.stringtext = "Draw text with the font Verdana. " + 
+                              "At size 10 points in a black color."
+    textOrigin = MIShapes.make_point(10, 440)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 10
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                              drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'SIL-Kai-Reg-Jian'
+    drawString.stringtext = "Draw text with the font SIL-Kai-Reg-Jian. " + 
+                              "At size 24 points in a green color."
+    textOrigin = MIShapes.make_point(10, 400)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 24
+    greenColor = MIColor.make_rgbacolor(0.05, 0.5, 0.1)
+    drawString.fillcolor = greenColor
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                              drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'SIL-Kai-Reg-Jian'
+    drawString.stringtext = "Draw text with the font SIL-Kai-Reg-Jian. " + 
+                              "At size 8 points in a black color."
+    textOrigin = MIShapes.make_point(10, 360)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 8
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Chalkboard'
+    drawString.stringtext = "Draw text with the font Chalkboard. " + 
+                              "At size 23 points in a blue color."
+    textOrigin = MIShapes.make_point(10, 320)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 23
+    blueColor = MIColor.make_rgbacolor(0, 0.05, 0.6)
+    drawString.fillcolor = blueColor
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Chalkboard'
+    drawString.stringtext = "Draw text with the font Chalkboard. " + 
+                              "At size 11 points in a black color."
+    textOrigin = MIShapes.make_point(10, 280)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 11
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                                drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.userinterfacefont = 'kCTFontUIFontLabel'
+    drawString.stringtext = "Draw text using user interface font. " + 
+                              "kCTFontUIFontLabel in a black color."
+    textOrigin = MIShapes.make_point(10, 240)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.elementhash.delete(:fontsize)
+    drawString.fillcolor = blackColor
+    drawCommand = CommandModule.make_drawelement(windowContextObject, 
+                                            drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 2/3. Draw the text along a line.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Verdana-Bold'
+    drawString.stringtext = "Draw outline text using using font " +
+                              "Verdana-Bold with a black outline. "
+    textOrigin = MIShapes.make_point(10, 200)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 20
+    drawString.strokecolor = blackColor
+    drawString.stringstrokewidth = 4
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                              drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 4. Draw the text along a line stroking the text.
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'Verdana-Bold'
+    drawString.stringtext = "Draw text using font Verdana-Bold " +
+                              "with a black outline & red fill."
+    textOrigin = MIShapes.make_point(10, 160)
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 20
+    drawString.strokecolor = blackColor
+    redColor = MIColor.make_rgbacolor(0.9, 0.2, 0.1)
+    drawString.fillcolor = redColor
+    drawString.stringstrokewidth = -8
+    drawCommand = CommandModule.make_drawelement(windowContextObject, 
+                                          drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+
+    # 5. Draw the text along a line stroking and filling the text.
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    # 6. Create an image exporter object
+    
+    imageExporterName = SecureRandom.uuid
+    createExporterCommand = CommandModule.make_createexporter(tempFile,
+                                                  export_type: :"public.jpeg", 
+                                                  name: imageExporterName)
+    exporterObject = SmigIDHash.make_objectid(objecttype: :imageexporter,
+                                              objectname: imageExporterName)
+    theCommands.add_command(createExporterCommand)
+    theCommands.add_tocleanupcommands_closeobject(exporterObject)
+    # 7. Add an image representation of the bitmap to the image exporter object
+    addImageToExporterCommand = CommandModule.make_addimage(
+                                    exporterObject, windowContextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    # 8. Save the image as jpeg.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+    $teststring = theCommands.commandshash.to_json
+    Smig.perform_commands(theCommands)
+    origFile = File.join($compareImageDir, baseImageName)
+    # 9. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile, 85)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    FileUtils.mv(tempFile, origFile)
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+#    Open3.capture2("open", origFile)
+  end
+end
+
+def test06()
+  baseImageName = "drawtextwithinnershadow.jpg"
+  begin
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    # 1. Create the bitmap context 800x300
+    bitmapSize = MIShapes.make_size(800, 300)
+    bitmapObject = theCommands.make_createbitmapcontext(size: bitmapSize,
+        addtocleanup: true, preset: :PlatformDefaultBitmapContext)
+    
+    # 2. Create the inner shadow representation.
+    
+    innerShadow = MIShadow.new
+    innerShadow.color = MIColor.make_rgbacolor(0,0,0) # black
+    innerShadow.blur = 3.6
+    innerShadow.offset = MIShapes.make_size(3.0, 3.0)
+    
+    # 3. Create the bounding box within which the text will be drawn.
+    textOrigin = MIShapes.make_point(100, 20)
+    textRect = MIShapes.make_rectangle(width: 600, height: 260, origin: textOrigin)
+    
+    # 4. Draw the text along a line stroking the text.
+    greenColor = MIColor.make_rgbacolor(0.1, 0.8, 0.05)
+    drawString = MIDrawBasicStringElement.new()
+    drawString.postscriptfontname = 'AvenirNext-Bold'
+    drawString.stringtext = "Moving Images"
+    drawString.point_textdrawnfrom = textOrigin
+    drawString.fontsize = 90
+    drawString.fillcolor = greenColor
+    drawString.innershadow = innerShadow
+    drawString.textalignment = :kCTTextAlignmentCenter
+    drawString.boundingbox = textRect
+
+    drawCommand = CommandModule.make_drawelement(bitmapObject, 
+                                          drawinstructions: drawString)
+    theCommands.add_command(drawCommand)
+    # tempFile = File.join($compareImageDir, baseImageName)
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+    exporterObject = theCommands.make_createexporter(tempFile)
+    addImageToExporterCommand = CommandModule.make_addimage(exporterObject,
+                                                            bitmapObject)
+    theCommands.add_command(addImageToExporterCommand)
+
+    # 5. Save the image as jpeg.
+    exportImageToFileCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportImageToFileCommand)
+    Smig.perform_commands(theCommands)
+
+    origFile = File.join($compareImageDir, baseImageName)
+    
+    # 6. Compare with previously saved image.
+    unless AreImageFilesSame(origFile, tempFile, 85)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts $teststring + " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    FileUtils.mv(tempFile, origFile)
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+#    Open3.capture2("open", origFile)
+  end
+end
+
+def LocalTestMain007()
+  puts "test01"
+  test01()
+  puts "test02"
+  test02()
+  puts "test03"
+  test03()
+  puts "test04"
+  test04()
+  puts "test05"
+  test05()
+  puts "test06"
+  test06()
+  return $errorcode
+end
+
+exit(LocalTestMain007())
+

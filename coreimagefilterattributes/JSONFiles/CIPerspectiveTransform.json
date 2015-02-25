@@ -1,0 +1,53 @@
+{
+  "CIAttributeFilterDisplayName" : "Perspective Transform",
+  "CIAttributeDescription" : "Alters the geometry of an image to simulate the observer changing viewing position. You can use the perspective filter to skew an image.",
+  "outputImage" : {
+    "CIAttributeClass" : "CIImage"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeClass" : "CIImage"
+  },
+  "CIAttributeFilterName" : "CIPerspectiveTransform",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIPerspectiveTransform",
+  "inputBottomLeft" : {
+    "CIAttributeDisplayName" : "Bottom Left",
+    "CIAttributeDescription" : "The bottom left coordinate to map the image to.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[155 153]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryGeometryAdjustment",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputTopLeft" : {
+    "CIAttributeDisplayName" : "Top Left",
+    "CIAttributeDescription" : "The top left coordinate to map the image to.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[118 484]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "inputBottomRight" : {
+    "CIAttributeDisplayName" : "Bottom Right",
+    "CIAttributeDescription" : "The bottom right coordinate to map the image to.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[548 140]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "inputTopRight" : {
+    "CIAttributeDisplayName" : "Top Right",
+    "CIAttributeDescription" : "The top right coordinate to map the image to.",
+    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : "[646 507]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  }
+}
