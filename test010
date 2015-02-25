@@ -10,17 +10,6 @@
 # After drawing the object the script compares the generated image with a 
 # previously generated image.
 # 
-# 1. Create a bitmap context
-# 2. Draw a filled rounded rectangle in a yellow color.
-# 3. Draw a linear gradient fill. (Yellow to Orange)
-# 4. Draw a blue line
-# 5. Draw black lines.
-# 6. Draw the array of elements to the bitmap context
-# 7. Create an image exporter with filetype public.jpeg and path
-# 8. Generate image from bitmap context and add to image exporter.
-# 9. Export from image exporter
-# 10. Close base object
-
 # The second test method test02, tests the drawing of the radial gradient.
 
 require 'Open3'
