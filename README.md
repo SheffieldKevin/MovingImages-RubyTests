@@ -114,16 +114,34 @@ Cleanup commands are commands that run after the last command in the main list o
   * Test getting pixel data works for a 8 bit per component integer based context.
 6. Test the getproperties command by getting image properties from an image works.
 
-#####  test014 - Draw arcs, use equations, apply clipping
+##### test014 - Draw arcs, use equations, apply clipping
 
 1. Draw a path made up of arcs and stroke.
 2. Set up a clipping path, and then draw an image which will have its drawing clipped.
 3. Use a grayscale image as an image mask before drawing an image.
-4. 
 
+##### test015 - Movie Importer objects
 
+1. Getting various bits of metadata from a movie importer about the movie file
+2. Getting various bits of metadata from a video track in a movie importer object
+3. Get an image composed from all video tracks in a movie file at a specific movie time. Compare.
+4. Get an image composed from a single video tracks in a movie file at a specific movie time. Compare.
 
-1. 
+##### test016 - Using the image collection. MovieImporter object process frames command.
 
+1. Add, access and remove an image in the collection, original source from a movie frame.
+  * Draw the image in the image collection to a bitmap context.
+2. Add an image created from a bitmap context and add it to the image collection.
+  * Confirm that the image can be drawn
+  * Confirm that the image can be drawn after its image source is taken away.
+  * Confirm that the image is removed from collection by trying to draw again.
+3. Use the processing frames command to apply a sequence of commands to movie frames.
+  * This is probably one of the most complex commands to use.
 
+##### test017 - Tests the movie video writer object
+
+1. Test writing as different movie formats. mp4, m4v, mov.
+  *Test creating and closing a video frames writer object.
+2. Tests adding a video input to the video frames writer object.
+3. Test reading frames from an imported movie and then adding frames to the video writer.
 
