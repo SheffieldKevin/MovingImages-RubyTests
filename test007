@@ -216,6 +216,8 @@ def test01()
 #    exit 240
   ensure
     FileUtils.rm_f(tempFile) unless tempFile.nil?
+    # `open #{tempFile}`
+    # `open #{origFile}`
   end
 end
 
