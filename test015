@@ -233,7 +233,7 @@ def test02()
                                                         property: :naturalsize)
     getTrackNaturalSize.add_option(key: :track, value: trackID)
     res = Smig.perform_command(getTrackNaturalSize)
-    natSize = '{"width":400.000000, "height":252.000000}'
+    natSize = '{"width":400, "height":252}'
     raise "Track with id #{trackID} natural size #{res}" unless res.eql? natSize
 
     # 7. Get the nominal frame rate.
