@@ -177,7 +177,7 @@ module TestFile011
     addImageToExporterCommand = CommandModule.make_addimage(exporterObj, bitmapObj)
     theCommands.add_command(addImageToExporterCommand)
     setPathCommand = CommandModule.make_set_objectproperty(exporterObj,
-        propertykey: :exportfilepath, propertyvalue: outputFile)
+        propertykey: :file, propertyvalue: outputFile)
     theCommands.add_command(setPathCommand)
     exportCommand = CommandModule.make_export(exporterObj)
     theCommands.add_command(exportCommand)
@@ -411,7 +411,7 @@ module TestFile011
         outputFile = File.join($tempDir, fileName)
         
         setPathCommand = CommandModule.make_set_objectproperty(exportObj,
-            propertykey: :exportfilepath, propertyvalue: outputFile)
+            propertykey: :file, propertyvalue: outputFile)
         theCommands.add_command(setPathCommand)
         exportCommand = CommandModule.make_export(exportObj,
                                runasynchronously: true)

@@ -444,7 +444,7 @@ def test03()
         filePath = File.join(Dir.tmpdir(), fileName)
         setExportPathCommand = CommandModule.make_set_objectproperty(
                                                                exporterObject,
-                                                  propertykey: :exportfilepath,
+                                                  propertykey: :file,
                                                 propertyvalue: filePath)
         frameInstructions.add_command(setExportPathCommand)
         exportCommand = CommandModule.make_export(exporterObject)
