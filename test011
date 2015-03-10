@@ -104,11 +104,9 @@ module TestFile011
       FileUtils.cp(inputFile, intermediateFile)
       origFile = File.join($origforcompareimagesdir, newFileName)
       result = self.apply_simplesinglecifilter(filterName, intermediateFile, $tempDir)
-      distance = 17
+      distance = 22
       if filterName.eql? "CIColorPosterize"
         distance = 63
-      elsif filterName.eql? "CIBloom"
-        distance = 22
       end
       outputFile = File.join($tempDir, newFileName)
       puts "outputFile doesn't exist: #{outputFile}" unless File.exists?(outputFile)
@@ -445,7 +443,7 @@ module TestFile011
         fileName = baseName + numString + ".png"
         origFile = File.join(origDir, fileName)
         newFile = File.join(outputDir, fileName)
-        unless AreImageFilesSame(origFile, newFile, 20)
+        unless AreImageFilesSame(origFile, newFile, 25)
           raise "Different image files: " + origFile + " and " + newFile
         end
       }
