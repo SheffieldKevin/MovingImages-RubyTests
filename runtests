@@ -36,6 +36,7 @@ begin
   puts RunTest("test015")
   puts RunTest("test016")
   puts RunTest("test017")
+  puts RunTest("test018")
   endTime = Time.now
   puts "Time to runtests: " + (endTime - startTime).to_s
 rescue Exception => e

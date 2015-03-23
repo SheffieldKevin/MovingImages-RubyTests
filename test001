@@ -184,7 +184,7 @@ def test04()
   baseStr = "File:" + $filename + ": test04(): "
   begin
     # First just close everything.
-    CloseAllObjectsOfType("")
+    CloseAllObjectsOfType(nil)
     CreateImageImporterObject()
     CreateImageImporterObject()
     CreateImageImporterObject()
@@ -194,7 +194,7 @@ def test04()
     CreatePDFContextObject()
     CreateWindowContextObject()
     # no errors so far, so start checking.
-    CloseAllObjectsOfType("")
+    CloseAllObjectsOfType(nil)
     FileUtils.rm_f("~/deleteme.pdf")
     numObjects = GetNumberOfObjectsOfType(nil)
     unless numObjects.eql? 0

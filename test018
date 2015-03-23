@@ -10,23 +10,40 @@
 # This script file is for testing interacting with the MovieEditor class and
 # objects of that class.
 # Testing covers:
+#
 # 1. Getting a list of all export presets from the class.
 # 1.1 Get the number of open movie editor objects.
-# 2. Create a movie editor object.
+#
+# 2. Create a movie editor object, add a single track and some content.
+# 2.0 Create the movie editor object
 # 2.1 Confirm that the number of movie editor objects is 1.
 # 2.2 Add a video track to the movie editor.
 # 2.3 Confirm that there is one video track.
 # 2.4 Add a movie segment.
-# 2.5 Add an empty segment.
-# 2.6 Add a second movie segment.
-# 2.7 Get the segment mappings.
+# 2.5 Get the segment mappings.
+# 2.6 Add an empty segment.
+# 2.7 Add a second movie segment.
+# 2.8 Get the segment mappings.
+# 2.9 Add a single passthru instruction for the length of the movie.
+# 2.10 Copy the composition map image to the image collection.
+# 2.11 Save the composition map image
+# 2.12 Compare the composition map image with a previously generated one.
+# 2.13 Export the video compostion.
+# 2.14 Import the exported movie and check movie length and size.
 # 
-# 3. Adding a few different video writer inputs.
-# 4. Getting properties from the video writer objects with different inputs.
-# 5. For H264, ProRes4444 and ProRes422 codecs test creation of files.
-# 6. Don't try and do comparison of actual movie pixels. Do test dimensions
-#      and movie length.
-# Test path substitution when creating a movie writer class.
+# 3 Create a movie editor object with multiple video tracks, with transitions.
+# 3.0 Create a movie editor object
+# 3.1 Add three video tracks.
+# 3.2 Confirm that the number of tracks is 3.
+# 3.3 Import a movie file.
+# 3.4 Add content to all three tracks that overlaps.
+# 3.5 Add instructions.
+# 3.6 Copy the composition map image to the image collection.
+# 3.7 Save the composition map image
+# 3.8 Compare the composition map image with a previously generated one.
+# 3.9 Export the video compostion.
+# 3.10 Import the exported movie and check movie length and size.
+
 
 require 'Open3'
 require 'JSON'
@@ -92,7 +109,8 @@ def test01()
   end
 end
 
-# 2.0 Create a movie editor object.
+# 2. Create a movie editor object, add a single track and some content.
+# 2.0 Create the movie editor object
 # 2.1 Confirm that the number of movie editor objects is 1.
 # 2.2 Add a video track to the movie editor.
 # 2.3 Confirm that there is one video track.
@@ -266,7 +284,6 @@ def test02()
     imageIdentifier = SecureRandom.uuid
     addCompositionToImageCollection = CommandModule.make_assignimage_tocollection(
                                                 movieEditorObject,
-                        image_creation_options: nil,
                                     identifier: imageIdentifier)
     theCommands.add_command(addCompositionToImageCollection)
     cleanupCommands.add_tocleanupcommands_removeimagefromcollection(imageIdentifier)
@@ -274,6 +291,7 @@ def test02()
     # First create an image exporter object and add it to the cleanup commands.
     compMapFileName = "compositionmap.jpg"
     exportPath = File.join(Dir.tmpdir(), compMapFileName)
+    # exportPath = File.join($compareImageDir, compMapFileName)
     exporterObject = theCommands.make_createexporter(exportPath,
                                         export_type: "public.jpeg",
                                        addtocleanup: false)
@@ -303,8 +321,9 @@ def test02()
                               exportfiletype: fileType)
     theCommands.add_command(exportMovieCommand)
     Smig.perform_commands(theCommands)
-    # `open #{movieExportPath}`
     theCommands.clear
+    
+    # 2.14 Now import the movie so that we can check the video track properties.
     movieImporter2 = theCommands.make_createmovieimporter(movieExportPath,
                                            addtocleanup: false)
     cleanupCommands.add_tocleanupcommands_closeobject(movieImporter2)
@@ -344,449 +363,331 @@ def test02()
     Smig.perform_commands(cleanupCommands)
     FileUtils.rm_f(exportPath) unless exportPath.nil?
     FileUtils.rm_f(movieExportPath) unless movieExportPath.nil?
+    # `open #{movieExportPath}` unless movieExportPath.nil?
   end
 end
 
-# Tests creating and automically close video writer objects.
-# Video writer created that will export as mp4, mov and m4v.
-# Tests getting properties of 
-def xtest01()
-  destMovieFileNameMP4 = "movie01.mp4"
-  destMovieFileNameMOV = "movie02.mov"
-  destMovieFileNameM4V = "movie03.m4v"
-  begin
-    # Test with a mpeg4 file type.
-    
-    # Create the list of commands object.
-    theCommands = SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
-     
-    movieFilePath = File.join(Dir.tmpdir(), destMovieFileNameMP4)
-    videoWriterName = "videowriter.test01.name"
-    utiFileType = "public.mpeg-4"
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                          addtocleanup: true,
-                                                  name: videoWriterName,
-                                           utifiletype: utiFileType,
-                                   pathsubstitutionkey: nil)
-     
-    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
-                                            saveresultstype: :jsonstring)
-    theCommands.add_command(getMovieWriterProps)
-    result = Smig.perform_commands(theCommands)
-    oldResH = { 
-                            "file" => "/This/Path/Is/Ignored",
-                      "objectname" => videoWriterName,
-                      "objecttype" => "videoframeswriter",
-                     "utifiletype" => utiFileType,
-                  "canwriteframes" => false,
-               "videowriterstatus" => 0
-              }
-    newResH = JSON.parse(result)
-    
-    # Compare the different property hashes.
-    compare_videowriterproperties_hash(oldResH, newResH)
+# 3 Create a movie editor object with multiple video tracks, with transitions.
+# 3.0 Create a movie editor object
+# 3.1 Add three video tracks.
+# 3.2 Confirm that the number of tracks is 3.
+# 3.3 Import a movie file.
+# 3.4 Add content to all three tracks that overlaps.
+# 3.5 Add instructions.
+# 3.6 Copy the composition map image to the image collection.
+# 3.7 Save the composition map image
+# 3.8 Compare the composition map image with a previously generated one.
+# 3.9 Export the video compostion.
+# 3.10 Import the exported movie and check movie length and size.
 
-    # Now lets ask for the number of objects. Should be 0.
-    fail "Video writer object not closed" unless Smig.get_numberofobjects().eql? 0
-    
-    # Test with a quicktime file type.
-
-    # Create the list of commands object.
-    theCommands = SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
-     
-    movieFilePath = File.join(Dir.tmpdir(), destMovieFileNameMOV)
-    videoWriterName = "videowriter.test01.name"
-    utiFileType = "com.apple.quicktime-movie"
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                          addtocleanup: true,
-                                                  name: videoWriterName,
-                                           utifiletype: utiFileType,
-                                   pathsubstitutionkey: nil)
-     
-    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
-                                            saveresultstype: :jsonstring)
-    theCommands.add_command(getMovieWriterProps)
-    result = Smig.perform_commands(theCommands)
-    oldResH = { 
-                            "file" => "/This/Path/Is/Ignored",
-                      "objectname" => videoWriterName,
-                      "objecttype" => "videoframeswriter",
-                     "utifiletype" => utiFileType,
-                  "canwriteframes" => false,
-               "videowriterstatus" => 0
-              }
-    newResH = JSON.parse(result)
-    
-    # Compare the different property hashes.
-    compare_videowriterproperties_hash(oldResH, newResH)
-    
-    # Now lets ask for the number of objects. Should be 0.
-    fail "Video writer object not closed" unless Smig.get_numberofobjects().eql? 0
-
-    # Test with a m4v file type.
-
-    # Create the list of commands object.
-    theCommands = SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
-     
-    movieFilePath = File.join(Dir.tmpdir(), destMovieFileNameM4V)
-    videoWriterName = "videowriter.test01.name"
-    utiFileType = "com.apple.m4v-video"
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                          addtocleanup: true,
-                                                  name: videoWriterName,
-                                           utifiletype: utiFileType,
-                                   pathsubstitutionkey: nil)
-     
-    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
-                                            saveresultstype: :jsonstring)
-    theCommands.add_command(getMovieWriterProps)
-    result = Smig.perform_commands(theCommands)
-    oldResH = { 
-                  "file" => "/This/Path/Is/Ignored",
-                      "objectname" => videoWriterName,
-                      "objecttype" => "videoframeswriter",
-                     "utifiletype" => utiFileType,
-                  "canwriteframes" => false,
-               "videowriterstatus" => 0
-              }
-    newResH = JSON.parse(result)
-    
-    # Compare the different property hashes.
-    compare_videowriterproperties_hash(oldResH, newResH)
-    
-    # Now lets ask for the number of objects. Should be 0.
-    fail "Video writer object not closed" unless Smig.get_numberofobjects().eql? 0
-
-    # One last test. Check that we can get a single property.
-    # In this case the utifiletype.
-    # Create the list of commands object.
-    theCommands = SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
-     
-    movieFilePath = File.join(Dir.tmpdir(), destMovieFileNameM4V)
-    videoWriterName = "videowriter.test01.name"
-    utiFileType = "com.apple.m4v-video"
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                          addtocleanup: true,
-                                                  name: videoWriterName,
-                                           utifiletype: utiFileType,
-                                   pathsubstitutionkey: nil)
-     
-    getMovieWriterProp = CommandModule.make_get_objectproperty(movieWriter,
-                                            property: :utifiletype)
-    theCommands.add_command(getMovieWriterProp)
-    result = Smig.perform_commands(theCommands)
-
-    fail "utifiletype different to assigned: " unless result.eql? utiFileType
-
-    # Now lets ask for the number of objects. Should be 0.
-    fail "Video writer object not closed" unless Smig.get_numberofobjects().eql? 0
-
-  rescue RuntimeError => e
-    $errorcode = Smig.exitvalue
-    unless $errorcode.zero?
-      puts "Exit string: " + Smig.exitstring
-      puts " Exit status: " + $errorcode.to_s
-    end
-    puts e.message
-    puts e.backtrace.to_s
-  end
-end
-
-# Test adding an input to a video writer object.
-# Set the file type to quicktime.
-# All the presets for the inputs will be tested.
-# Once again we will request all the associated properties.
-
-def xtest02()
-  movieFileName = "movie01.mov"
-  begin
-    theCommands = SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
-     
-    movieFilePath = File.join("/blah", movieFileName)
-    videoWriterName = "videowriter.test02.name"
-    utiFileType = "com.apple.quicktime-movie"
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                          addtocleanup: true,
-                                                  name: videoWriterName,
-                                           utifiletype: utiFileType,
-                                   pathsubstitutionkey: nil)
-    
-    # Now add the h264_sd input to the video writer object
-    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
-      timescale: 30000)
-    cleanAperture = MIMovie::CleanAperture.make_cleanaperture(0, 30, 640, 420)
-    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
-      movieWriter, preset: :h264preset_sd, framesize: { width: 640, height: 480 },
-      frameduration: frameduration, cleanaperture: cleanAperture,
-      scalingmode: :AVVideoScalingModeResizeAspect)
-    theCommands.add_command(addVideoInputCommand)
-    
-    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
-                                            saveresultstype: :jsonstring)
-    theCommands.add_command(getMovieWriterProps)
-    result = Smig.perform_commands(theCommands)
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoCleanApertureKey":'\
-    '{"AVVideoCleanApertureHorizontalOffsetKey":0,'\
-    '"AVVideoCleanApertureHeightKey":420,"AVVideoCleanApertureVerticalOffsetKey"'\
-    ':30,"AVVideoCleanApertureWidthKey":640},"AVVideoHeightKey":'\
-    '480,"AVVideoCodecKey":"avc1","AVVideoCompressionPropertiesKey":{'\
-    '"AverageBitRate":3145728,"MaxKeyFrameInterval":30,"ProfileLevel":'\
-    '"H264_Baseline_AutoLevel","ExpectedFrameRate":30},"AVVideoWidthKey":'\
-    '640,"AVVideoScalingModeKey":"AVVideoScalingModeResizeAspect"},'\
-    '"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
-    '0},"canwriteframes":true,"file":"\/blah\/movie01.mov","time":'\
-    '{"flags":1,"value":0,"timescale":6000,"epoch":0},"size":{"width":640,'\
-    '"height":480},"videowriterstatus":0,'\
-    '"utifiletype":"com.apple.quicktime-movie"}'
-    fail "Writer with input h264_sd properties different: " unless result.eql? oldRes
-
-    # Now redo for h264_hd
-    theCommands = SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
-     
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                          addtocleanup: true,
-                                                  name: videoWriterName,
-                                           utifiletype: utiFileType,
-                                   pathsubstitutionkey: nil)
-    
-    # Now add the h264_hd input to the video writer object
-    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
-      timescale: 30000)
-    cleanAperture = MIMovie::CleanAperture.make_cleanaperture(150, 0, 1620, 1080)
-    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
-      movieWriter, preset: :h264preset_hd, framesize: { width: 1920, height: 1080 },
-      frameduration: frameduration, cleanaperture: cleanAperture,
-      scalingmode: :AVVideoScalingModeResizeAspect)
-    theCommands.add_command(addVideoInputCommand)
-    
-    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
-                                            saveresultstype: :jsonstring)
-    theCommands.add_command(getMovieWriterProps)
-    result = Smig.perform_commands(theCommands)
-
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoCleanApertureKey":'\
-    '{"AVVideoCleanApertureHorizontalOffsetKey":150,'\
-    '"AVVideoCleanApertureHeightKey":1080,"AVVideoCleanApertureVerticalOffsetKey"'\
-    ':0,"AVVideoCleanApertureWidthKey":1620},"AVVideoHeightKey":1080,'\
-    '"AVVideoCodecKey":"avc1","AVVideoCompressionPropertiesKey":'\
-    '{"ProfileLevel":"H264_High_AutoLevel","AverageBitRate":15585760'\
-    ',"H264EntropyMode":"CABAC","MaxKeyFrameInterval":30,"AllowFrameReordering":'\
-    '1,"ExpectedFrameRate":30},"AVVideoWidthKey":1920,"AVVideoScalingModeKey":'\
-    '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001'\
-    ',"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
-    '"\/blah\/movie01.mov","time":{"flags":1,'\
-    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":1080},'\
-    '"videowriterstatus":0,"utifiletype"'\
-    ':"com.apple.quicktime-movie"}'
-    
-    fail "Writer with input h264_hd properties different: " unless result.eql? oldRes
-
-    # Now redo for jpegpreset
-    theCommands = SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
-     
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                          addtocleanup: true,
-                                                  name: videoWriterName,
-                                           utifiletype: utiFileType,
-                                   pathsubstitutionkey: nil)
-    
-    # Now add the jpegpreset input to the video writer object
-    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
-      timescale: 30000)
-    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
-      movieWriter, preset: :jpegpreset, framesize: { width: 1280, height: 720 },
-      frameduration: frameduration)
-    theCommands.add_command(addVideoInputCommand)
-    
-    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
-                                            saveresultstype: :jsonstring)
-    theCommands.add_command(getMovieWriterProps)
-    result = Smig.perform_commands(theCommands)
-
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoHeightKey":720,"AVVideoCodecKey"'\
-    ':"jpeg","AVVideoWidthKey":1280,"AVVideoCompressionPropertiesKey":{"Quality":'\
-    '0.85}},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
-    '0},"canwriteframes":true,"file":"\/blah\/movie01.mov","time":{"flags":1,'\
-    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1280,"height":720},'\
-    '"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
-    
-    fail "Writer with input jpegpreset properties different: " unless result.eql? oldRes
-
-    # Now redo for ProRes422
-    theCommands = SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
-     
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                          addtocleanup: true,
-                                                  name: videoWriterName,
-                                           utifiletype: utiFileType,
-                                   pathsubstitutionkey: nil)
-    
-    # Now add the ProRes422 input to the video writer object
-    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
-      timescale: 30000)
-    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
-      movieWriter, preset: :prores422preset,
-      framesize: { width: 1280, height: 720 }, frameduration: frameduration)
-    theCommands.add_command(addVideoInputCommand)
-    
-    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
-                                            saveresultstype: :jsonstring)
-    theCommands.add_command(getMovieWriterProps)
-    result = Smig.perform_commands(theCommands)
-
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoColorPropertiesKey":'\
-    '{"TransferFunction":"ITU_R_709_2","YCbCrMatrix":"ITU_R_709_2",'\
-    '"ColorPrimaries":"ITU_R_709_2"},"AVVideoCodecKey":"apcn",'\
-    '"AVVideoHeightKey":720,"AVVideoWidthKey":1280,"AVVideoScalingModeKey":'\
-    '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001,'\
-    '"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
-    '"\/blah\/movie01.mov","time":{"flags":1,'\
-    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1280,"height":720}'\
-    ',"videowriterstatus":'\
-    '0,"utifiletype":"com.apple.quicktime-movie"}'
-    
-    fail "Writer with input ProRes422 properties different: " unless result.eql? oldRes
-
-    # Now redo for ProRes4444
-    theCommands = SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
-     
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                          addtocleanup: true,
-                                                  name: videoWriterName,
-                                           utifiletype: utiFileType,
-                                   pathsubstitutionkey: nil)
-    
-    # Now add the ProRes4444 input to the video writer object
-    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 1001,
-      timescale: 30000)
-    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
-      movieWriter, preset: :prores4444preset,
-      framesize: { width: 1920, height: 1080 }, frameduration: frameduration)
-    theCommands.add_command(addVideoInputCommand)
-    
-    getMovieWriterProps = CommandModule.make_get_objectproperties(movieWriter,
-                                            saveresultstype: :jsonstring)
-    theCommands.add_command(getMovieWriterProps)
-    result = Smig.perform_commands(theCommands)
-    # puts result
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoColorPropertiesKey":'\
-    '{"TransferFunction":"ITU_R_709_2","YCbCrMatrix":"ITU_R_709_2",'\
-    '"ColorPrimaries":"ITU_R_709_2"},"AVVideoCodecKey":"ap4h","AVVideoHeightKey":'\
-    '1080,"AVVideoWidthKey":1920,"AVVideoScalingModeKey":'\
-    '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":'\
-    '1001,"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
-    '"\/blah\/movie01.mov","time":{"flags"'\
-    ':1,"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":'\
-    '1080},"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
-    
-    fail "Writer with input ProRes4444 properties different: " unless result.eql? oldRes
-
-  rescue RuntimeError => e
-    $errorcode = Smig.exitvalue
-    unless $errorcode.zero?
-      puts "Exit string: " + Smig.exitstring
-      puts " Exit status: " + $errorcode.to_s
-    end
-    puts e.message
-    puts e.backtrace.to_s
-  end
-end
-
-# test reading frames from an imported movie draw them and then write a movie.
 def test03()
-  movieFileName = "movie03.mov"
-  # In this example source file and output dimensions are both 1280x720
-  sourceMovie = File.join($directory, "images/testinput-movingimages.mov")
-  utiFileType = "com.apple.quicktime-movie"
-
+  movieEditorObject = nil
   begin
-    # Create the list of commands object, ready to have commands added to it.
-    theCommands = CommandModule::SmigCommands.new
-    theCommands.saveresultstype = :lastcommandresult
+    theCommands = SmigCommands.new
+    
+    # Create a Smig commands object purely used to cleanup on script completion.
+    cleanupCommands = SmigCommands.new
+    # 3.0 Create a movie editor object.
+    movieEditorObject = theCommands.make_createmovieeditor(addtocleanup: false)
 
-    # Importer the movie file
-    movieImporterName = SecureRandom.uuid
+    cleanupCommands.add_tocleanupcommands_closeobject(movieEditorObject)
+    
+    # 3.1 Add three video tracks.
+    # Leave track id unspecified and one will be assigned.
+    addVideoTrackCommand = CommandModule.make_createtrackcommand(movieEditorObject,
+                                     mediatype: :vide)
+    theCommands.add_command(addVideoTrackCommand)
+    # Since we are not specifying the persistent track id, the create track
+    # command is the same for creating all 3 tracks.
+    theCommands.add_command(addVideoTrackCommand)
+    theCommands.add_command(addVideoTrackCommand)
+
+    # 3.2 Confirm that there is three tracks.
+    getNumTracks = CommandModule.make_get_objectproperty(movieEditorObject,
+                                                      property: :numberoftracks)
+    theCommands.add_command(getNumTracks)
+    
+    numTracks = Smig.perform_commands(theCommands)
+    fail "Number of video tracks should be 3 is #{numTracks}" unless numTracks.eql?("3")
+
+    theCommands.clear
+    # 3.3 Import a movie file.
+    sourceMovie = File.join($directory, "images/testinput-movingimages.mov")
     movieImporter = theCommands.make_createmovieimporter(sourceMovie,
-                                                 name: movieImporterName)
-
-    contextSize = MIShapes.make_size(1280, 720)
-    bitmapObject = theCommands.make_createbitmapcontext(size: contextSize,
-                                        profile: :kCGColorSpaceGenericRGB)
-
-    movieFilePath = File.join(File.expand_path("~/Desktop"), movieFileName)
-    # Create the video frames writer object
-    movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
-                                      addtocleanup: true,
-                                       utifiletype: utiFileType,
-                               pathsubstitutionkey: nil)
-
-    # Now add the ProRes422 input to the video writer object
-    frameduration = MIMovie::MovieTime.make_movietime(timevalue: 400,
-                                                      timescale: 6000)
-    addVideoInputCommand = CommandModule.make_addinputto_videowritercommand(
-        movieWriter, preset: :prores422preset, framesize: contextSize,
-        frameduration: frameduration)
-    theCommands.add_command(addVideoInputCommand)
-
-    # Prepare to loop over accessing frames and add frames to video frame writer
-    # Will do nothing else other than halve the speed by doubling frame duration
-    # time.
-    # lets get 60 frames.
-    numberOfFrames = 60
-    imageID = SecureRandom.uuid
-    trackID = MIMovie::MovieTrackIdentifier.make_movietrackid_from_mediatype(
-        mediatype: :vide, trackindex: 0)
-    currentTime = MIMovie::MovieTime.make_movietime(timevalue: 120, timescale: 30)
+                                                         addtocleanup: false)
+    cleanupCommands.add_tocleanupcommands_closeobject(movieImporter)
+    # Specify that the content will be from the first video track in movie file.
+    sourceTrack = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+      mediatype: :vide, trackindex: 0)
     
-    # I've needed to use drawing to a bitmap context because my old laptop is
-    # incapable of creating the necessary color correction data to go from
-    # the profile of the image frame from the movie importer to the pixel buffer.
-    # Drawing to bitmap slows down the processing of the movie frames. When
-    # writing a script for computers with better hardware and optimizing for
-    # speed you could leave out the draw image code and swap it for the commented
-    # out code.
+=begin
+create 3 tracks.
+
+The first track is scaled down to display in the bottom right corner for the full
+length of the movie. Scale is 0.333, 0.333. There are two ways to do this,
+specify the preferred transform for the track, and use a passthru layer
+instruction for the track in all instructions or, add a transform layer
+instruction for the track in every instruction. Generated movie should be 10
+seconds long.
+
+I'm going to go with the first option for now, specifying the preferred transform
+for the first track. This might cause problems if the movie decides to make the
+size of video tracks to be the transformed size of the first video track.
+
+First option didn't work, preferred transform is for display not composition.
+So use a transform layer instruction and apply it to first track.
+
+Tracks two and three have an opacity ramp then crop ramp between the two.
+IN = Instruction
+
+————————————————————  T0
+————————    ————————  T1
+    ————————————      T2
+     OR      CR
+ 
+IN1 IN2 IN3 IN4  IN5
+
+OR is an opacity ramp that ramps the opacity from T1 to T2, CR is a crop
+ramp that crops T2 from no cropping to a small centred crop rect.
+
+IN1 [ T0PTLI, T1PTLI ] for 2 seconds.
+IN2 [ T0PTLI, T1ORLI, T2PTLI ] for 2 seconds.
+IN3 [ T0PTLI, T2PTLI ] for 2 seconds.
+IN4 [ T0PTLI, T2CRLI, T1PTLI ] for 2 seconds.
+IN5 [ T0PTLI, T1PTLI ] for 2 seconds.
+
+T0 Track 0
+T1 Track 1
+T2 Track 2
+PT PassThru
+OR Opacity Ramp
+CR Crop Ramp
+LI Layer Instruction
+[] indicates an array of layer instructions.
+=end
+    # 3.4 Add content to all three tracks that overlaps.
+    # First add 10 seconds of content to T0
+    track0 = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+                                            mediatype: :vide, trackindex: 0)
+    sourceTrack = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+                                            mediatype: :vide, trackindex: 0)
+
+    timeZero = MovieTime.make_movietime(timevalue: 0, timescale: 6000)
+    duration = MovieTime.make_movietime(timevalue: 60000, timescale: 6000)
+    sourceTimeRange = MovieTime.make_movie_timerange(start: timeZero,
+                                                  duration: duration)
+    insertionTime = MovieTime.make_movietime(timevalue: 0, timescale: 6000)
+    insertTrackSegmentCommand = CommandModule.make_inserttracksegment(
+                                movieEditorObject, 
+                         track: track0,
+                 source_object: movieImporter,
+                  source_track: sourceTrack,
+                 insertiontime: timeZero, 
+              source_timerange: sourceTimeRange)
+
+    theCommands.add_command(insertTrackSegmentCommand)
+    # Now set the preferred transform of track 0. Original movie 1280x720
+
+    # Now add content to T1. Two segments of content to be added. Each 4 seconds long.
+    # First segment is last 4 seconds of source track. Then a two second break.
+    # Second segment is first 4 seconds of source track.
+    fourSeconds = MovieTime.make_movietime(timevalue: 24000, timescale: 6000)
+    sixSeconds = MovieTime.make_movietime(timevalue: 36000, timescale: 6000)
+    track1 = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+                                            mediatype: :vide, trackindex: 1)
+    sourceTimeRange2 = MovieTime.make_movie_timerange(start: sixSeconds,
+                                                   duration: fourSeconds)
+    insertTrackSegmentCommand2 = CommandModule.make_inserttracksegment(
+                                movieEditorObject, 
+                         track: track1,
+                 source_object: movieImporter,
+                  source_track: sourceTrack,
+                 insertiontime: timeZero, 
+              source_timerange: sourceTimeRange2)
+    theCommands.add_command(insertTrackSegmentCommand2)
+    sourceTimeRange3 = MovieTime.make_movie_timerange(start: timeZero,
+                                                   duration: fourSeconds)
+    insertTrackSegmentCommand3 = CommandModule.make_inserttracksegment(
+                                movieEditorObject, 
+                         track: track1,
+                 source_object: movieImporter,
+                  source_track: sourceTrack,
+                 insertiontime: sixSeconds, 
+              source_timerange: sourceTimeRange3)
+    theCommands.add_command(insertTrackSegmentCommand3)
     
-    numberOfFrames.times do |frameIndex|
-      currentTime = MIMovie::MovieTime.make_movietime(timevalue: 60 + frameIndex,
-                                                      timescale: 30)
-      # frameOptions = MIMovie::FrameOptions.new
-      # frameOptions.frametime = currentTime
-      # frameOptions.tracks = [trackID]
-      #==================================================================
-      drawImageElement = MIDrawImageElement.new
-      drawImageElement.set_moviefile_imagesource(source_object: movieImporter,
-          frametime: currentTime, tracks: [trackID])
-      drawImageElement.destinationrectangle = MIShapes.make_rectangle(
-          size: contextSize)
-      drawImageCommand = CommandModule.make_drawelement(bitmapObject, 
-          drawinstructions: drawImageElement, createimage: true)
-      theCommands.add_command(drawImageCommand)
-      addImageToWriterInput = CommandModule.make_addimageto_videoinputwriter(
-          movieWriter, sourceobject: bitmapObject)
-      #==================================================================
-      # addImageToWriterInput = CommandModule.make_addimageto_videoinputwriter(
-      # movieWriter, imageoptions: frameOptions, sourceobject: movieImporter)
-      theCommands.add_command(addImageToWriterInput)
+    # Now add content to T2. One segment to be added. 4 seconds long, starting
+    # at 2 seconds in with source content starting at 3 seconds in.
+    twoSeconds = MovieTime.make_movietime(timevalue: 12000, timescale: 6000)
+    threeSeconds = MovieTime.make_movietime(timevalue: 18000, timescale: 6000)
+    track2 = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+                                            mediatype: :vide, trackindex: 2)
+    sourceTimeRange4 = MovieTime.make_movie_timerange(start: twoSeconds,
+                                                   duration: sixSeconds)
+    insertTrackSegmentCommand4 = CommandModule.make_inserttracksegment(
+                                movieEditorObject, 
+                         track: track2,
+                 source_object: movieImporter,
+                  source_track: sourceTrack,
+                 insertiontime: twoSeconds, 
+              source_timerange: sourceTimeRange4)
+    theCommands.add_command(insertTrackSegmentCommand4)
+    
+    # 3.5 Now add composition instructions.
+    # IN1 [ T0PTLI, T1PTLI ] for 2 seconds.
+    # First layer instruction is a transform instruction for track 0.
+    # Then a pass thru layer instruction for track 1.
+
+    contextTransformation = MITransformations.make_contexttransformation
+    translatePoint = MIShapes.make_point(853.3, 480)
+    MITransformations.add_translatetransform(contextTransformation, translatePoint)
+    scaleXY = MIShapes.make_point(0.3333333, 0.3333333)
+    MITransformations.add_scaletransform(contextTransformation, scaleXY)
+
+    li1 = VideoLayerInstructions.new
+    # li1.add_passthrulayerinstruction(track: track0)
+    li1.add_transformlayerinstruction(track: track0,
+                             transformvalue: contextTransformation)
+    li1.add_passthrulayerinstruction(track: track1)
+    videoI1TimeRange = MovieTime.make_movie_timerange(start: timeZero,
+                                                   duration: twoSeconds)
+    videoI1Command = CommandModule.make_addvideoinstruction(movieEditorObject,
+                                                 timerange: videoI1TimeRange,
+                                         layerinstructions: li1)
+    theCommands.add_command(videoI1Command)
+
+    # IN2 [ T0PTLI, T1ORLI, T2PTLI ] for 2 seconds.
+    li2 = VideoLayerInstructions.new
+    videoI2TimeRange = MovieTime.make_movie_timerange(start: twoSeconds,
+                                                   duration: twoSeconds)
+    li2.add_transformlayerinstruction(track: track0,
+                             transformvalue: contextTransformation)
+#    li2.add_passthrulayerinstruction(track: track0)
+    li2.add_opacityramplayerinstruction(track: track1,
+                            startopacityvalue: 1.0,
+                              endopacityvalue: 0.0,
+                                    timerange: videoI2TimeRange)
+
+    li2.add_passthrulayerinstruction(track: track2)
+    videoI2Command = CommandModule.make_addvideoinstruction(movieEditorObject,
+                                                 timerange: videoI2TimeRange,
+                                         layerinstructions: li2)
+    theCommands.add_command(videoI2Command)
+
+    # IN3 [ T0PTLI, T2PTLI ] for 2 seconds.
+    li3 = VideoLayerInstructions.new
+    li3.add_transformlayerinstruction(track: track0,
+                             transformvalue: contextTransformation)
+    li3.add_passthrulayerinstruction(track: track2)
+    videoI3TimeRange = MovieTime.make_movie_timerange(start: fourSeconds,
+                                                   duration: twoSeconds)
+    videoI3Command = CommandModule.make_addvideoinstruction(movieEditorObject,
+                                                 timerange: videoI3TimeRange,
+                                         layerinstructions: li3)
+    theCommands.add_command(videoI3Command)
+
+    # IN4 [ T0PTLI, T2CRLI, T1PTLI ] for 2 seconds.
+    li4 = VideoLayerInstructions.new
+    videoI4TimeRange = MovieTime.make_movie_timerange(start: sixSeconds,
+                                                   duration: twoSeconds)
+    li4.add_transformlayerinstruction(track: track0,
+                             transformvalue: contextTransformation)
+    startCropRect = MIShapes.make_rectangle(size: { width: 1280, height: 720 })
+    endCropRect = MIShapes.make_rectangle(width: 16, height: 16,
+                                           xloc: 623,  yloc: 352)
+    li4.add_croprectramplayerinstruction(track: track2,
+                            startcroprectvalue: startCropRect,
+                              endcroprectvalue: endCropRect,
+                                     timerange: videoI4TimeRange)
+
+    li4.add_passthrulayerinstruction(track: track1)
+    videoI4Command = CommandModule.make_addvideoinstruction(movieEditorObject,
+                                                 timerange: videoI4TimeRange,
+                                         layerinstructions: li4)
+    theCommands.add_command(videoI4Command)
+
+    # IN5 [ T0PTLI, T1PTLI ] for 2 seconds.
+    li5 = VideoLayerInstructions.new
+    li5.add_transformlayerinstruction(track: track0,
+                             transformvalue: contextTransformation)
+    li5.add_passthrulayerinstruction(track: track1)
+    eightSeconds = MovieTime.make_movietime(timevalue: 48000, timescale: 6000)
+    videoI5TimeRange = MovieTime.make_movie_timerange(start: eightSeconds,
+                                                   duration: twoSeconds)
+    videoI5Command = CommandModule.make_addvideoinstruction(movieEditorObject,
+                                                 timerange: videoI5TimeRange,
+                                         layerinstructions: li5)
+    theCommands.add_command(videoI5Command)
+
+    # 3.6 Copy the composition map image to the image collection.
+    imageIdentifier = SecureRandom.uuid
+    addCompositionToImageCollection = CommandModule.make_assignimage_tocollection(
+                                                movieEditorObject,
+                                    identifier: imageIdentifier)
+    theCommands.add_command(addCompositionToImageCollection)
+    cleanupCommands.add_tocleanupcommands_removeimagefromcollection(imageIdentifier)
+
+    # 3.7 Save the composition map image
+    # First create an image exporter object and add it to the cleanup commands.
+    compMapFileName = "compositionmap03.jpg"
+    # exportPath = File.join($compareImageDir, compMapFileName)
+    exportPath = File.join(Dir.tmpdir(), compMapFileName)
+    exporterObject = theCommands.make_createexporter(exportPath,
+                                        export_type: "public.jpeg",
+                                       addtocleanup: false)
+    cleanupCommands.add_tocleanupcommands_closeobject(exporterObject)
+    addImageToExporterCommand = CommandModule.make_addimage_fromimagecollection(
+      exporterObject, imageidentifier: imageIdentifier)
+    theCommands.add_command(addImageToExporterCommand)
+    exportCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportCommand)
+    Smig.perform_commands(theCommands)
+
+    # 3.8 Compare the composition map image with a previously generated one.
+    # `open #{exportPath}`
+    origFile = File.join($compareImageDir, compMapFileName)
+    compareResult = AreImageFilesSame(origFile, exportPath, 0)
+    unless compareResult
+      fail "3.8 Different image files: " + origFile + " and " + tempFile
     end
-    
-    finalize = CommandModule.make_finishwritingframescommand(movieWriter)
-    theCommands.add_command(finalize)
-    result = Smig.perform_commands(theCommands)
-    # The above will throw if an error occured.
+
+    # 3.9 Export the video compostion.
+    theCommands.clear
+    movieFileName = "videowithinstructions.mp4"
+    movieExportPath = File.join(Dir.tmpdir(), movieFileName)
+    # movieExportPath = File.join(File.expand_path("~/Desktop"), movieFileName)
+    fileType = "public.mpeg-4"
+    exportMovieCommand = CommandModule.make_movieeditor_export(movieEditorObject,
+                                exportpreset: :AVAssetExportPreset1280x720,
+                              exportfilepath: movieExportPath,
+                              exportfiletype: fileType)
+    theCommands.add_command(exportMovieCommand)
+    Smig.perform_commands(theCommands)
+
+    # 3.10 Import the exported movie and check movie length and size.
+    movieImporter2 = theCommands.make_createmovieimporter(movieExportPath,
+                                           addtocleanup: false)
+    cleanupCommands.add_tocleanupcommands_closeobject(movieImporter2)
+    getMovieTrackPropertiesCommand = CommandModule.make_get_objectproperties(
+                                                          movieImporter2)
+    theTrack = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+      mediatype: :vide, trackindex: 0)
+
+    getMovieTrackPropertiesCommand.add_option(key: :track, value: theTrack)
+    theCommands.add_command(getMovieTrackPropertiesCommand)
+    theResult = Smig.perform_commands(theCommands)
+    origResult = JSON.parse('{"naturalsize":{"width":1280,"height":720},'\
+    '"minframeduration":{"flags":1,"value":3002,"timescale":90000,"epoch":0},'\
+    '"mediatype":"vide","timerange":{"start":{"flags":1,"value":0,"timescale":'\
+    '90000,"epoch":0},"duration":{"flags":1,"value":900600,"timescale":90000,'\
+    '"epoch":0}},"trackid":1,"languagecode":"und","languagetag":"",'\
+    '"affinetransform":{"m12":0,"m21":0,"m22":1,"tY":0,"m11":1,"tX":'\
+    '0},"requiresframereordering":true,"trackenabled":true,"framerate":29.98001}')
+    newResult = JSON.parse(theResult)
+    unless origResult["naturalsize"]["width"].eql?(newResult["naturalsize"]["width"]) &&
+          origResult["timerange"]["duration"]["value"].eql?(newResult["timerange"]["duration"]["value"])
+      fail "3.10 Different track properties: #{theResult}"
+    end
   rescue RuntimeError => e
     $errorcode = Smig.exitvalue
     unless $errorcode.zero?
@@ -796,8 +697,10 @@ def test03()
     puts e.message
     puts e.backtrace.to_s
   ensure
-    FileUtils.rm_f(movieFilePath) unless movieFilePath.nil?
-#    `open #{movieFilePath}`
+    Smig.perform_commands(cleanupCommands)
+    FileUtils.rm_f(exportPath) unless exportPath.nil?
+    FileUtils.rm_f(movieExportPath) unless movieExportPath.nil?
+    # `open #{movieExportPath}` unless movieExportPath.nil?
   end
 end
 
@@ -807,8 +710,8 @@ def LocalTestMain018()
     test01()
     puts "test02"
     test02()
-#    puts "test03"
-#    test03()
+    puts "test03"
+    test03()
   rescue RuntimeError => e
     puts e.message
     # puts e.backtrace
