@@ -145,3 +145,26 @@ Cleanup commands are commands that run after the last command in the main list o
 2. Tests adding a video input to the video frames writer object.
 3. Test reading frames from an imported movie and then adding frames to the video writer.
 
+##### test018 - Tests the movie video editor object
+
+1. Get a list of export presets. Get the number of movie editor objects
+2. Create a movie editor, check that the number of movie editor objects is 1.
+    * Add a video track, check that the number of video tracks is 1.
+    * Add a content segment. Get the segment mappings.
+    * Add an empty segment, and then another content segment.
+    * Get the segment mappings.
+    * Add a single passthru segment for the length of the movie.
+    * Save the composition map to a file.
+    * Compare with a previsouly created composition map.
+    * Export the video composition.
+    * Check that the video composition is right length and size.
+3. Create a movie editor object with multiple video tracks with composition instructions.
+    * Create movie editor and add 3 video tracks.
+    * Confirm that the number of tracks is 3.
+    * Add video content to all 3 video tracks.
+    * Add video composition instructions.
+    * Save the composition map to a file.
+    * Compare with a previsouly created composition map.
+    * Export the video composition.
+    * Check that the video composition is right length and size.
+   
