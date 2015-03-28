@@ -337,8 +337,8 @@ def test04()
     :finalizepage, :getpixeldata, :calculategraphicsizeoftext, :renderfilterchain,
     :assignimagetocollection, :removeimagefromcollection, :processframes,
     :createtrack, :addinputtowriter, :addimagesampletowriter,
-    :finishwritingframes, :addmovieinstruction, :inserttracksegment,
-    :insertemptytracksegment ]
+    :finishwritingframes, :cancelwritingframes, :addmovieinstruction,
+    :inserttracksegment, :insertemptytracksegment]
 
     commands = MIMeta.listallcommands
     unless origCommands.eql? commands
