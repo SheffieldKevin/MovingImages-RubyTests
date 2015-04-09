@@ -72,6 +72,7 @@ This test file also exports the generated image and then compares the created im
 3. Draw various shapes into a bitmap context and draw a stroked rectangle rotated around its centre.
 4. Draw text into a pdf context
 5. Repeat 2, but draw into a window context.
+6. Draw text with an inner shadow.
 
 ##### test008 - Drawing paths.
 
