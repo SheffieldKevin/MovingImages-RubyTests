@@ -131,18 +131,18 @@ Cleanup commands are commands that run after the last command in the main list o
 ##### test016 - Using the image collection. MovieImporter object process frames command.
 
 1. Add, access and remove an image in the collection, original source from a movie frame.
-  * Draw the image in the image collection to a bitmap context.
+    * Draw the image in the image collection to a bitmap context.
 2. Add an image created from a bitmap context and add it to the image collection.
-  * Confirm that the image can be drawn
-  * Confirm that the image can be drawn after its image source is taken away.
-  * Confirm that the image is removed from collection by trying to draw again.
+    * Confirm that the image can be drawn
+    * Confirm that the image can be drawn after its image source is taken away.
+    * Confirm that the image is removed from collection by trying to draw again.
 3. Use the processing frames command to apply a sequence of commands to movie frames.
-  * This is probably one of the most complex commands to use.
+    * This is probably one of the most complex commands to use.
 
 ##### test017 - Tests the movie video writer object
 
 1. Test writing as different movie formats. mp4, m4v, mov.
-  *Test creating and closing a video frames writer object.
+    * Test creating and closing a video frames writer object.
 2. Tests adding a video input to the video frames writer object.
 3. Test reading frames from an imported movie and then adding frames to the video writer.
 

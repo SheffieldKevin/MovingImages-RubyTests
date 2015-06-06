@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Copyright (C) 2013-2014 Kevin Meaney
+# Copyright (C) Zukini Ltd.
 # Script for testing smig and moving images importer objects.
 # Requires file test002image.jpg
 # Please refer to the file LICENSE for the license agreement.

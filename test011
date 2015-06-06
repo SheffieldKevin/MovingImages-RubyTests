@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Copyright (C) 2014 Kevin Meaney
+# Copyright (C) 2015 Zukini Ltd.
 # Script for testing smig and moving images.
 # Please refer to the file LICENSE for the license agreement.
 # You are granted the rights to modify this file for your own purposes
@@ -411,8 +411,7 @@ module TestFile011
         setPathCommand = CommandModule.make_set_objectproperty(exportObj,
             propertykey: :file, propertyvalue: outputFile)
         theCommands.add_command(setPathCommand)
-        exportCommand = CommandModule.make_export(exportObj,
-                               runasynchronously: true)
+        exportCommand = CommandModule.make_export(exportObj)
         theCommands.add_command(exportCommand)
       end
       Smig.perform_commands(theCommands)
