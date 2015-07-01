@@ -625,7 +625,8 @@ LI Layer Instruction
                                                 movieEditorObject,
                                     identifier: imageIdentifier)
     theCommands.add_command(addCompositionToImageCollection)
-    cleanupCommands.add_tocleanupcommands_removeimagefromcollection(imageIdentifier)
+    cleanupCommands.add_tocleanupcommands_removeimagefromcollection(
+                                                imageIdentifier)
 
     # 3.7 Save the composition map image
     # First create an image exporter object and add it to the cleanup commands.
@@ -637,7 +638,8 @@ LI Layer Instruction
                                        addtocleanup: false)
     cleanupCommands.add_tocleanupcommands_closeobject(exporterObject)
     addImageToExporterCommand = CommandModule.make_addimage_fromimagecollection(
-      exporterObject, imageidentifier: imageIdentifier)
+                                    exporterObject,
+                   imageidentifier: imageIdentifier)
     theCommands.add_command(addImageToExporterCommand)
     exportCommand = CommandModule.make_export(exporterObject)
     theCommands.add_command(exportCommand)
@@ -657,7 +659,8 @@ LI Layer Instruction
     movieExportPath = File.join(Dir.tmpdir(), movieFileName)
     # movieExportPath = File.join(File.expand_path("~/Desktop"), movieFileName)
     fileType = "public.mpeg-4"
-    exportMovieCommand = CommandModule.make_movieeditor_export(movieEditorObject,
+    exportMovieCommand = CommandModule.make_movieeditor_export(
+                                              movieEditorObject,
                                 exportpreset: :AVAssetExportPreset1280x720,
                               exportfilepath: movieExportPath,
                               exportfiletype: fileType)
