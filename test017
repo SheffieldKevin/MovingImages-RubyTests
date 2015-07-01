@@ -460,7 +460,8 @@ def test03()
     bitmapObject = theCommands.make_createbitmapcontext(size: contextSize,
                                         profile: :kCGColorSpaceGenericRGB)
 
-    movieFilePath = File.join(File.expand_path("~/Desktop"), movieFileName)
+    # movieFilePath = File.join(File.expand_path("~/Desktop"), movieFileName)
+    movieFilePath = File.join(Dir.tmpdir(), movieFileName)
     # Create the video frames writer object
     movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
                                       addtocleanup: true,

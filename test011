@@ -222,8 +222,8 @@ module TestFile011
         begin
           newFileName = ciblendmode + endName + ".tiff"
           origFileName = ciblendmode + endName + ".png"
-          # outputFile = File.join($tempDir, newFileName)
-          outputFile = File.join(File.expand_path("~/Desktop/"), newFileName)
+          outputFile = File.join($tempDir, newFileName)
+          # outputFile = File.join(File.expand_path("~/Desktop/"), newFileName)
           origFile = File.join($originalblendimages, origFileName)
           result = self.apply_blendcifilter(ciblendmode, outputFile,
                           fgImporterObj, bgImporterObj, bitmapObj, exporterObj)
@@ -385,7 +385,7 @@ module TestFile011
       embossFilterChain = self.make_embossfilterchain(bitmapObject, maskImporter,
                                                       width, height)
       filterChainObj = theCommands.make_createimagefilterchain(embossFilterChain)
-      exportObj = theCommands.make_createexporter("~/Desktop/temp.",
+      exportObj = theCommands.make_createexporter("DummyFilePath.png",
                                                     export_type: :'public.png')
       numFrames.times do |i|
         radians = i.to_f * 2.0 * Math::PI / numFrames.to_f
