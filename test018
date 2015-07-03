@@ -392,9 +392,10 @@ def test03()
 
     cleanupCommands.add_tocleanupcommands_closeobject(movieEditorObject)
     
-    # 3.1 Add three video tracks.
+    # 3.1 Add two video tracks.
     # Leave track id unspecified and one will be assigned.
-    addVideoTrackCommand = CommandModule.make_createtrackcommand(movieEditorObject,
+    addVideoTrackCommand = CommandModule.make_createtrackcommand(
+                                                movieEditorObject,
                                      mediatype: :vide)
     theCommands.add_command(addVideoTrackCommand)
     # Since we are not specifying the persistent track id, the create track
@@ -408,7 +409,7 @@ def test03()
     theCommands.add_command(getNumTracks)
     
     numTracks = Smig.perform_commands(theCommands)
-    fail "Number of video tracks should be 3 is #{numTracks}" unless numTracks.eql?("3")
+    fail "Should have 3 video tracks is #{numTracks}" unless numTracks.eql?("3")
 
     theCommands.clear
     # 3.3 Import a movie file.
@@ -488,7 +489,8 @@ LI Layer Instruction
     theCommands.add_command(insertTrackSegmentCommand)
     # Now set the preferred transform of track 0. Original movie 1280x720
 
-    # Now add content to T1. Two segments of content to be added. Each 4 seconds long.
+    # Now add content to T1. Two segments of content to be added.
+    # Each 4 seconds long.
     # First segment is last 4 seconds of source track. Then a two second break.
     # Second segment is first 4 seconds of source track.
     fourSeconds = MovieTime.make_movietime(timevalue: 24000, timescale: 6000)
