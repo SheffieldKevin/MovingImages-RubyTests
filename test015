@@ -119,7 +119,7 @@ def test01()
     res = Smig.perform_command(getObjectTypeCommand).to_i
     raise 'Movie should have 1 video tracks: ' unless res.eql? 1
 
-    # 9. Get the number of tracks in the movie
+    # 9. Get the number of audio tracks in the movie
     getObjectTypeCommand = CommandModule.make_get_objectproperty(movieObject,
                                             property: :numberoftracks)
     getObjectTypeCommand.add_option(key: :mediatype, value: :soun)
