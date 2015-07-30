@@ -240,7 +240,7 @@ def test02()
     theCommands = SmigCommands.new
     theCommands.saveresultstype = :lastcommandresult
      
-    movieFilePath = File.join("/blah", movieFileName)
+    movieFilePath = File.join("/", movieFileName)
     videoWriterName = "videowriter.test02.name"
     utiFileType = "com.apple.quicktime-movie"
     movieWriter = theCommands.make_createvideoframeswriter(movieFilePath,
@@ -273,7 +273,7 @@ def test02()
     '"H264_Baseline_AutoLevel","ExpectedFrameRate":30},"AVVideoWidthKey":'\
     '640,"AVVideoScalingModeKey":"AVVideoScalingModeResizeAspect"},'\
     '"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
-    '0},"canwriteframes":true,"file":"\/blah\/movie01.mov","time":'\
+    '0},"canwriteframes":true,"file":"\/movie01.mov","time":'\
     '{"flags":1,"value":0,"timescale":6000,"epoch":0},"size":{"width":640,'\
     '"height":480},"videowriterstatus":0,'\
     '"utifiletype":"com.apple.quicktime-movie"}'
@@ -315,7 +315,7 @@ def test02()
     '1,"ExpectedFrameRate":30},"AVVideoWidthKey":1920,"AVVideoScalingModeKey":'\
     '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001'\
     ',"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
-    '"\/blah\/movie01.mov","time":{"flags":1,'\
+    '"\/movie01.mov","time":{"flags":1,'\
     '"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":1080},'\
     '"videowriterstatus":0,"utifiletype"'\
     ':"com.apple.quicktime-movie"}'
@@ -349,7 +349,7 @@ def test02()
     '"videoframeswriter","videosettings":{"AVVideoHeightKey":720,"AVVideoCodecKey"'\
     ':"jpeg","AVVideoWidthKey":1280,"AVVideoCompressionPropertiesKey":{"Quality":'\
     '0.85}},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
-    '0},"canwriteframes":true,"file":"\/blah\/movie01.mov","time":{"flags":1,'\
+    '0},"canwriteframes":true,"file":"\/movie01.mov","time":{"flags":1,'\
     '"value":0,"timescale":6000,"epoch":0},"size":{"width":1280,"height":720},'\
     '"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
     
@@ -385,7 +385,7 @@ def test02()
     '"AVVideoHeightKey":720,"AVVideoWidthKey":1280,"AVVideoScalingModeKey":'\
     '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001,'\
     '"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
-    '"\/blah\/movie01.mov","time":{"flags":1,'\
+    '"\/movie01.mov","time":{"flags":1,'\
     '"value":0,"timescale":6000,"epoch":0},"size":{"width":1280,"height":720}'\
     ',"videowriterstatus":'\
     '0,"utifiletype":"com.apple.quicktime-movie"}'
@@ -422,7 +422,7 @@ def test02()
     '1080,"AVVideoWidthKey":1920,"AVVideoScalingModeKey":'\
     '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":'\
     '1001,"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
-    '"\/blah\/movie01.mov","time":{"flags"'\
+    '"\/movie01.mov","time":{"flags"'\
     ':1,"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":'\
     '1080},"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
     
