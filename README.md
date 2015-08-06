@@ -3,9 +3,13 @@ The system tests written in ruby for end to end testing of the MovingImages Laun
 
 #### Running tests from the command line
 
-If you haven't already done so, you will need to install the MovingImages. This is done with the MovingImages application.
+If you haven't already done so, you will need to install the moving_images ruby gem and the LaunchAgent to be able to test MovingImages. This is done using the MovingImages application.
 
-To run all tests then run the command runtests. Each test script file is independent and can be run seperately, these scripts are test001, test002 ... etc.
+The pdf-reader ruby gem is needed for running the tests. You can install the gem `gem install pdf-reader`
+
+The ruby gem works with the default ruby installation in Yosemite and ruby 2.2.1 installed using rvm also on Yosemite.
+
+To run all tests then run the command `runtests`. Each test script file is independent and can be run seperately, these scripts are test001, test002 ... etc.
 
 #### Test script descriptions
 
