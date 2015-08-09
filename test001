@@ -42,8 +42,8 @@ end
 $verbose = false
 $smig = "smig"
 
-$smigversion = "0.3a"
-$miversion = "0.3a"
+$smigversion = "1.0"
+$miversion = "1.0"
 $imagefile = File.join($directory, "/images/test002image.jpg")
 
 # Get the smig version number.
