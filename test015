@@ -101,9 +101,7 @@ def test01()
     getObjectTypeCommand = CommandModule.make_get_objectproperty(movieObject,
                                             property: :metadata)
     res = Smig.perform_command(getObjectTypeCommand)
-    meta = '[{"key":"@cmt","keyspace":"itsk","stringValue":"iTunes metadata: ' +
-    'Exported to preset AVAssetExportPresetAppleM4VCellular using avexporter ' +
-    'at: 20 Nov 2014 13:25"},{"key":"meta","keyspace":"uiso"}]'
+    meta = '[{"key":"@cmt","keyspace":"itsk","stringValue":"iTunes metadata: Exported to preset AVAssetExportPresetAppleM4VCellular using avexporter at: 20 Nov 2014 13:25"}]'
     raise 'Movie metadata has changed' unless res.eql? meta
     
     # 7. Get the number of tracks in the movie

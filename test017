@@ -263,20 +263,8 @@ def test02()
                                             saveresultstype: :jsonstring)
     theCommands.add_command(getMovieWriterProps)
     result = Smig.perform_commands(theCommands)
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoCleanApertureKey":'\
-    '{"AVVideoCleanApertureHorizontalOffsetKey":0,'\
-    '"AVVideoCleanApertureHeightKey":420,"AVVideoCleanApertureVerticalOffsetKey"'\
-    ':30,"AVVideoCleanApertureWidthKey":640},"AVVideoHeightKey":'\
-    '480,"AVVideoCodecKey":"avc1","AVVideoCompressionPropertiesKey":{'\
-    '"AverageBitRate":3145728,"MaxKeyFrameInterval":30,"ProfileLevel":'\
-    '"H264_Baseline_AutoLevel","ExpectedFrameRate":30},"AVVideoWidthKey":'\
-    '640,"AVVideoScalingModeKey":"AVVideoScalingModeResizeAspect"},'\
-    '"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
-    '0},"canwriteframes":true,"file":"\/movie01.mov","time":'\
-    '{"flags":1,"value":0,"timescale":6000,"epoch":0},"size":{"width":640,'\
-    '"height":480},"videowriterstatus":0,'\
-    '"utifiletype":"com.apple.quicktime-movie"}'
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":"videoframeswriter","videosettings":{"AVVideoCleanApertureKey":{"AVVideoCleanApertureHorizontalOffsetKey":0,"AVVideoCleanApertureHeightKey":420,"AVVideoCleanApertureVerticalOffsetKey":30,"AVVideoCleanApertureWidthKey":640},"AVVideoHeightKey":480,"AVVideoCodecKey":"avc1","AVVideoCompressionPropertiesKey":{"AverageBitRate":3145728,"MaxKeyFrameInterval":30,"ProfileLevel":"H264_Baseline_AutoLevel","ExpectedFrameRate":30},"AVVideoWidthKey":640,"AVVideoScalingModeKey":"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":0},"canwriteframes":true,"file":"\/movie01.mov","time":{"flags":1,"value":0,"timescale":30000,"epoch":0},"size":{"width":640,"height":480},"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
+    # puts result
     fail "Writer with input h264_sd properties different: " unless result.eql? oldRes
 
     # Now redo for h264_hd
@@ -304,22 +292,7 @@ def test02()
     theCommands.add_command(getMovieWriterProps)
     result = Smig.perform_commands(theCommands)
 
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoCleanApertureKey":'\
-    '{"AVVideoCleanApertureHorizontalOffsetKey":150,'\
-    '"AVVideoCleanApertureHeightKey":1080,"AVVideoCleanApertureVerticalOffsetKey"'\
-    ':0,"AVVideoCleanApertureWidthKey":1620},"AVVideoHeightKey":1080,'\
-    '"AVVideoCodecKey":"avc1","AVVideoCompressionPropertiesKey":'\
-    '{"ProfileLevel":"H264_High_AutoLevel","AverageBitRate":15585760'\
-    ',"H264EntropyMode":"CABAC","MaxKeyFrameInterval":30,"AllowFrameReordering":'\
-    '1,"ExpectedFrameRate":30},"AVVideoWidthKey":1920,"AVVideoScalingModeKey":'\
-    '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001'\
-    ',"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
-    '"\/movie01.mov","time":{"flags":1,'\
-    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":1080},'\
-    '"videowriterstatus":0,"utifiletype"'\
-    ':"com.apple.quicktime-movie"}'
-    
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":"videoframeswriter","videosettings":{"AVVideoCleanApertureKey":{"AVVideoCleanApertureHorizontalOffsetKey":150,"AVVideoCleanApertureHeightKey":1080,"AVVideoCleanApertureVerticalOffsetKey":0,"AVVideoCleanApertureWidthKey":1620},"AVVideoHeightKey":1080,"AVVideoCodecKey":"avc1","AVVideoCompressionPropertiesKey":{"ProfileLevel":"H264_High_AutoLevel","AverageBitRate":15585760,"H264EntropyMode":"CABAC","MaxKeyFrameInterval":30,"AllowFrameReordering":1,"ExpectedFrameRate":30},"AVVideoWidthKey":1920,"AVVideoScalingModeKey":"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":0},"canwriteframes":true,"file":"\/movie01.mov","time":{"flags":1,"value":0,"timescale":30000,"epoch":0},"size":{"width":1920,"height":1080},"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
     fail "Writer with input h264_hd properties different: " unless result.eql? oldRes
 
     # Now redo for jpegpreset
@@ -345,14 +318,8 @@ def test02()
     theCommands.add_command(getMovieWriterProps)
     result = Smig.perform_commands(theCommands)
 
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoHeightKey":720,"AVVideoCodecKey"'\
-    ':"jpeg","AVVideoWidthKey":1280,"AVVideoCompressionPropertiesKey":{"Quality":'\
-    '0.85}},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
-    '0},"canwriteframes":true,"file":"\/movie01.mov","time":{"flags":1,'\
-    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1280,"height":720},'\
-    '"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
-    
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":"videoframeswriter","videosettings":{"AVVideoHeightKey":720,"AVVideoCodecKey":"jpeg","AVVideoWidthKey":1280,"AVVideoCompressionPropertiesKey":{"Quality":0.85}},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":0},"canwriteframes":true,"file":"\/movie01.mov","time":{"flags":1,"value":0,"timescale":30000,"epoch":0},"size":{"width":1280,"height":720},"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
+    # puts result
     fail "Writer with input jpegpreset properties different: " unless result.eql? oldRes
 
     # Now redo for ProRes422
@@ -378,18 +345,8 @@ def test02()
     theCommands.add_command(getMovieWriterProps)
     result = Smig.perform_commands(theCommands)
 
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoColorPropertiesKey":'\
-    '{"TransferFunction":"ITU_R_709_2","YCbCrMatrix":"ITU_R_709_2",'\
-    '"ColorPrimaries":"ITU_R_709_2"},"AVVideoCodecKey":"apcn",'\
-    '"AVVideoHeightKey":720,"AVVideoWidthKey":1280,"AVVideoScalingModeKey":'\
-    '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001,'\
-    '"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
-    '"\/movie01.mov","time":{"flags":1,'\
-    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1280,"height":720}'\
-    ',"videowriterstatus":'\
-    '0,"utifiletype":"com.apple.quicktime-movie"}'
-    
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":"videoframeswriter","videosettings":{"AVVideoColorPropertiesKey":{"TransferFunction":"ITU_R_709_2","YCbCrMatrix":"ITU_R_709_2","ColorPrimaries":"ITU_R_709_2"},"AVVideoCodecKey":"apcn","AVVideoHeightKey":720,"AVVideoWidthKey":1280,"AVVideoScalingModeKey":"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":0},"canwriteframes":true,"file":"\/movie01.mov","time":{"flags":1,"value":0,"timescale":30000,"epoch":0},"size":{"width":1280,"height":720},"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
+    # puts result
     fail "Writer with input ProRes422 properties different: " unless result.eql? oldRes
 
     # Now redo for ProRes4444
@@ -415,17 +372,7 @@ def test02()
     theCommands.add_command(getMovieWriterProps)
     result = Smig.perform_commands(theCommands)
     # puts result
-    oldRes = '{"objectname":"videowriter.test02.name","objecttype":'\
-    '"videoframeswriter","videosettings":{"AVVideoColorPropertiesKey":'\
-    '{"TransferFunction":"ITU_R_709_2","YCbCrMatrix":"ITU_R_709_2",'\
-    '"ColorPrimaries":"ITU_R_709_2"},"AVVideoCodecKey":"ap4h","AVVideoHeightKey":'\
-    '1080,"AVVideoWidthKey":1920,"AVVideoScalingModeKey":'\
-    '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":'\
-    '1001,"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
-    '"\/movie01.mov","time":{"flags"'\
-    ':1,"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":'\
-    '1080},"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
-    
+    oldRes = '{"objectname":"videowriter.test02.name","objecttype":"videoframeswriter","videosettings":{"AVVideoColorPropertiesKey":{"TransferFunction":"ITU_R_709_2","YCbCrMatrix":"ITU_R_709_2","ColorPrimaries":"ITU_R_709_2"},"AVVideoCodecKey":"ap4h","AVVideoHeightKey":1080,"AVVideoWidthKey":1920,"AVVideoScalingModeKey":"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":0},"canwriteframes":true,"file":"\/movie01.mov","time":{"flags":1,"value":0,"timescale":30000,"epoch":0},"size":{"width":1920,"height":1080},"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
     fail "Writer with input ProRes4444 properties different: " unless result.eql? oldRes
 
   rescue RuntimeError => e

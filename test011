@@ -60,12 +60,22 @@ module TestFile011
     begin
       inputKey1 = nil
       inputValue1 = nil
+      inputKey2 = nil
+      inputValue2 = nil
       if filterName.eql? "CIHueAdjust"
         inputKey1 = "inputAngle"
         inputValue1 = 2.09
       elsif filterName.eql? "CIUnsharpMask"
         inputKey1 = "inputIntensity"
         inputValue1 = 1.0
+      elsif filterName.eql? "CIBloom"
+        inputKey1 = "inputIntensity"
+        inputValue1 = 1.0
+        inputKey2 = "inputRadius"
+        inputValue2 = 10
+      elsif filterName.eql? "CIExposureAdjust"
+        inputKey1 = "inputEV"
+        inputValue1 = 0.5
       end
       
       filterOptions = MILibrary::Utility.make_simplesinglecifilter_options(
@@ -76,8 +86,8 @@ module TestFile011
                                    softwarerender: false,
                                         inputkey1: inputKey1,
                                       inputvalue1: inputValue1,
-                                        inputkey2: nil,
-                                      inputvalue2: nil)
+                                        inputkey2: inputKey2,
+                                      inputvalue2: inputValue2)
       # filterOptions[:generate_json] = true
       fileList = { width: 908, height: 681, files: [inputFile] }
       result = MILibrary.simplesinglecifilter_files(filterOptions, fileList)
@@ -103,21 +113,20 @@ module TestFile011
       intermediateFile = File.join($inputimagesdir, newFileName)
       FileUtils.cp(inputFile, intermediateFile)
       origFile = File.join($origforcompareimagesdir, newFileName)
-      result = self.apply_simplesinglecifilter(filterName, intermediateFile, $tempDir)
-      distance = 22
-      if filterName.eql? "CIColorPosterize"
-        distance = 63
-      end
-      outputFile = File.join($tempDir, newFileName)
+      tempDir = "/Users/ktam/Desktop/Current/test_simplesingle"
+      # result = self.apply_simplesinglecifilter(filterName, intermediateFile, $tempDir)
+      result = self.apply_simplesinglecifilter(filterName, intermediateFile, tempDir)
+      # outputFile = File.join($tempDir, newFileName)
+      outputFile = File.join(tempDir, newFileName)
       puts "outputFile doesn't exist: #{outputFile}" unless File.exists?(outputFile)
-      unless AreImageFilesSame(origFile, outputFile, distance)
+      unless AreImageFilesSame(origFile, outputFile, 3)
         raise "Different image files: " + origFile + " and " + outputFile
       end
     rescue RuntimeError => e
       puts e.message
     ensure
       # FileUtils.cp(outputFile, origFile)
-      FileUtils.rm_f(outputFile) unless outputFile.nil?
+      # FileUtils.rm_f(outputFile) unless outputFile.nil?
       FileUtils.rm_f(intermediateFile) unless intermediateFile.nil?
       # `open #{outputFile}`
     end
@@ -227,7 +236,7 @@ module TestFile011
           origFile = File.join($originalblendimages, origFileName)
           result = self.apply_blendcifilter(ciblendmode, outputFile,
                           fgImporterObj, bgImporterObj, bitmapObj, exporterObj)
-          unless AreImageFilesSame(origFile, outputFile, 75)
+          unless AreImageFilesSame(origFile, outputFile, 1)
             puts "Different image files: " + origFile + " and " + outputFile
           end
         ensure
@@ -442,7 +451,7 @@ module TestFile011
         fileName = baseName + numString + ".png"
         origFile = File.join(origDir, fileName)
         newFile = File.join(outputDir, fileName)
-        unless AreImageFilesSame(origFile, newFile, 25)
+        unless AreImageFilesSame(origFile, newFile, 2)
           raise "Different image files: " + origFile + " and " + newFile
         end
       }

@@ -79,6 +79,20 @@ def testsnapshot(onwindow: false)
       raise "Draw shapshot should have failed as no snapshot has been taken"
     end
 
+    if onwindow
+      # Need to initialize the window to having a white background.
+      windowRect = MIShapes.make_rectangle(size:{ :width => 800,
+                                                  :height => 600 },
+                                           origin: { :x => 0, :y => 0 } )
+      whiteColor = MIColor.make_rgbacolor(1.0, 1.0, 1.0)
+      drawBackgroundElement = MIDrawElement.new(:fillrectangle)
+      drawBackgroundElement.rectangle = windowRect
+      drawBackgroundElement.fillcolor = whiteColor
+      drawBackgroundCommand = CommandModule.make_drawelement(bitmapObject, 
+                                          drawinstructions: drawBackgroundElement)
+      Smig.perform_command(drawBackgroundCommand)
+    end
+
     # 4. Draw some stuff into the bitmap context.
     points = []
     points.push(MIShapes.make_point(100, 50))
@@ -123,9 +137,8 @@ def testsnapshot(onwindow: false)
     tempFile = File.join(Dir.tmpdir(), baseImageName)
     SmigHelpers.save_image(imagesource: bitmapObject, pathtofile: tempFile)
     origFile = File.join($compareImageDir, baseImageName)
-    compareValue = 0
-    compareValue = 35 if onwindow
-    unless AreImageFilesSame(origFile, tempFile, compareValue)
+
+    unless AreImageFilesSame(origFile, tempFile)
       # 11. Report if different.
       raise "Different image files: " + origFile + " and " + tempFile
     end
@@ -141,6 +154,9 @@ def testsnapshot(onwindow: false)
 #    exit 240
   ensure
     Smig.close_object_nothrow(bitmapObject)
+#    `open #{tempFile}`
+#    `open #{tempFile2}`
+#    `open #{origFile}`
     FileUtils.rm_f(tempFile)
     FileUtils.rm_f(tempFile2)
   end

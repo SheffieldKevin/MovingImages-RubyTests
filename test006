@@ -185,6 +185,8 @@ def test01()
   ensure
     unless tempFile.nil?
       FileUtils.rm_f(tempFile)
+      # Open3.capture2("open", origFile)
+      # Open3.capture2("open", tempFile)
     end
   end
 end
@@ -315,6 +317,8 @@ def test02()
   ensure
     unless tempFile.nil?
       FileUtils.rm_f(tempFile)
+      # Open3.capture2("open", origFile)
+      # Open3.capture2("open", tempFile)
     end
   end
 end
@@ -392,7 +396,7 @@ def test03()
     puts "The result is: " + theResult unless theResult.length.zero?
 
     origFile = File.join($compareImageDir, baseImageName)
-    unless AreImageFilesSame(origFile, tempFile, 28)
+    unless AreImageFilesSame(origFile, tempFile, 0)
       raise "Different image files: " + origFile + " and " + tempFile
     end
   rescue RuntimeError => e
@@ -405,7 +409,9 @@ def test03()
     puts e.backtrace.to_s
 #    exit 240
   ensure
-    FileUtils.rm_f(tempFile) unless tempFile.nil?
+    # Open3.capture2("open", origFile)
+    # Open3.capture2("open", tempFile)
+    # FileUtils.rm_f(tempFile) unless tempFile.nil?
   end
 end
 
@@ -495,7 +501,7 @@ def test04()
     puts "The result is: " + theResult unless theResult.length.zero?
 
     origFile = File.join($compareImageDir, baseImageName)
-    unless AreImageFilesSame(origFile, tempFile, 31)
+    unless AreImageFilesSame(origFile, tempFile, 0)
       raise "Different image files: " + origFile + " and " + tempFile
     end
   rescue RuntimeError => e
@@ -510,6 +516,7 @@ def test04()
   ensure
     FileUtils.rm_f(tempFile) unless tempFile.nil?
     # Open3.capture2("open", tempFile)
+    # Open3.capture2("open", origFile)
   end
 end
 
@@ -642,7 +649,8 @@ def test05()
   ensure
     unless tempFile.nil?
       FileUtils.rm_f(tempFile)
-#      Open3.capture2("open", tempFile)
+      # Open3.capture2("open", tempFile)
+      # Open3.capture2("open", origFile)
     end
   end
 end

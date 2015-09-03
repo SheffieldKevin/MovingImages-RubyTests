@@ -125,11 +125,11 @@ def test01()
     SmigHelpers.save_image(imagesource: bitmapObject, pathtofile: tempFile2)
     origFile1 = File.join($compareImageDir, baseName1)
     origFile2 = File.join($compareImageDir, baseName2)
-    unless AreImageFilesSame(origFile1, tempFile1, 30)
+    unless AreImageFilesSame(origFile1, tempFile1, 3)
       # 10. Report if different.
       raise "Different image files: " + origFile1 + " and " + tempFile1
     end
-    unless AreImageFilesSame(origFile2, tempFile2, 20)
+    unless AreImageFilesSame(origFile2, tempFile2, 2)
       # 10. Report if different.
       raise "Different image files: " + origFile2 + " and " + tempFile2
     end
@@ -249,7 +249,7 @@ def test02()
     Smig.perform_commands(theCommands)
     tempFile = File.join(Dir.tmpdir(), baseImageName)
     origFile = File.join($compareImageDir, baseImageName)
-    unless AreImageFilesSame(origFile, tempFile, 67)
+    unless AreImageFilesSame(origFile, tempFile, 3)
       # 10. Report if different.
       raise "Different image files: " + origFile + " and " + tempFile
     end
@@ -286,7 +286,7 @@ def test03()
                             text: "This is the text to calculate dimensions of",
                             userinterfacefont: "kCTFontUIFontMiniSystem")
     theResult = Smig.perform_command(calculateTextSizeCommand)
-    original2 = '{"width":184.8018292682927,"height":8.698150634765625}'
+    original2 = '{"width":183.1904296875,"height":8.701171875}'
     unless theResult.eql? original2
       raise "Calculated text sizes differ: #{theResult}"
     end

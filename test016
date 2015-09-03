@@ -469,8 +469,9 @@ def test03()
       origFile = File.join($compareImageDir, fileName)
       tempFile = File.join(Dir.tmpdir(), fileName)
 #      tempFile = File.join($compareImageDir, fileName)
-      compareResult = AreImageFilesSame(origFile, tempFile, 80)
+      compareResult = AreImageFilesSame(origFile, tempFile, 0)
       FileUtils.rm_f(tempFile)
+      # FileUtils.mv(tempFile, origFile)
       unless compareResult
         # 2. Report if different.
         raise "Different image files: " + origFile + " and " + tempFile

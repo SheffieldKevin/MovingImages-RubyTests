@@ -429,7 +429,7 @@ def test02()
     Smig.perform_commands(theCommands.commandshash)
     origFile = File.join($compareImageDir, baseImageName)
     # 9. Compare with previously saved image.
-    unless AreImageFilesSame(origFile, tempFile, 26)
+    unless AreImageFilesSame(origFile, tempFile)
       # 10. Report if different.
       raise "Different image files: " + origFile + " and " + tempFile
     end
@@ -685,6 +685,9 @@ def test03()
 #    exit 240
   ensure
     FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    FileUtils.mv(tempFile, origFile)
+#    Open3.capture2("open", tempFile) unless tempFile.nil?
+#    Open3.capture2("open", origFile)
   end
 end
 
@@ -915,6 +918,11 @@ def test05()
     theCommands.add_command(createWindowContextCommand)
     theCommands.add_tocleanupcommands_closeobject(windowContextObject)
 
+    # Create a single draw element that draws an array of elements. This
+    # gets around a problem in El Cap where in any one processing of commands
+    # only one draw element to a window context is possible.
+    drawElements = MIDrawElement.new(:arrayofelements)
+
     # Need to initialize the window to having a white background.
     windowRect = MIShapes.make_rectangle(size:{ :width => 800,
                                                 :height => 600 },
@@ -923,9 +931,7 @@ def test05()
     drawBackgroundElement = MIDrawElement.new(:fillrectangle)
     drawBackgroundElement.rectangle = windowRect
     drawBackgroundElement.fillcolor = whiteColor
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                       drawinstructions: drawBackgroundElement)
-    theCommands.add_command(drawCommand)
+    drawElements.add_drawelement_toarrayofelements(drawBackgroundElement)
 
     # 2/3. Setup the draw string object for drawing the text.
     # First font to draw is a Frilly font.
@@ -938,146 +944,128 @@ def test05()
     drawString.fillcolor = darkRedColor
     textOrigin = MIShapes.make_point(10, 560)
     drawString.point_textdrawnfrom = textOrigin
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                            drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawElements.add_drawelement_toarrayofelements(drawString)
 
     # 2/3. Draw the text along a line.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.stringtext = "Draw text with the font SavoyeLetPlain. " + 
+    drawString2 = MIDrawBasicStringElement.new()
+    drawString2.stringtext = "Draw text with the font SavoyeLetPlain. " + 
                               "At a size of 18 points in a black color."
-    drawString.postscriptfontname = 'SavoyeLetPlain'
+    drawString2.postscriptfontname = 'SavoyeLetPlain'
     textOrigin = MIShapes.make_point(10, 520)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.fontsize = 18
+    drawString2.point_textdrawnfrom = textOrigin
+    drawString2.fontsize = 18
     blackColor = MIColor.make_rgbacolor(0,0,0)
-    drawString.fillcolor = blackColor
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                            drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawString2.fillcolor = blackColor
+    drawElements.add_drawelement_toarrayofelements(drawString2)
 
     # 2/3. Draw the text along a line.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.postscriptfontname = 'Verdana'
-    drawString.stringtext = "Draw text with the font Verdana. " + 
+    drawString3 = MIDrawBasicStringElement.new()
+    drawString3.postscriptfontname = 'Verdana'
+    drawString3.stringtext = "Draw text with the font Verdana. " + 
                               "At size 26 points in a cyan color."
     textOrigin = MIShapes.make_point(10, 480)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.fontsize = 26
+    drawString3.point_textdrawnfrom = textOrigin
+    drawString3.fontsize = 26
     cyan = MIColor.make_rgbacolor(0,1,1)
-    drawString.fillcolor = cyan
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                                drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawString3.fillcolor = cyan
+    drawElements.add_drawelement_toarrayofelements(drawString3)
 
     # 2/3. Draw the text along a line.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.postscriptfontname = 'Verdana'
-    drawString.stringtext = "Draw text with the font Verdana. " + 
+    drawString4 = MIDrawBasicStringElement.new()
+    drawString4.postscriptfontname = 'Verdana'
+    drawString4.stringtext = "Draw text with the font Verdana. " + 
                               "At size 10 points in a black color."
     textOrigin = MIShapes.make_point(10, 440)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.fontsize = 10
-    drawString.fillcolor = blackColor
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                              drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawString4.point_textdrawnfrom = textOrigin
+    drawString4.fontsize = 10
+    drawString4.fillcolor = blackColor
+    drawElements.add_drawelement_toarrayofelements(drawString4)
 
     # 2/3. Draw the text along a line.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.postscriptfontname = 'SIL-Kai-Reg-Jian'
-    drawString.stringtext = "Draw text with the font SIL-Kai-Reg-Jian. " + 
+    drawString5 = MIDrawBasicStringElement.new()
+    drawString5.postscriptfontname = 'SIL-Kai-Reg-Jian'
+    drawString5.stringtext = "Draw text with the font SIL-Kai-Reg-Jian. " + 
                               "At size 24 points in a green color."
     textOrigin = MIShapes.make_point(10, 400)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.fontsize = 24
+    drawString5.point_textdrawnfrom = textOrigin
+    drawString5.fontsize = 24
     greenColor = MIColor.make_rgbacolor(0.05, 0.5, 0.1)
-    drawString.fillcolor = greenColor
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                              drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawString5.fillcolor = greenColor
+    drawElements.add_drawelement_toarrayofelements(drawString5)
 
     # 2/3. Draw the text along a line.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.postscriptfontname = 'SIL-Kai-Reg-Jian'
-    drawString.stringtext = "Draw text with the font SIL-Kai-Reg-Jian. " + 
+    drawString6 = MIDrawBasicStringElement.new()
+    drawString6.postscriptfontname = 'SIL-Kai-Reg-Jian'
+    drawString6.stringtext = "Draw text with the font SIL-Kai-Reg-Jian. " + 
                               "At size 8 points in a black color."
     textOrigin = MIShapes.make_point(10, 360)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.fontsize = 8
-    drawString.fillcolor = blackColor
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                            drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawString6.point_textdrawnfrom = textOrigin
+    drawString6.fontsize = 8
+    drawString6.fillcolor = blackColor
+    drawElements.add_drawelement_toarrayofelements(drawString6)
 
     # 2/3. Draw the text along a line.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.postscriptfontname = 'Chalkboard'
-    drawString.stringtext = "Draw text with the font Chalkboard. " + 
+    drawString7 = MIDrawBasicStringElement.new()
+    drawString7.postscriptfontname = 'Chalkboard'
+    drawString7.stringtext = "Draw text with the font Chalkboard. " + 
                               "At size 23 points in a blue color."
     textOrigin = MIShapes.make_point(10, 320)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.fontsize = 23
+    drawString7.point_textdrawnfrom = textOrigin
+    drawString7.fontsize = 23
     blueColor = MIColor.make_rgbacolor(0, 0.05, 0.6)
-    drawString.fillcolor = blueColor
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                            drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawString7.fillcolor = blueColor
+    drawElements.add_drawelement_toarrayofelements(drawString7)
 
     # 2/3. Draw the text along a line.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.postscriptfontname = 'Chalkboard'
-    drawString.stringtext = "Draw text with the font Chalkboard. " + 
+    drawString8 = MIDrawBasicStringElement.new()
+    drawString8.postscriptfontname = 'Chalkboard'
+    drawString8.stringtext = "Draw text with the font Chalkboard. " + 
                               "At size 11 points in a black color."
     textOrigin = MIShapes.make_point(10, 280)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.fontsize = 11
-    drawString.fillcolor = blackColor
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                                drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawString8.point_textdrawnfrom = textOrigin
+    drawString8.fontsize = 11
+    drawString8.fillcolor = blackColor
+    drawElements.add_drawelement_toarrayofelements(drawString8)
 
     # 2/3. Draw the text along a line.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.userinterfacefont = 'kCTFontUIFontLabel'
-    drawString.stringtext = "Draw text using user interface font. " + 
+    drawString9 = MIDrawBasicStringElement.new()
+    drawString9.userinterfacefont = 'kCTFontUIFontLabel'
+    drawString9.stringtext = "Draw text using user interface font. " + 
                               "kCTFontUIFontLabel in a black color."
     textOrigin = MIShapes.make_point(10, 240)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.elementhash.delete(:fontsize)
-    drawString.fillcolor = blackColor
-    drawCommand = CommandModule.make_drawelement(windowContextObject, 
-                                            drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawString9.point_textdrawnfrom = textOrigin
+    drawString9.elementhash.delete(:fontsize)
+    drawString9.fillcolor = blackColor
+    drawElements.add_drawelement_toarrayofelements(drawString9)
 
     # 2/3. Draw the text along a line.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.postscriptfontname = 'Verdana-Bold'
-    drawString.stringtext = "Draw outline text using using font " +
+    drawString10 = MIDrawBasicStringElement.new()
+    drawString10.postscriptfontname = 'Verdana-Bold'
+    drawString10.stringtext = "Draw outline text using using font " +
                               "Verdana-Bold with a black outline. "
     textOrigin = MIShapes.make_point(10, 200)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.fontsize = 20
-    drawString.strokecolor = blackColor
-    drawString.stringstrokewidth = 4
-    drawCommand = CommandModule.make_drawelement(windowContextObject,
-                                              drawinstructions: drawString)
-    theCommands.add_command(drawCommand)
+    drawString10.point_textdrawnfrom = textOrigin
+    drawString10.fontsize = 20
+    drawString10.strokecolor = blackColor
+    drawString10.stringstrokewidth = 4
+    drawElements.add_drawelement_toarrayofelements(drawString10)
 
     # 4. Draw the text along a line stroking the text.
-    drawString = MIDrawBasicStringElement.new()
-    drawString.postscriptfontname = 'Verdana-Bold'
-    drawString.stringtext = "Draw text using font Verdana-Bold " +
+    drawString11 = MIDrawBasicStringElement.new()
+    drawString11.postscriptfontname = 'Verdana-Bold'
+    drawString11.stringtext = "Draw text using font Verdana-Bold " +
                               "with a black outline & red fill."
     textOrigin = MIShapes.make_point(10, 160)
-    drawString.point_textdrawnfrom = textOrigin
-    drawString.fontsize = 20
-    drawString.strokecolor = blackColor
+    drawString11.point_textdrawnfrom = textOrigin
+    drawString11.fontsize = 20
+    drawString11.strokecolor = blackColor
     redColor = MIColor.make_rgbacolor(0.9, 0.2, 0.1)
-    drawString.fillcolor = redColor
-    drawString.stringstrokewidth = -8
-    drawCommand = CommandModule.make_drawelement(windowContextObject, 
-                                          drawinstructions: drawString)
+    drawString11.fillcolor = redColor
+    drawString11.stringstrokewidth = -8
+    drawElements.add_drawelement_toarrayofelements(drawString11)
+
+    drawCommand = CommandModule.make_drawelement(windowContextObject,
+                                            drawinstructions: drawElements)
     theCommands.add_command(drawCommand)
 
     # 5. Draw the text along a line stroking and filling the text.
@@ -1101,10 +1089,11 @@ def test05()
     exportImageToFileCommand = CommandModule.make_export(exporterObject)
     theCommands.add_command(exportImageToFileCommand)
     $teststring = theCommands.commandshash.to_json
+    # puts JSON.pretty_generate(theCommands.commandshash)
     Smig.perform_commands(theCommands)
     origFile = File.join($compareImageDir, baseImageName)
     # 9. Compare with previously saved image.
-    unless AreImageFilesSame(origFile, tempFile, 85)
+    unless AreImageFilesSame(origFile, tempFile, 0)
       # 10. Report if different.
       raise "Different image files: " + origFile + " and " + tempFile
     end

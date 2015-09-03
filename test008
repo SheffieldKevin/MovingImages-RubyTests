@@ -258,6 +258,7 @@ def test02()
   ensure
     FileUtils.rm_f(tempFile) unless tempFile.nil?
     # Open3.capture2("open", tempFile) unless tempFile.nil?
+    # Open3.capture2("open", origFile) unless origFile.nil?
   end
 end
 
