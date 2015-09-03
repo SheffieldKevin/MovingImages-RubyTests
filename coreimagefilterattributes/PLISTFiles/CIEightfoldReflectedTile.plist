@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Produces a tiled image from a source image by applying an 8-way reflected symmetry.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.5</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>6</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryTileEffect</string>
@@ -24,7 +26,7 @@
 		<key>CIAttributeDefault</key>
 		<real>0.0</real>
 		<key>CIAttributeDescription</key>
-		<string>The angle (in degrees) of the tiled pattern.</string>
+		<string>The angle (in radians) of the tiled pattern.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Angle</string>
 		<key>CIAttributeIdentity</key>
@@ -35,8 +37,6 @@
 		<real>-3.1415926535897931</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeAngle</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputCenter</key>
 	<dict>
@@ -50,8 +50,6 @@
 		<string>Center</string>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypePosition</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputImage</key>
 	<dict>
@@ -61,8 +59,8 @@
 		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 	<key>inputWidth</key>
 	<dict>
@@ -84,13 +82,6 @@
 		<real>1</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeDistance</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

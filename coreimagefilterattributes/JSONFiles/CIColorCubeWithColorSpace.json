@@ -2,7 +2,6 @@
   "inputCubeDimension" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDisplayName" : "Cube Dimension",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 2,
     "CIAttributeMax" : 128,
     "CIAttributeIdentity" : 2,
@@ -10,30 +9,19 @@
     "CIAttributeDefault" : 2
   },
   "CIAttributeFilterDisplayName" : "Color Cube with ColorSpace",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
-  "inputColorSpace" : {
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDisplayName" : "ColorSpace",
-    "CIAttributeClass" : "NSObject"
-  },
-  "CIAttributeFilterName" : "CIColorCubeWithColorSpace",
-  "inputImage" : {
-    "CIAttributeDisplayName" : "Image",
-    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  },
   "inputCubeData" : {
     "CIAttributeDisplayName" : "Cube Data",
     "CIAttributeIdentity" : "AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAAAAAAIA\/AACAPwAAgD8AAAAAAACAPwAAAAAAAAAAAACAPwAAgD8AAIA\/AAAAAAAAgD8AAIA\/AAAAAAAAgD8AAIA\/AACAPwAAgD8AAIA\/AACAPwAAgD8=",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAAAAAAIA\/AACAPwAAgD8AAAAAAACAPwAAAAAAAAAAAACAPwAAgD8AAIA\/AAAAAAAAgD8AAIA\/AAAAAAAAgD8AAIA\/AACAPwAAgD8AAIA\/AACAPwAAgD8=",
     "CIAttributeClass" : "NSData"
   },
-  "CIAttributeDescription" : "Color Cube with ColorSpace",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorCubeWithColorSpace",
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
+  },
+  "CIAttributeFilterName" : "CIColorCubeWithColorSpace",
   "CIAttributeFilterCategories" : [
     "CICategoryColorEffect",
     "CICategoryVideo",
@@ -41,5 +29,12 @@
     "CICategoryNonSquarePixels",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorCubeWithColorSpace",
+  "inputColorSpace" : {
+    "CIAttributeDisplayName" : "ColorSpace",
+    "CIAttributeClass" : "NSObject"
+  },
+  "CIAttributeFilterAvailable_iOS" : "7",
+  "CIAttributeFilterAvailable_Mac" : "10.9"
 }

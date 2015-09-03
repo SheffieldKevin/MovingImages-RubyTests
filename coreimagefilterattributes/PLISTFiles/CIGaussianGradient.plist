@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Generates a gradient that varies from one color to another using a Gaussian distribution.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>5</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryGradient</string>
@@ -24,13 +26,11 @@
 		<key>CIAttributeDefault</key>
 		<string>[150 150]</string>
 		<key>CIAttributeDescription</key>
-		<string>The center of the area, as x and y coordinates, to filter.</string>
+		<string>The center of the effect as x and y coordinates.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Center</string>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypePosition</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputColor0</key>
 	<dict>
@@ -42,8 +42,8 @@
 		<string>The first color to use in the gradient.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Color 1</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeColor</string>
 	</dict>
 	<key>inputColor1</key>
 	<dict>
@@ -55,8 +55,8 @@
 		<string>The second color to use in the gradient.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Color 2</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeColor</string>
 	</dict>
 	<key>inputRadius</key>
 	<dict>
@@ -76,13 +76,6 @@
 		<real>0.0</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeDistance</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

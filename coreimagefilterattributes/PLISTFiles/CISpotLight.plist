@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Applies a directional spotlight effect to an image.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>9</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryStylize</string>
@@ -37,8 +39,6 @@
 		<real>0.0</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeDistance</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputColor</key>
 	<dict>
@@ -52,8 +52,6 @@
 		<string>Color</string>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeOpaqueColor</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputConcentration</key>
 	<dict>
@@ -75,8 +73,6 @@
 		<real>0.001</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeScalar</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputImage</key>
 	<dict>
@@ -86,8 +82,8 @@
 		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 	<key>inputLightPointsAt</key>
 	<dict>
@@ -101,8 +97,6 @@
 		<string>Light Points At</string>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypePosition3</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputLightPosition</key>
 	<dict>
@@ -116,13 +110,6 @@
 		<string>Light Position</string>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypePosition3</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

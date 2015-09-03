@@ -1,17 +1,17 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "CIAttributeFilterDisplayName" : "Source Out",
-  "CIAttributeDescription" : "Uses the second image to define what to take out of the first image.",
-  "outputImage" : {
+  "inputBackgroundImage" : {
+    "CIAttributeDescription" : "The image to use as a background image.",
+    "CIAttributeDisplayName" : "Background Image",
     "CIAttributeClass" : "CIImage"
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CISourceOutCompositing",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISourceOutCompositing",
   "CIAttributeFilterCategories" : [
     "CICategoryCompositeOperation",
     "CICategoryVideo",
@@ -21,10 +21,7 @@
     "CICategoryHighDynamicRange",
     "CICategoryBuiltIn"
   ],
-  "inputBackgroundImage" : {
-    "CIAttributeDisplayName" : "Background Image",
-    "CIAttributeDescription" : "The image to use as a background image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  }
+  "CIAttributeFilterName" : "CISourceOutCompositing",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISourceOutCompositing",
+  "CIAttributeFilterAvailable_iOS" : "5"
 }

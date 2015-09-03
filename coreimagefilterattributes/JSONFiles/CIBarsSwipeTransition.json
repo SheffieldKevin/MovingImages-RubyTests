@@ -1,8 +1,7 @@
 {
   "inputTargetImage" : {
-    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeDescription" : "The target image for a transition.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeClass" : "CIImage"
   },
   "inputTime" : {
@@ -11,41 +10,41 @@
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Time",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeTime",
     "CIAttributeDefault" : 0
   },
-  "CIAttributeDescription" : "Transitions from one image to another by swiping rectangular portions of the foreground image to disclose the target image.",
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
+  },
   "inputAngle" : {
     "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The angle (in degrees) of the bars.",
+    "CIAttributeDescription" : "The angle (in radians) of the bars.",
     "CIAttributeSliderMax" : 6.283185307179586,
     "CIAttributeDisplayName" : "Angle",
     "CIAttributeDefault" : 3.141592653589793,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeAngle",
     "CIAttributeSliderMin" : 0
-  },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
   },
   "inputWidth" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The width of each bar.",
     "CIAttributeSliderMax" : 300,
     "CIAttributeDisplayName" : "Width",
-    "CIAttributeSliderMin" : 2,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 30,
     "CIAttributeMin" : 2,
     "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 30
+    "CIAttributeSliderMin" : 2
   },
   "CIAttributeFilterName" : "CIBarsSwipeTransition",
   "CIAttributeFilterDisplayName" : "Bars Swipe Transition",
+  "CIAttributeFilterAvailable_iOS" : "6",
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIBarsSwipeTransition",
   "CIAttributeFilterCategories" : [
     "CICategoryTransition",
@@ -58,16 +57,10 @@
     "CIAttributeDescription" : "The offset of one bar with respect to another",
     "CIAttributeSliderMax" : 100,
     "CIAttributeDisplayName" : "Bar Offset",
-    "CIAttributeSliderMin" : 1,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 10,
     "CIAttributeMin" : 1,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 10
+    "CIAttributeSliderMin" : 1
   },
-  "inputImage" : {
-    "CIAttributeDisplayName" : "Image",
-    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  }
+  "CIAttributeFilterAvailable_Mac" : "10.5"
 }

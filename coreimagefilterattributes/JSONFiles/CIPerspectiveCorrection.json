@@ -1,35 +1,37 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.10",
   "CIAttributeFilterDisplayName" : "Perspective Correction",
-  "CIAttributeDescription" : "Apply a perspective correction to an image.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
+  "inputTopRight" : {
+    "CIAttributeDisplayName" : "Top Right",
+    "CIAttributeDescription" : "The top right coordinate to be perspective corrected.",
+    "CIAttributeDefault" : "[646 507]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
+  "CIAttributeFilterCategories" : [
+    "CICategoryGeometryAdjustment",
+    "CICategoryStillImage",
+    "CICategoryVideo",
+    "CICategoryBuiltIn"
+  ],
   "CIAttributeFilterName" : "CIPerspectiveCorrection",
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIPerspectiveCorrection",
   "inputBottomLeft" : {
     "CIAttributeDisplayName" : "Bottom Left",
     "CIAttributeDescription" : "The bottom left coordinate to be perspective corrected.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[155 153]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
   },
-  "CIAttributeFilterCategories" : [
-    "CICategoryGeometryAdjustment",
-    "CICategoryVideo",
-    "CICategoryStillImage",
-    "CICategoryBuiltIn"
-  ],
   "inputTopLeft" : {
     "CIAttributeDisplayName" : "Top Left",
     "CIAttributeDescription" : "The top left coordinate to be perspective corrected.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[118 484]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
@@ -37,17 +39,9 @@
   "inputBottomRight" : {
     "CIAttributeDisplayName" : "Bottom Right",
     "CIAttributeDescription" : "The bottom right coordinate to be perspective corrected.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[548 140]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
   },
-  "inputTopRight" : {
-    "CIAttributeDisplayName" : "Top Right",
-    "CIAttributeDescription" : "The top right coordinate to be perspective corrected.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "[646 507]",
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeType" : "CIAttributeTypePosition"
-  }
+  "CIAttributeFilterAvailable_iOS" : "8"
 }

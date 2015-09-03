@@ -2,29 +2,25 @@
   "inputQuietSpace" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeSliderMax" : 20,
-    "CIAttributeSliderMin" : 0,
+    "CIAttributeDefault" : 7,
     "CIAttributeDisplayName" : "QuietSpace",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 20,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 7
+    "CIAttributeSliderMin" : 0
   },
-  "CIAttributeFilterDisplayName" : "CICode128BarcodeGenerator",
-  "CIAttributeDescription" : "Code128 Barcode Generator",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeFilterName" : "CICode128BarcodeGenerator",
+  "CIAttributeFilterDisplayName" : "Code128 Barcode Generator",
   "inputMessage" : {
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDisplayName" : "Message",
     "CIAttributeClass" : "NSData"
   },
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CICode128BarcodeGenerator",
   "CIAttributeFilterCategories" : [
     "CICategoryGenerator",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeFilterName" : "CICode128BarcodeGenerator",
+  "CIAttributeFilterAvailable_iOS" : "8",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CICode128BarcodeGenerator",
+  "CIAttributeFilterAvailable_Mac" : "10.10"
 }

@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Color Cube with ColorSpace</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.9</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>7</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryColorEffect</string>
@@ -25,8 +27,6 @@
 		<string>NSObject</string>
 		<key>CIAttributeDisplayName</key>
 		<string>ColorSpace</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputCubeData</key>
 	<dict>
@@ -38,27 +38,23 @@
 		<string>Cube Data</string>
 		<key>CIAttributeIdentity</key>
 		<string>AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/AACAPwAAgD8AAAAAAACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/AAAAAAAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8=</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputCubeDimension</key>
 	<dict>
 		<key>CIAttributeClass</key>
 		<string>NSNumber</string>
 		<key>CIAttributeDefault</key>
-		<real>2</real>
+		<integer>2</integer>
 		<key>CIAttributeDisplayName</key>
 		<string>Cube Dimension</string>
 		<key>CIAttributeIdentity</key>
-		<real>2</real>
+		<integer>2</integer>
 		<key>CIAttributeMax</key>
-		<real>128</real>
+		<integer>128</integer>
 		<key>CIAttributeMin</key>
-		<real>2</real>
+		<integer>2</integer>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeCount</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputImage</key>
 	<dict>
@@ -68,13 +64,8 @@
 		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 </dict>
 </plist>

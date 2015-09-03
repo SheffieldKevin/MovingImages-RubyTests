@@ -1,23 +1,11 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "6",
   "CIAttributeFilterDisplayName" : "Color Map",
-  "CIAttributeDescription" : "Performs a nonlinear transformation of source color values using mapping values provided in a table.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeFilterName" : "CIColorMap",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorMap",
-  "inputGradientImage" : {
-    "CIAttributeDisplayName" : "Gradient Image",
-    "CIAttributeDescription" : "The image data from this image transforms the source image values.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeClass" : "CIImage",
-    "CIAttributeType" : "CIAttributeTypeGradient"
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
   "CIAttributeFilterCategories" : [
     "CICategoryColorEffect",
@@ -26,5 +14,14 @@
     "CICategoryNonSquarePixels",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeFilterName" : "CIColorMap",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorMap",
+  "inputGradientImage" : {
+    "CIAttributeDisplayName" : "Gradient Image",
+    "CIAttributeDescription" : "The image data from this image transforms the source image values.",
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeGradient"
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

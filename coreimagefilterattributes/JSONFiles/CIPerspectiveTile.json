@@ -1,24 +1,18 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "CIAttributeFilterDisplayName" : "Perspective Tile",
-  "CIAttributeDescription" : "Applies a perspective transform to an image and then tiles the result.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
+  "inputTopRight" : {
+    "CIAttributeDisplayName" : "Top Right",
+    "CIAttributeDescription" : "The top right coordinate of a tile.",
+    "CIAttributeDefault" : "[646 507]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeFilterName" : "CIPerspectiveTile",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIPerspectiveTile",
-  "inputBottomLeft" : {
-    "CIAttributeDisplayName" : "Bottom Left",
-    "CIAttributeDescription" : "The bottom left coordinate of a tile.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "[155 153]",
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeType" : "CIAttributeTypePosition"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
   "CIAttributeFilterCategories" : [
     "CICategoryTileEffect",
@@ -26,10 +20,18 @@
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIPerspectiveTile",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIPerspectiveTile",
+  "inputBottomLeft" : {
+    "CIAttributeDisplayName" : "Bottom Left",
+    "CIAttributeDescription" : "The bottom left coordinate of a tile.",
+    "CIAttributeDefault" : "[155 153]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
   "inputTopLeft" : {
     "CIAttributeDisplayName" : "Top Left",
     "CIAttributeDescription" : "The top left coordinate of a tile.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[118 484]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
@@ -37,17 +39,9 @@
   "inputBottomRight" : {
     "CIAttributeDisplayName" : "Bottom Right",
     "CIAttributeDescription" : "The bottom right coordinate of a tile.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[548 140]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
   },
-  "inputTopRight" : {
-    "CIAttributeDisplayName" : "Top Right",
-    "CIAttributeDescription" : "The top right coordinate of a tile.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "[646 507]",
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeType" : "CIAttributeTypePosition"
-  }
+  "CIAttributeFilterAvailable_iOS" : "6"
 }

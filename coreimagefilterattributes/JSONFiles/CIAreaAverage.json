@@ -1,29 +1,26 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "9",
   "CIAttributeFilterDisplayName" : "Area Average",
-  "CIAttributeDescription" : "Calculates the average color for the specified area in an image, returning the result in a pixel.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to process.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIAreaAverage",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIAreaAverage",
   "CIAttributeFilterCategories" : [
     "CICategoryReduction",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIAreaAverage",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIAreaAverage",
   "inputExtent" : {
     "CIAttributeDisplayName" : "Extent",
     "CIAttributeDescription" : "A rectangle that specifies the subregion of the image that you want to process.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[0 0 640 80]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypeRectangle"
-  }
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.5"
 }

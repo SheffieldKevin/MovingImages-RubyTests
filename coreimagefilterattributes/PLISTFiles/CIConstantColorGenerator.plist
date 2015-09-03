@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Generates a solid color. You typically use the output of this filter as the input to another filter.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>5</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryGenerator</string>
@@ -27,13 +29,8 @@
 		<string>The color to generate.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Color</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeColor</string>
 	</dict>
 </dict>
 </plist>

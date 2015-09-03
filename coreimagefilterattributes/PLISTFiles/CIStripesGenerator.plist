@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Generates a stripe pattern. You can control the color of the stripes, the spacing, and the contrast.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>5</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryGenerator</string>
@@ -29,8 +31,6 @@
 		<string>Center</string>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypePosition</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputColor0</key>
 	<dict>
@@ -42,8 +42,6 @@
 		<string>A color to use for the odd stripes.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Color 1</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputColor1</key>
 	<dict>
@@ -55,8 +53,6 @@
 		<string>A color to use for the even stripes.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Color 2</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputSharpness</key>
 	<dict>
@@ -78,8 +74,6 @@
 		<real>0.0</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeScalar</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputWidth</key>
 	<dict>
@@ -97,13 +91,6 @@
 		<real>0.0</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeDistance</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

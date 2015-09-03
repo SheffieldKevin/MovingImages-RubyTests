@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Either multiplies or screens colors, depending on the source image sample color. If the source image sample color is lighter than 50% gray, the background is lightened, similar to screening. If the source image sample color is darker than 50% gray, the background is darkened, similar to multiplying. If the source image sample color is equal to 50% gray, the source image is not changed. Image samples that are equal to pure black or pure white result in pure black or white. The overall effect is similar to what you would achieve by shining a harsh spotlight on the source image.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>5</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryCompositeOperation</string>
@@ -27,8 +29,6 @@
 		<string>The image to use as a background image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Background Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputImage</key>
 	<dict>
@@ -38,13 +38,8 @@
 		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 </dict>
 </plist>

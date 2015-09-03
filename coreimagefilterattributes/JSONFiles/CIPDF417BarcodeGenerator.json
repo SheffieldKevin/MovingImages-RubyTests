@@ -1,0 +1,105 @@
+{
+  "inputDataColumns" : {
+    "CIAttributeMax" : 30,
+    "CIAttributeDisplayName" : "DataColumns",
+    "CIAttributeSliderMin" : 1,
+    "CIAttributeMin" : 1,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 30
+  },
+  "inputMinHeight" : {
+    "CIAttributeMax" : 283,
+    "CIAttributeDisplayName" : "MinHeight",
+    "CIAttributeSliderMin" : 13,
+    "CIAttributeMin" : 13,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 283
+  },
+  "inputCompactStyle" : {
+    "CIAttributeMax" : true,
+    "CIAttributeDisplayName" : "CompactStyle",
+    "CIAttributeSliderMin" : false,
+    "CIAttributeMin" : false,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : true
+  },
+  "inputMinWidth" : {
+    "CIAttributeMax" : 583,
+    "CIAttributeDisplayName" : "MinWidth",
+    "CIAttributeSliderMin" : 56,
+    "CIAttributeMin" : 56,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 583
+  },
+  "inputMaxWidth" : {
+    "CIAttributeMax" : 583,
+    "CIAttributeDisplayName" : "MaxWidth",
+    "CIAttributeSliderMin" : 56,
+    "CIAttributeMin" : 56,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 583
+  },
+  "CIAttributeFilterName" : "CIPDF417BarcodeGenerator",
+  "CIAttributeFilterDisplayName" : "PDF417 Barcode Generator",
+  "inputMessage" : {
+    "CIAttributeDisplayName" : "Message",
+    "CIAttributeClass" : "NSData"
+  },
+  "inputCorrectionLevel" : {
+    "CIAttributeMax" : 8,
+    "CIAttributeDisplayName" : "CorrectionLevel",
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeMin" : 0,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 8
+  },
+  "CIAttributeFilterAvailable_iOS" : "9",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIPDF417BarcodeGenerator",
+  "inputAlwaysSpecifyCompaction" : {
+    "CIAttributeMax" : 9223372036854775807,
+    "CIAttributeDisplayName" : "AlwaysSpecifyCompaction",
+    "CIAttributeSliderMin" : -9223372036854775808,
+    "CIAttributeMin" : -9223372036854775808,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 9223372036854775807
+  },
+  "inputRows" : {
+    "CIAttributeMax" : 90,
+    "CIAttributeDisplayName" : "Rows",
+    "CIAttributeSliderMin" : 3,
+    "CIAttributeMin" : 3,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 90
+  },
+  "inputMaxHeight" : {
+    "CIAttributeMax" : 283,
+    "CIAttributeDisplayName" : "MaxHeight",
+    "CIAttributeSliderMin" : 13,
+    "CIAttributeMin" : 13,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 283
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryGenerator",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputPreferredAspectRatio" : {
+    "CIAttributeMax" : 9223372036854775807,
+    "CIAttributeDisplayName" : "PreferredAspectRatio",
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeMin" : 0,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 9223372036854775807
+  },
+  "inputCompactionMode" : {
+    "CIAttributeMax" : 3,
+    "CIAttributeDisplayName" : "CompactionMode",
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeMin" : 0,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 3
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.11"
+}

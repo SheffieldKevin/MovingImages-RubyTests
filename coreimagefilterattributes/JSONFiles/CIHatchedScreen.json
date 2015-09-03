@@ -1,62 +1,57 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "6",
   "CIAttributeFilterDisplayName" : "Hatched Screen",
-  "CIAttributeDescription" : "Simulates the hatched pattern of a halftone screen.",
   "inputAngle" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The angle of the pattern.",
     "CIAttributeSliderMax" : 3.141592653589793,
     "CIAttributeDisplayName" : "Angle",
     "CIAttributeDefault" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeAngle",
     "CIAttributeSliderMin" : -3.141592653589793
   },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIHatchedScreen",
-  "inputWidth" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The distance between lines in the pattern.",
-    "CIAttributeSliderMax" : 50,
-    "CIAttributeDisplayName" : "Width",
-    "CIAttributeSliderMin" : 2,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 1,
-    "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 6
-  },
-  "inputSharpness" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The amount of sharpening to apply.",
-    "CIAttributeSliderMax" : 1,
-    "CIAttributeDisplayName" : "Sharpness",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0.7
-  },
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHatchedScreen",
   "CIAttributeFilterCategories" : [
     "CICategoryHalftoneEffect",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIHatchedScreen",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHatchedScreen",
+  "inputWidth" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The distance between lines in the pattern.",
+    "CIAttributeSliderMax" : 50,
+    "CIAttributeDisplayName" : "Width",
+    "CIAttributeDefault" : 6,
+    "CIAttributeMin" : 1,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeSliderMin" : 2
+  },
+  "inputSharpness" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The amount of sharpening to apply.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Sharpness",
+    "CIAttributeDefault" : 0.7,
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeSliderMin" : 0
+  },
   "inputCenter" : {
     "CIAttributeDisplayName" : "Center",
     "CIAttributeDescription" : "The x and y position to use as the center of the hatched screen pattern",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[150 150]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
-  }
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

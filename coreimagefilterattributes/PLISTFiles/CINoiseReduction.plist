@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Reduces noise using a threshold value to define what is considered noise. Small changes in luminance below that value are considered noise and get a noise reduction treatment, which is a local blur. Changes above the threshold value are considered edges, so they are sharpened.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>9</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryBlur</string>
@@ -25,8 +27,8 @@
 		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 	<key>inputNoiseLevel</key>
 	<dict>
@@ -48,8 +50,6 @@
 		<real>0.0</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeScalar</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputSharpness</key>
 	<dict>
@@ -71,13 +71,6 @@
 		<real>0.0</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeScalar</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

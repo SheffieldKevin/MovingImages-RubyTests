@@ -1,0 +1,41 @@
+{
+  "inputColor1" : {
+    "CIAttributeDisplayName" : "Color 2",
+    "CIAttributeDescription" : "The second color to use in the gradient.",
+    "CIAttributeDefault" : "0 0 0 1",
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeColor"
+  },
+  "CIAttributeFilterDisplayName" : "Smooth Linear Gradient",
+  "CIAttributeFilterAvailable_iOS" : "6",
+  "inputColor0" : {
+    "CIAttributeDisplayName" : "Color 1",
+    "CIAttributeDescription" : "The first color to use in the gradient.",
+    "CIAttributeDefault" : "1 1 1 1",
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeColor"
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryGradient",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "CIAttributeFilterName" : "CISmoothLinearGradient",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISmoothLinearGradient",
+  "inputPoint1" : {
+    "CIAttributeDisplayName" : "Point 2",
+    "CIAttributeDescription" : "The ending position of the gradient -- where the second color begins.",
+    "CIAttributeDefault" : "[200 200]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "inputPoint0" : {
+    "CIAttributeDisplayName" : "Point 1",
+    "CIAttributeDescription" : "The starting position of the gradient -- where the first color begins.",
+    "CIAttributeDefault" : "[0 0]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.10"
+}

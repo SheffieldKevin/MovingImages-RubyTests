@@ -1,33 +1,30 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "9",
   "CIAttributeFilterDisplayName" : "Height Field From Mask",
-  "CIAttributeDescription" : "Produces a continuous three-dimensional, loft-shaped height field from a grayscale mask. The white values of the mask define those pixels that are inside the height field while the black values define those pixels that are outside. The field varies smoothly and continuously inside the mask, reaching the value 0 at the edge of the mask. You can use this filter with the CIShadedMaterial filter to produce extremely realistic shaded objects.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The white values of the mask define those pixels that are inside the height field while the black values define those pixels that are outside. The field varies smoothly and continuously inside the mask, reaching the value 0 at the edge of the mask.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIHeightFieldFromMask",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHeightFieldFromMask",
   "CIAttributeFilterCategories" : [
     "CICategoryStylize",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIHeightFieldFromMask",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHeightFieldFromMask",
   "inputRadius" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The distance from the edge of the mask for the smooth transition is proportional to the input radius. Larger values make the transition smoother and more pronounced. Smaller values make the transition approximate a fillet radius.",
     "CIAttributeSliderMax" : 300,
     "CIAttributeDisplayName" : "Radius",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 10,
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 10,
     "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 10
-  }
+    "CIAttributeSliderMin" : 0
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

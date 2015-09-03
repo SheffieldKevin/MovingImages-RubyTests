@@ -1,17 +1,17 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "CIAttributeFilterDisplayName" : "Color Burn Blend Mode",
-  "CIAttributeDescription" : "Darkens the background image samples to reflect the source image samples. Source image sample values that specify white do not produce a change.",
-  "outputImage" : {
+  "inputBackgroundImage" : {
+    "CIAttributeDescription" : "The image to use as a background image.",
+    "CIAttributeDisplayName" : "Background Image",
     "CIAttributeClass" : "CIImage"
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIColorBurnBlendMode",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorBurnBlendMode",
   "CIAttributeFilterCategories" : [
     "CICategoryCompositeOperation",
     "CICategoryVideo",
@@ -20,10 +20,7 @@
     "CICategoryNonSquarePixels",
     "CICategoryBuiltIn"
   ],
-  "inputBackgroundImage" : {
-    "CIAttributeDisplayName" : "Background Image",
-    "CIAttributeDescription" : "The image to use as a background image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  }
+  "CIAttributeFilterName" : "CIColorBurnBlendMode",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorBurnBlendMode",
+  "CIAttributeFilterAvailable_iOS" : "5"
 }

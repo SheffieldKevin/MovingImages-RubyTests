@@ -1,8 +1,7 @@
 {
   "inputTargetImage" : {
-    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeDescription" : "The target image for a transition.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeClass" : "CIImage"
   },
   "inputTime" : {
@@ -11,49 +10,42 @@
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Time",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeTime",
     "CIAttributeDefault" : 0
   },
-  "CIAttributeDescription" : "Transitions from one image to another by simulating a curling page, revealing the new image as the page curls.",
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "inputAngle" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The angle of the curling page.",
     "CIAttributeSliderMax" : 3.141592653589793,
     "CIAttributeDisplayName" : "Angle",
     "CIAttributeDefault" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeAngle",
     "CIAttributeSliderMin" : -3.141592653589793
-  },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
   },
   "CIAttributeFilterName" : "CIPageCurlTransition",
   "CIAttributeFilterDisplayName" : "Page Curl",
   "inputExtent" : {
     "CIAttributeDisplayName" : "Extent",
     "CIAttributeDescription" : "The extent of the effect.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[0 0 300 300]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypeRectangle"
   },
   "inputShadingImage" : {
-    "CIAttributeDisplayName" : "Shading Image",
     "CIAttributeDescription" : "An image that looks like a shaded sphere enclosed in a square image.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Shading Image",
     "CIAttributeClass" : "CIImage"
   },
+  "CIAttributeFilterAvailable_iOS" : "9",
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIPageCurlTransition",
   "inputBacksideImage" : {
-    "CIAttributeDisplayName" : "Backside Image",
     "CIAttributeDescription" : "The image that appears on the back of the source image, as the page curls to reveal the target image.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Backside Image",
     "CIAttributeClass" : "CIImage"
   },
   "CIAttributeFilterCategories" : [
@@ -67,16 +59,15 @@
     "CIAttributeDescription" : "The radius of the curl.",
     "CIAttributeSliderMax" : 400,
     "CIAttributeDisplayName" : "Radius",
-    "CIAttributeSliderMin" : 0.01,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 100,
     "CIAttributeMin" : 0.01,
     "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 100
+    "CIAttributeSliderMin" : 0.01
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   }
 }

@@ -1,28 +1,22 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "CIAttributeFilterDisplayName" : "Noise Reduction",
-  "CIAttributeDescription" : "Reduces noise using a threshold value to define what is considered noise. Small changes in luminance below that value are considered noise and get a noise reduction treatment, which is a local blur. Changes above the threshold value are considered edges, so they are sharpened.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
+  "inputNoiseLevel" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The amount of noise reduction. The larger the value, the more noise reduction.",
+    "CIAttributeSliderMax" : 0.1,
+    "CIAttributeDisplayName" : "Noise Level",
+    "CIAttributeDefault" : 0.02,
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeSliderMin" : 0
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeFilterName" : "CINoiseReduction",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CINoiseReduction",
-  "inputSharpness" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The sharpness of the final image. The larger the value, the sharper the result.",
-    "CIAttributeSliderMax" : 2,
-    "CIAttributeDisplayName" : "Sharpness",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeIdentity" : 0,
-    "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0.4
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
   "CIAttributeFilterCategories" : [
     "CICategoryBlur",
@@ -30,16 +24,18 @@
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
-  "inputNoiseLevel" : {
+  "CIAttributeFilterName" : "CINoiseReduction",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CINoiseReduction",
+  "inputSharpness" : {
     "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The amount of noise reduction. The larger the value, the more noise reduction.",
-    "CIAttributeSliderMax" : 0.1,
-    "CIAttributeDisplayName" : "Noise Level",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDescription" : "The sharpness of the final image. The larger the value, the sharper the result.",
+    "CIAttributeSliderMax" : 2,
+    "CIAttributeDisplayName" : "Sharpness",
+    "CIAttributeDefault" : 0.4,
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0.02
-  }
+    "CIAttributeSliderMin" : 0
+  },
+  "CIAttributeFilterAvailable_iOS" : "9"
 }

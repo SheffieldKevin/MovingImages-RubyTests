@@ -1,52 +1,47 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "5",
   "CIAttributeFilterDisplayName" : "Twirl Distortion",
-  "CIAttributeDescription" : "Rotates pixels around a point to give a twirling effect. You can specify the number of rotations as well as the center and radius of the effect.",
   "inputAngle" : {
     "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The angle (in degrees) of the twirl. Values can be positive or negative.",
+    "CIAttributeDescription" : "The angle (in radians) of the twirl. Values can be positive or negative.",
     "CIAttributeSliderMax" : 12.56637061435917,
     "CIAttributeDisplayName" : "Angle",
     "CIAttributeDefault" : 3.141592653589793,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeAngle",
     "CIAttributeSliderMin" : -12.56637061435917
   },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CITwirlDistortion",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CITwirlDistortion",
   "CIAttributeFilterCategories" : [
     "CICategoryDistortionEffect",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CITwirlDistortion",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CITwirlDistortion",
   "inputRadius" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The radius determines how many pixels are used to create the distortion. The larger the radius, wider the extent of the distortion.",
     "CIAttributeSliderMax" : 500,
     "CIAttributeDisplayName" : "Radius",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 300,
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 300,
     "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 300
+    "CIAttributeSliderMin" : 0
   },
   "inputCenter" : {
     "CIAttributeDisplayName" : "Center",
-    "CIAttributeDescription" : "The x and y position to use as the center of the distortion.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDescription" : "The center of the effect as x and y coordinates.",
     "CIAttributeDefault" : "[150 150]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
-  }
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

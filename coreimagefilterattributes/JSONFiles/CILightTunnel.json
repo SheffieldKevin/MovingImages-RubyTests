@@ -1,0 +1,46 @@
+{
+  "CIAttributeFilterAvailable_iOS" : "6",
+  "CIAttributeFilterDisplayName" : "Light Tunnel Distortion",
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to process.",
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryDistortionEffect",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "CIAttributeFilterName" : "CILightTunnel",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CILightTunnel",
+  "inputRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "center radius of the light tunnel.",
+    "CIAttributeSliderMax" : 500,
+    "CIAttributeDisplayName" : "Radius",
+    "CIAttributeDefault" : 100,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : 1
+  },
+  "inputRotation" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "Rotation angle of the light tunnel.",
+    "CIAttributeSliderMax" : 1.570796326794897,
+    "CIAttributeDisplayName" : "Rotation",
+    "CIAttributeDefault" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : 0
+  },
+  "inputCenter" : {
+    "CIAttributeDisplayName" : "Center",
+    "CIAttributeDescription" : "Center of the light tunnel.",
+    "CIAttributeDefault" : "[150 150]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.10"
+}

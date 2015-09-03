@@ -1,16 +1,12 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "5",
   "CIAttributeFilterDisplayName" : "Vibrance",
-  "CIAttributeDescription" : "Adjusts the saturation of an image while keeping pleasing skin tones.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputAmount" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The amount to adjust the saturation.",
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Amount",
     "CIAttributeSliderMin" : -1,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : -1,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 0,
@@ -20,11 +16,9 @@
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIVibrance",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIVibrance",
   "CIAttributeFilterCategories" : [
     "CICategoryColorAdjustment",
     "CICategoryVideo",
@@ -32,5 +26,8 @@
     "CICategoryInterlaced",
     "CICategoryNonSquarePixels",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIVibrance",
+  "CIAttributeFilterName" : "CIVibrance",
+  "CIAttributeFilterAvailable_Mac" : "10.7"
 }

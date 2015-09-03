@@ -1,30 +1,26 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "5",
   "CIAttributeFilterDisplayName" : "Highlight and Shadow Adjust",
-  "CIAttributeDescription" : "Adjust the tonal mapping of an image while preserving spatial detail",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIHighlightShadowAdjust",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHighlightShadowAdjust",
   "CIAttributeFilterCategories" : [
     "CICategoryStylize",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIHighlightShadowAdjust",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHighlightShadowAdjust",
   "inputHighlightAmount" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The amount of adjustment to the highlights of the image.",
     "CIAttributeSliderMax" : 1,
-    "CIAttributeDisplayName" : "HighlightAmount",
+    "CIAttributeDisplayName" : "Highlight Amount",
     "CIAttributeSliderMin" : 0.3,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 1,
@@ -36,24 +32,23 @@
     "CIAttributeDescription" : "Shadow Hightlight Radius",
     "CIAttributeSliderMax" : 10,
     "CIAttributeDisplayName" : "Radius",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 0,
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0
+    "CIAttributeSliderMin" : 0
   },
   "inputShadowAmount" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The amount of adjustment to the shadows of the image.",
     "CIAttributeSliderMax" : 1,
-    "CIAttributeDisplayName" : "ShadowAmount",
+    "CIAttributeDisplayName" : "Shadow Amount",
     "CIAttributeSliderMin" : -1,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : -1,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
     "CIAttributeDefault" : 0
-  }
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.7"
 }

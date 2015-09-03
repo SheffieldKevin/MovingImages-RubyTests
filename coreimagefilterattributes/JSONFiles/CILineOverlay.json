@@ -1,7 +1,9 @@
 {
-  "CIAttributeDescription" : "Creates a sketch that outlines the edges of an image in black, leaving the non-outlined portions of the image transparent. The result has alpha and is rendered in black, so it won't look like much until you render it over another image using source over compositing.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
   "inputNRNoiseLevel" : {
     "CIAttributeClass" : "NSNumber",
@@ -9,7 +11,6 @@
     "CIAttributeSliderMax" : 0.1,
     "CIAttributeDisplayName" : "NR Noise Level",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
@@ -21,7 +22,6 @@
     "CIAttributeSliderMax" : 200,
     "CIAttributeDisplayName" : "Contrast",
     "CIAttributeSliderMin" : 0.25,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0.25,
     "CIAttributeIdentity" : 1,
     "CIAttributeType" : "CIAttributeTypeScalar",
@@ -33,7 +33,6 @@
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Threshold",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
@@ -47,19 +46,18 @@
     "CIAttributeSliderMax" : 200,
     "CIAttributeDisplayName" : "Edge Intensity",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
     "CIAttributeDefault" : 1
   },
+  "CIAttributeFilterAvailable_iOS" : "9",
   "inputNRSharpness" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The amount of sharpening done when removing noise in the image before tracing the edges of the image. This improves the edge acquisition.",
     "CIAttributeSliderMax" : 2,
     "CIAttributeDisplayName" : "NR Sharpness",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
@@ -67,15 +65,10 @@
   },
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CILineOverlay",
   "CIAttributeFilterCategories" : [
-    "CICategoryStylize",
-    "CICategoryVideo",
+    "CICategoryBuiltIn",
     "CICategoryStillImage",
-    "CICategoryBuiltIn"
+    "CICategoryVideo",
+    "CICategoryStylize"
   ],
-  "inputImage" : {
-    "CIAttributeDisplayName" : "Image",
-    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  }
+  "CIAttributeFilterAvailable_Mac" : "10.5"
 }

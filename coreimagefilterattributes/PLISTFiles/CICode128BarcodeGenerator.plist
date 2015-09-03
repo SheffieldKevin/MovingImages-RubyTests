@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Code128 Barcode Generator</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.10</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>8</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryGenerator</string>
@@ -11,7 +13,7 @@
 		<string>CICategoryBuiltIn</string>
 	</array>
 	<key>CIAttributeFilterDisplayName</key>
-	<string>CICode128BarcodeGenerator</string>
+	<string>Code128 Barcode Generator</string>
 	<key>CIAttributeFilterName</key>
 	<string>CICode128BarcodeGenerator</string>
 	<key>CIAttributeReferenceDocumentation</key>
@@ -22,8 +24,6 @@
 		<string>NSData</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Message</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputQuietSpace</key>
 	<dict>
@@ -43,13 +43,6 @@
 		<integer>0</integer>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeScalar</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

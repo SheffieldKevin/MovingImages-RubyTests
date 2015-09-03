@@ -4,50 +4,31 @@
     "CIAttributeDescription" : "The amount of brightness to apply. The larger the value, the brighter the result.",
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Brightness",
-    "CIAttributeSliderMin" : -1,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 0,
     "CIAttributeMin" : -1,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0
+    "CIAttributeSliderMin" : -1
   },
   "CIAttributeFilterDisplayName" : "Color Controls",
-  "CIAttributeDescription" : "Adjusts saturation, brightness, and contrast values.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
-  "inputImage" : {
-    "CIAttributeDisplayName" : "Image",
-    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeFilterName" : "CIColorControls",
   "inputSaturation" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The amount of saturation to apply. The larger the value, the more saturated the result.",
     "CIAttributeSliderMax" : 2,
     "CIAttributeDisplayName" : "Saturation",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 1,
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 1,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 1
+    "CIAttributeSliderMin" : 0
   },
-  "inputContrast" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The amount of contrast to apply. The larger the value, the more contrast in the resulting image.",
-    "CIAttributeSliderMax" : 4,
-    "CIAttributeDisplayName" : "Contrast",
-    "CIAttributeSliderMin" : 0.25,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0.25,
-    "CIAttributeIdentity" : 1,
-    "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 1
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorControls",
+  "CIAttributeFilterName" : "CIColorControls",
   "CIAttributeFilterCategories" : [
     "CICategoryColorAdjustment",
     "CICategoryVideo",
@@ -55,5 +36,19 @@
     "CICategoryInterlaced",
     "CICategoryNonSquarePixels",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorControls",
+  "inputContrast" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The amount of contrast to apply. The larger the value, the more contrast in the resulting image.",
+    "CIAttributeSliderMax" : 4,
+    "CIAttributeDisplayName" : "Contrast",
+    "CIAttributeDefault" : 1,
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeSliderMin" : 0.25
+  },
+  "CIAttributeFilterAvailable_iOS" : "5",
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

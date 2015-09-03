@@ -1,17 +1,14 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "CIAttributeFilterDisplayName" : "Gamma Adjust",
-  "CIAttributeDescription" : "Adjusts midtone brightness. This filter is typically used to compensate for nonlinear effects of displays. Adjusting the gamma effectively changes the slope of the transition between black and white.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
+  "CIAttributeFilterAvailable_iOS" : "5",
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
   "CIAttributeFilterName" : "CIGammaAdjust",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIGammaAdjust",
   "CIAttributeFilterCategories" : [
     "CICategoryColorAdjustment",
     "CICategoryVideo",
@@ -20,15 +17,15 @@
     "CICategoryNonSquarePixels",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIGammaAdjust",
   "inputPower" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "A gamma value to use to correct image brightness. The larger the value, the darker the result.",
-    "CIAttributeSliderMax" : 3,
+    "CIAttributeSliderMax" : 4,
     "CIAttributeDisplayName" : "Power",
-    "CIAttributeDefault" : 0.75,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 1,
     "CIAttributeIdentity" : 1,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeSliderMin" : 0.1
+    "CIAttributeSliderMin" : 0.25
   }
 }

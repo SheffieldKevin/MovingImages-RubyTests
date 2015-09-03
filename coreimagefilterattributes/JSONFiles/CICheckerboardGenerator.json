@@ -1,39 +1,17 @@
 {
+  "inputColor1" : {
+    "CIAttributeDisplayName" : "Color 2",
+    "CIAttributeDescription" : "A color to use for the second set of the checkerboard squares.",
+    "CIAttributeDefault" : "0 0 0 1",
+    "CIAttributeClass" : "CIColor"
+  },
   "CIAttributeFilterDisplayName" : "Checkerboard",
-  "CIAttributeDescription" : "Generates a checkerboard pattern. You can specify the checkerboard size and colors, and the sharpness of the pattern.",
+  "CIAttributeFilterAvailable_iOS" : "5",
   "inputColor0" : {
     "CIAttributeDisplayName" : "Color 1",
     "CIAttributeDescription" : "A color to use for the first set of the checkerboard squares.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "1 1 1 1",
     "CIAttributeClass" : "CIColor"
-  },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeFilterName" : "CICheckerboardGenerator",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CICheckerboardGenerator",
-  "inputSharpness" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The sharpness of the checkerboard pattern. The smaller the value, the more blurry the pattern. Values range from 0.0 to 1.0.",
-    "CIAttributeSliderMax" : 1,
-    "CIAttributeDisplayName" : "Sharpness",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeMax" : 1,
-    "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 1
-  },
-  "inputWidth" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The width of a square in the checkerboard pattern.",
-    "CIAttributeSliderMax" : 800,
-    "CIAttributeDisplayName" : "Width",
-    "CIAttributeDefault" : 80,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeSliderMin" : 0
   },
   "CIAttributeFilterCategories" : [
     "CICategoryGenerator",
@@ -41,19 +19,34 @@
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
-  "inputColor1" : {
-    "CIAttributeDisplayName" : "Color 2",
-    "CIAttributeDescription" : "A color to use for the second set of the checkerboard squares.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "0 0 0 1",
-    "CIAttributeClass" : "CIColor"
+  "CIAttributeFilterName" : "CICheckerboardGenerator",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CICheckerboardGenerator",
+  "inputWidth" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The width of a square in the checkerboard pattern.",
+    "CIAttributeSliderMax" : 800,
+    "CIAttributeDisplayName" : "Width",
+    "CIAttributeDefault" : 80,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeSliderMin" : 0
+  },
+  "inputSharpness" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The sharpness of the checkerboard pattern. The smaller the value, the more blurry the pattern. Values range from 0.0 to 1.0.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "Sharpness",
+    "CIAttributeDefault" : 1,
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeSliderMin" : 0
   },
   "inputCenter" : {
     "CIAttributeDisplayName" : "Center",
-    "CIAttributeDescription" : "The center of the area, as x and y coordinates, to filter.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDescription" : "The center of the effect as x and y coordinates.",
     "CIAttributeDefault" : "[150 150]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
-  }
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

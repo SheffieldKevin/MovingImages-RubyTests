@@ -1,29 +1,26 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "9",
   "CIAttributeFilterDisplayName" : "Row Average",
-  "CIAttributeDescription" : "Calculates the average color for each row of the specified area in an image, returning the result in a 1D image.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to process.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIRowAverage",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIRowAverage",
   "CIAttributeFilterCategories" : [
     "CICategoryReduction",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIRowAverage",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIRowAverage",
   "inputExtent" : {
     "CIAttributeDisplayName" : "Extent",
     "CIAttributeDescription" : "A rectangle that specifies the subregion of the image that you want to process.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[0 0 640 80]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypeRectangle"
-  }
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.5"
 }

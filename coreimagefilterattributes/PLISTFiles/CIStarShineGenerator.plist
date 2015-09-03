@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Generates a starburst pattern. The output image is typically used as input to another filter</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>6</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryGenerator</string>
@@ -29,8 +31,6 @@
 		<string>Center</string>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypePosition</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputColor</key>
 	<dict>
@@ -42,8 +42,6 @@
 		<string>The color to use for the outer shell of the circular star.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Color</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputCrossAngle</key>
 	<dict>
@@ -55,16 +53,12 @@
 		<string>The angle of the cross pattern.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Cross Angle</string>
-		<key>CIAttributeIdentity</key>
-		<real>0.59999999999999998</real>
 		<key>CIAttributeSliderMax</key>
 		<real>3.1415926535897931</real>
 		<key>CIAttributeSliderMin</key>
 		<real>-3.1415926535897931</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeAngle</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputCrossOpacity</key>
 	<dict>
@@ -86,8 +80,6 @@
 		<real>-8</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeScalar</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputCrossScale</key>
 	<dict>
@@ -109,8 +101,6 @@
 		<real>0.0</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeScalar</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputCrossWidth</key>
 	<dict>
@@ -122,8 +112,6 @@
 		<string>The width of the cross pattern.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Cross Width</string>
-		<key>CIAttributeIdentity</key>
-		<real>2.5</real>
 		<key>CIAttributeMin</key>
 		<real>0.0</real>
 		<key>CIAttributeSliderMax</key>
@@ -132,8 +120,6 @@
 		<real>0.5</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeDistance</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputEpsilon</key>
 	<dict>
@@ -155,8 +141,6 @@
 		<real>-8</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeScalar</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputRadius</key>
 	<dict>
@@ -168,8 +152,6 @@
 		<string>The radius of the star.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Radius</string>
-		<key>CIAttributeIdentity</key>
-		<real>50</real>
 		<key>CIAttributeMin</key>
 		<real>0.0</real>
 		<key>CIAttributeSliderMax</key>
@@ -178,13 +160,6 @@
 		<real>0.0</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeDistance</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

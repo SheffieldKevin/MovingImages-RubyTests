@@ -1,8 +1,7 @@
 {
   "inputTargetImage" : {
-    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeDescription" : "The target image for a transition.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeClass" : "CIImage"
   },
   "inputTime" : {
@@ -11,99 +10,89 @@
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Time",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeTime",
     "CIAttributeDefault" : 0
   },
-  "CIAttributeDescription" : "Transitions from one image to another by creating a flash. The flash originates from a point you specify. Small at first, it rapidly expands until the image frame is completely filled with the flash color. As the color fades, the target image begins to appear.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
+  "inputColor" : {
+    "CIAttributeDisplayName" : "Color",
+    "CIAttributeDescription" : "The color of the light rays emanating from the flash.",
+    "CIAttributeDefault" : "1 0.8 0.6 1",
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeColor"
   },
   "inputStriationStrength" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The strength of the light rays emanating from the flash.",
     "CIAttributeSliderMax" : 3,
     "CIAttributeDisplayName" : "Striation Strength",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 0.5,
     "CIAttributeMin" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0.5
+    "CIAttributeSliderMin" : 0
   },
-  "inputColor" : {
-    "CIAttributeDisplayName" : "Color",
-    "CIAttributeDescription" : "The color of the light rays emanating from the flash.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "1 0.8 0.6 1",
-    "CIAttributeClass" : "CIColor",
-    "CIAttributeType" : "CIAttributeTypeOpaqueColor"
-  },
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "CIAttributeFilterName" : "CIFlashTransition",
   "CIAttributeFilterDisplayName" : "Flash",
-  "inputExtent" : {
-    "CIAttributeDisplayName" : "Extent",
-    "CIAttributeDescription" : "The extent of the flash.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "[0 0 300 300]",
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeType" : "CIAttributeTypeRectangle"
-  },
   "inputFadeThreshold" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The amount of fade between the flash and the target image. The higher the value, the more flash time and the less fade time.",
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Fade Threshold",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 0.85,
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0.85
+    "CIAttributeSliderMin" : 0
+  },
+  "inputExtent" : {
+    "CIAttributeDisplayName" : "Extent",
+    "CIAttributeDescription" : "The extent of the flash.",
+    "CIAttributeDefault" : "[0 0 300 300]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypeRectangle"
   },
   "inputCenter" : {
     "CIAttributeDisplayName" : "Center",
     "CIAttributeDescription" : "The x and y position to use as the center of the effect",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[150 150]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
   },
+  "CIAttributeFilterAvailable_iOS" : "6",
   "inputStriationContrast" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The contrast of the light rays emanating from the flash.",
     "CIAttributeSliderMax" : 5,
     "CIAttributeDisplayName" : "Striation Contrast",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 1.375,
     "CIAttributeMin" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 1.375
+    "CIAttributeSliderMin" : 0
   },
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIFlashTransition",
-  "inputMaxStriationRadius" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The radius of the light rays emanating from the flash.",
-    "CIAttributeSliderMax" : 10,
-    "CIAttributeDisplayName" : "Maximum Striation Radius",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 2.58
-  },
   "CIAttributeFilterCategories" : [
     "CICategoryTransition",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "inputMaxStriationRadius" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The radius of the light rays emanating from the flash.",
+    "CIAttributeSliderMax" : 10,
+    "CIAttributeDisplayName" : "Maximum Striation Radius",
+    "CIAttributeDefault" : 2.58,
+    "CIAttributeMin" : 0,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeSliderMin" : 0
+  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   }
 }

@@ -1,17 +1,12 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.10",
   "CIAttributeFilterDisplayName" : "sRGB Tone Curve to Linear",
-  "CIAttributeDescription" : "Converts an image in sRGB space to linear space.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CISRGBToneCurveToLinear",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISRGBToneCurveToLinear",
   "CIAttributeFilterCategories" : [
     "CICategoryColorAdjustment",
     "CICategoryVideo",
@@ -19,5 +14,8 @@
     "CICategoryInterlaced",
     "CICategoryNonSquarePixels",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeFilterName" : "CISRGBToneCurveToLinear",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISRGBToneCurveToLinear",
+  "CIAttributeFilterAvailable_iOS" : "7"
 }

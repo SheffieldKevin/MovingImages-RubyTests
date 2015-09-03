@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.10</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>6</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryGradient</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Smooth Linear Gradient</string>
+	<key>CIAttributeFilterName</key>
+	<string>CISmoothLinearGradient</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CISmoothLinearGradient</string>
+	<key>inputColor0</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>1 1 1 1</string>
+		<key>CIAttributeDescription</key>
+		<string>The first color to use in the gradient.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Color 1</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeColor</string>
+	</dict>
+	<key>inputColor1</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIColor</string>
+		<key>CIAttributeDefault</key>
+		<string>0 0 0 1</string>
+		<key>CIAttributeDescription</key>
+		<string>The second color to use in the gradient.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Color 2</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeColor</string>
+	</dict>
+	<key>inputPoint0</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[0 0]</string>
+		<key>CIAttributeDescription</key>
+		<string>The starting position of the gradient -- where the first color begins.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Point 1</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition</string>
+	</dict>
+	<key>inputPoint1</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[200 200]</string>
+		<key>CIAttributeDescription</key>
+		<string>The ending position of the gradient -- where the second color begins.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Point 2</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition</string>
+	</dict>
+</dict>
+</plist>

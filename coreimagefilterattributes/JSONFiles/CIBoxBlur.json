@@ -1,32 +1,29 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "9",
   "CIAttributeFilterDisplayName" : "Box Blur",
-  "CIAttributeDescription" : "Smooths or sharpens an image using a box-shaped convolution kernel.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIBoxBlur",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIBoxBlur",
   "CIAttributeFilterCategories" : [
     "CICategoryBlur",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIBoxBlur",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIBoxBlur",
   "inputRadius" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The radius determines how many pixels are used to create the blur. The larger the radius, the blurrier the result.",
     "CIAttributeSliderMax" : 100,
     "CIAttributeDisplayName" : "Radius",
-    "CIAttributeSliderMin" : 1,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 10,
     "CIAttributeMin" : 1,
     "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 10
-  }
+    "CIAttributeSliderMin" : 1
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.5"
 }

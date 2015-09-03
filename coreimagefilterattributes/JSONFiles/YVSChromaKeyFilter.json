@@ -1,8 +1,20 @@
 {
   "CIAttributeFilterDisplayName" : "Simple Chroma Key.",
-  "outputImage" : {
+  "inputSlopeWidth" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDisplayName" : "Slope width",
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeName" : "Slope width",
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeDefault" : 0.06
+  },
+  "inputImage" : {
+    "CIAttributeType" : "CIAttributeTypeImage",
+    "CIAttributeDisplayName" : "Image",
     "CIAttributeClass" : "CIImage"
   },
+  "CIAttributeFilterName" : "YVSChromaKeyFilter",
   "CIAttributeFilterCategories" : [
     "CICategoryColorAdjustment",
     "CICategoryVideo",
@@ -10,39 +22,19 @@
     "CICategoryInterlaced",
     "CICategoryNonSquarePixels"
   ],
-  "inputImage" : {
-    "CIAttributeDisplayName" : "Image",
-    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+  "inputColor" : {
+    "CIAttributeDisplayName" : "Color",
+    "CIAttributeDefault" : "[0 1 0 1]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypeOpaqueColor"
   },
-  "inputSlopeWidth" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDisplayName" : "Slope width",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeMax" : 1,
-    "CIAttributeName" : "Slope width",
-    "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 0.06
-  },
-  "CIAttributeFilterName" : "YVSChromaKeyFilter",
   "inputDistance" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDisplayName" : "Distance",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeName" : "Distance",
     "CIAttributeType" : "CIAttributeTypeDistance",
     "CIAttributeDefault" : 0.08
-  },
-  "inputColor" : {
-    "CIAttributeDisplayName" : "Color",
-    "CIAttributeDescription" : "A color.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "[0 1 0 1]",
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeType" : "CIAttributeTypeOpaqueColor"
   }
 }

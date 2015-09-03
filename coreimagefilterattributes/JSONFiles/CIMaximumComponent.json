@@ -1,17 +1,12 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.5",
   "CIAttributeFilterDisplayName" : "Maximum Component",
-  "CIAttributeDescription" : "Converts an image to grayscale using the maximum of the three color components.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to process.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIMaximumComponent",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIMaximumComponent",
   "CIAttributeFilterCategories" : [
     "CICategoryColorEffect",
     "CICategoryVideo",
@@ -19,5 +14,8 @@
     "CICategoryNonSquarePixels",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeFilterName" : "CIMaximumComponent",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIMaximumComponent",
+  "CIAttributeFilterAvailable_iOS" : "6"
 }

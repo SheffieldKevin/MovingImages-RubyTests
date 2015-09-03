@@ -1,53 +1,48 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "9",
   "CIAttributeFilterDisplayName" : "Stretch Crop",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeDescription" : "Distorts an image by stretching and or cropping to fit a target size.",
-  "CIAttributeFilterName" : "CIStretchCrop",
   "inputCenterStretchAmount" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "Determine how much the center of the image is stretched if stretching is used. If value is 0 then the center of the image maintains the original aspect ratio.  If 1 then the image is stretched uniformly.",
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "CenterStretchAmount",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 0.25,
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0.25
+    "CIAttributeSliderMin" : 0
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "inputCropAmount" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "Determines if and how much cropping should be used to achieve the target size. If value is 0 then only stretching is used.  If 1 then only cropping is used.",
-    "CIAttributeSliderMax" : 1,
-    "CIAttributeDisplayName" : "CropAmount",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeMax" : 1,
-    "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0.25
-  },
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIStretchCrop",
-  "inputSize" : {
-    "CIAttributeDisplayName" : "Size",
-    "CIAttributeDescription" : "The size in pixels of the output image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "[1280 720]",
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeType" : "CIAttributeTypePosition"
-  },
+  "CIAttributeFilterName" : "CIStretchCrop",
   "CIAttributeFilterCategories" : [
     "CICategoryDistortionEffect",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIStretchCrop",
+  "inputCropAmount" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "Determines if and how much cropping should be used to achieve the target size. If value is 0 then only stretching is used.  If 1 then only cropping is used.",
+    "CIAttributeSliderMax" : 1,
+    "CIAttributeDisplayName" : "CropAmount",
+    "CIAttributeDefault" : 0.25,
+    "CIAttributeMin" : 0,
+    "CIAttributeMax" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeSliderMin" : 0
+  },
+  "inputSize" : {
+    "CIAttributeDisplayName" : "Size",
+    "CIAttributeDescription" : "The size in pixels of the output image.",
+    "CIAttributeDefault" : "[1280 720]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.6"
 }

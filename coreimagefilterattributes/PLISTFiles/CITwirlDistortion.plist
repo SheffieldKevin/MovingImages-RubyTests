@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Rotates pixels around a point to give a twirling effect. You can specify the number of rotations as well as the center and radius of the effect.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>5</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryDistortionEffect</string>
@@ -24,7 +26,7 @@
 		<key>CIAttributeDefault</key>
 		<real>3.1415926535897931</real>
 		<key>CIAttributeDescription</key>
-		<string>The angle (in degrees) of the twirl. Values can be positive or negative.</string>
+		<string>The angle (in radians) of the twirl. Values can be positive or negative.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Angle</string>
 		<key>CIAttributeIdentity</key>
@@ -35,8 +37,6 @@
 		<real>-12.566370614359172</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeAngle</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputCenter</key>
 	<dict>
@@ -45,13 +45,11 @@
 		<key>CIAttributeDefault</key>
 		<string>[150 150]</string>
 		<key>CIAttributeDescription</key>
-		<string>The x and y position to use as the center of the distortion.</string>
+		<string>The center of the effect as x and y coordinates.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Center</string>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypePosition</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputImage</key>
 	<dict>
@@ -61,8 +59,8 @@
 		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 	<key>inputRadius</key>
 	<dict>
@@ -84,13 +82,6 @@
 		<real>0.0</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeDistance</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

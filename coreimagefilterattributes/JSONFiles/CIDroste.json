@@ -2,16 +2,12 @@
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeDescription" : "Performs M.C. Escher Droste style deformation",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
+  "CIAttributeFilterAvailable_Mac" : "10.6",
   "inputInsetPoint1" : {
     "CIAttributeDisplayName" : "InsetPoint1",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[400 400]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
@@ -19,39 +15,36 @@
   "CIAttributeFilterName" : "CIDroste",
   "CIAttributeFilterDisplayName" : "Droste",
   "inputRotation" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeSliderMax" : 6.283185307179586,
-    "CIAttributeSliderMin" : 0,
     "CIAttributeDisplayName" : "Rotation",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 0
+    "CIAttributeType" : "CIAttributeTypeAngle",
+    "CIAttributeSliderMin" : 0,
+    "CIAttributeDefault" : 0,
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeSliderMax" : 6.283185307179586
   },
   "inputPeriodicity" : {
     "CIAttributeClass" : "NSNumber",
-    "CIAttributeSliderMax" : 10,
-    "CIAttributeSliderMin" : 0,
+    "CIAttributeSliderMax" : 5,
+    "CIAttributeSliderMin" : 1,
     "CIAttributeDisplayName" : "Periodicity",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeMin" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
     "CIAttributeDefault" : 1
   },
   "inputStrands" : {
     "CIAttributeClass" : "NSNumber",
-    "CIAttributeSliderMax" : 10,
-    "CIAttributeSliderMin" : 0,
+    "CIAttributeSliderMax" : 2,
+    "CIAttributeDefault" : 1,
     "CIAttributeDisplayName" : "Strands",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 1
+    "CIAttributeMin" : -10,
+    "CIAttributeMax" : 10,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeSliderMin" : -2
   },
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIDroste",
+  "CIAttributeFilterAvailable_iOS" : "9",
   "inputInsetPoint0" : {
     "CIAttributeDisplayName" : "InsetPoint0",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[200 200]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
@@ -67,7 +60,6 @@
     "CIAttributeSliderMax" : 5,
     "CIAttributeSliderMin" : 0.01,
     "CIAttributeDisplayName" : "Zoom",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0.01,
     "CIAttributeType" : "CIAttributeTypeScalar",
     "CIAttributeDefault" : 1

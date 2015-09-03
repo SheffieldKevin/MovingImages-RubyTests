@@ -1,33 +1,29 @@
 {
   "inputMaskImage" : {
-    "CIAttributeDisplayName" : "Mask Image",
     "CIAttributeDescription" : "A grayscale mask. When a mask value is 0.0, the result is the background. When the mask value is 1.0, the result is the image.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Mask Image",
     "CIAttributeClass" : "CIImage"
   },
   "CIAttributeFilterDisplayName" : "Blend With Mask",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeDescription" : "Uses values from a grayscale mask to interpolate between an image and the background. When a mask green value is 0.0, the result is the background. When the mask green value is 1.0, the result is the image.",
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
-    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeDescription" : "The image to use as a foreground image.",
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIBlendWithMask",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIBlendWithMask",
   "CIAttributeFilterCategories" : [
     "CICategoryStylize",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIBlendWithMask",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIBlendWithMask",
   "inputBackgroundImage" : {
-    "CIAttributeDisplayName" : "Background Image",
     "CIAttributeDescription" : "The image to use as a background image.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Background Image",
     "CIAttributeClass" : "CIImage"
-  }
+  },
+  "CIAttributeFilterAvailable_iOS" : "6"
 }

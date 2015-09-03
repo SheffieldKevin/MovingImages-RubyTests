@@ -2,38 +2,32 @@
   "inputMaxComponents" : {
     "CIAttributeDisplayName" : "MaxComponents",
     "CIAttributeDescription" : "Higher clamping values",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[1 1 1 1]",
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeType" : "CIAttributeTypeRectangle"
+    "CIAttributeClass" : "CIVector"
   },
   "CIAttributeFilterDisplayName" : "Color Clamp",
-  "CIAttributeDescription" : "Clamp color to a certain range.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
+  "CIAttributeFilterAvailable_iOS" : "7",
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
   "CIAttributeFilterName" : "CIColorClamp",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorClamp",
   "CIAttributeFilterCategories" : [
     "CICategoryColorAdjustment",
     "CICategoryVideo",
-    "CICategoryStillImage",
     "CICategoryInterlaced",
     "CICategoryNonSquarePixels",
+    "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorClamp",
   "inputMinComponents" : {
     "CIAttributeDisplayName" : "MinComponents",
     "CIAttributeDescription" : "Lower clamping values",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[0 0 0 0]",
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeType" : "CIAttributeTypeRectangle"
-  }
+    "CIAttributeClass" : "CIVector"
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.9"
 }

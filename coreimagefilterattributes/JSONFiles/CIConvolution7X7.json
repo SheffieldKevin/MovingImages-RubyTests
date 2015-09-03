@@ -2,35 +2,30 @@
   "inputWeights" : {
     "CIAttributeDisplayName" : "Weights",
     "CIAttributeIdentity" : "[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]",
     "CIAttributeClass" : "CIVector"
   },
   "CIAttributeFilterDisplayName" : "7 by 7 convolution",
-  "CIAttributeDescription" : "Convolution with 7 by 7 matrix",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
+  "CIAttributeFilterAvailable_iOS" : "9",
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
   "CIAttributeFilterName" : "CIConvolution7X7",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIConvolution7X7",
   "CIAttributeFilterCategories" : [
     "CICategoryStylize",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIConvolution7X7",
   "inputBias" : {
     "CIAttributeDisplayName" : "Bias",
     "CIAttributeIdentity" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : 0,
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeType" : "CIAttributeTypeDistance"
-  }
+    "CIAttributeClass" : "NSNumber"
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.9"
 }

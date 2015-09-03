@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>QRCode Generator</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.9</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>7</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryGenerator</string>
@@ -11,7 +13,7 @@
 		<string>CICategoryBuiltIn</string>
 	</array>
 	<key>CIAttributeFilterDisplayName</key>
-	<string>CIQRCodeGenerator</string>
+	<string>QRCode Generator</string>
 	<key>CIAttributeFilterName</key>
 	<string>CIQRCodeGenerator</string>
 	<key>CIAttributeReferenceDocumentation</key>
@@ -26,8 +28,6 @@
 		<string>QRCode correction level L, M, Q, or H.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>CorrectionLevel</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputMessage</key>
 	<dict>
@@ -35,13 +35,6 @@
 		<string>NSData</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Message</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

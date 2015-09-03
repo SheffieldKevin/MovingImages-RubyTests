@@ -1,48 +1,43 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "5",
   "CIAttributeFilterDisplayName" : "Vignette",
-  "CIAttributeDescription" : "Applies a vignette shading to the corners of an image.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIVignette",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIVignette",
   "CIAttributeFilterCategories" : [
     "CICategoryColorEffect",
     "CICategoryVideo",
     "CICategoryInterlaced",
-    "CICategoryNonSquarePixels",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIVignette",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIVignette",
   "inputRadius" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The distance from the center of the effect.",
     "CIAttributeSliderMax" : 2,
     "CIAttributeDisplayName" : "Radius",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 1,
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 2,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 1
+    "CIAttributeSliderMin" : 0
   },
   "inputIntensity" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The intensity of the effect.",
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Intensity",
-    "CIAttributeSliderMin" : -1,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 0,
     "CIAttributeMin" : -1,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0
-  }
+    "CIAttributeSliderMin" : -1
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.9"
 }

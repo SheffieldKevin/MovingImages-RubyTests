@@ -1,39 +1,35 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "9",
   "CIAttributeFilterDisplayName" : "Displacement Distortion",
   "inputDisplacementImage" : {
-    "CIAttributeDisplayName" : "Displacement Image",
     "CIAttributeDescription" : "An image whose grayscale values will be applied to the source image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  },
-  "outputImage" : {
+    "CIAttributeDisplayName" : "Displacement Image",
     "CIAttributeClass" : "CIImage"
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "inputScale" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The amount of texturing of the resulting image. The larger the value, the greater the texturing.",
-    "CIAttributeSliderMax" : 200,
-    "CIAttributeDisplayName" : "Scale",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 0,
-    "CIAttributeIdentity" : 0,
-    "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 50
-  },
-  "CIAttributeFilterName" : "CIDisplacementDistortion",
-  "CIAttributeDescription" : "Applies the grayscale values of the second image to the first image. The output image has a texture defined by the grayscale values.",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIDisplacementDistortion",
   "CIAttributeFilterCategories" : [
     "CICategoryDistortionEffect",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeFilterName" : "CIDisplacementDistortion",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIDisplacementDistortion",
+  "inputScale" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The amount of texturing of the resulting image. The larger the value, the greater the texturing.",
+    "CIAttributeSliderMax" : 200,
+    "CIAttributeDisplayName" : "Scale",
+    "CIAttributeDefault" : 50,
+    "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
+    "CIAttributeType" : "CIAttributeTypeDistance",
+    "CIAttributeSliderMin" : 0
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

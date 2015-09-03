@@ -1,44 +1,41 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "6",
   "CIAttributeFilterDisplayName" : "Bloom",
-  "CIAttributeDescription" : "Softens edges and applies a pleasant glow to an image.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIBloom",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIBloom",
   "CIAttributeFilterCategories" : [
     "CICategoryStylize",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIBloom",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIBloom",
   "inputRadius" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The radius determines how many pixels are used to create the effect. The larger the radius, the greater the effect.",
     "CIAttributeSliderMax" : 100,
     "CIAttributeDisplayName" : "Radius",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 10,
     "CIAttributeMin" : 0,
+    "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 10
+    "CIAttributeSliderMin" : 0
   },
   "inputIntensity" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The intensity of the effect. A value of 0.0 is no effect. A value of 1.0 is the maximum effect.",
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Intensity",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 1,
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 1
-  }
+    "CIAttributeSliderMin" : 0
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

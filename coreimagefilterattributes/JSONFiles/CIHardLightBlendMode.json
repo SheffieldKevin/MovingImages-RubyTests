@@ -1,17 +1,17 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "CIAttributeFilterDisplayName" : "Hard Light Blend Mode",
-  "CIAttributeDescription" : "Either multiplies or screens colors, depending on the source image sample color. If the source image sample color is lighter than 50% gray, the background is lightened, similar to screening. If the source image sample color is darker than 50% gray, the background is darkened, similar to multiplying. If the source image sample color is equal to 50% gray, the source image is not changed. Image samples that are equal to pure black or pure white result in pure black or white. The overall effect is similar to what you would achieve by shining a harsh spotlight on the source image.",
-  "outputImage" : {
+  "inputBackgroundImage" : {
+    "CIAttributeDescription" : "The image to use as a background image.",
+    "CIAttributeDisplayName" : "Background Image",
     "CIAttributeClass" : "CIImage"
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIHardLightBlendMode",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHardLightBlendMode",
   "CIAttributeFilterCategories" : [
     "CICategoryCompositeOperation",
     "CICategoryVideo",
@@ -20,10 +20,7 @@
     "CICategoryNonSquarePixels",
     "CICategoryBuiltIn"
   ],
-  "inputBackgroundImage" : {
-    "CIAttributeDisplayName" : "Background Image",
-    "CIAttributeDescription" : "The image to use as a background image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  }
+  "CIAttributeFilterName" : "CIHardLightBlendMode",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHardLightBlendMode",
+  "CIAttributeFilterAvailable_iOS" : "5"
 }

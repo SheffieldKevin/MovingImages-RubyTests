@@ -1,51 +1,46 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "9",
   "CIAttributeFilterDisplayName" : "Kaleidoscope",
-  "CIAttributeDescription" : "Produces a kaleidoscopic image from a source image by applying 12-way symmetry.",
   "inputAngle" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The angle of reflection.",
     "CIAttributeSliderMax" : 3.141592653589793,
     "CIAttributeDisplayName" : "Angle",
     "CIAttributeDefault" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeAngle",
     "CIAttributeSliderMin" : -3.141592653589793
   },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIKaleidoscope",
-  "inputCount" : {
-    "CIAttributeClass" : "NSNumber",
-    "CIAttributeDescription" : "The number of reflections in the pattern.",
-    "CIAttributeSliderMax" : 64,
-    "CIAttributeDisplayName" : "Count",
-    "CIAttributeSliderMin" : 1,
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeMin" : 1,
-    "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 6
-  },
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIKaleidoscope",
   "CIAttributeFilterCategories" : [
     "CICategoryTileEffect",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIKaleidoscope",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIKaleidoscope",
+  "inputCount" : {
+    "CIAttributeClass" : "NSNumber",
+    "CIAttributeDescription" : "The number of reflections in the pattern.",
+    "CIAttributeSliderMax" : 64,
+    "CIAttributeDisplayName" : "Count",
+    "CIAttributeDefault" : 6,
+    "CIAttributeMin" : 1,
+    "CIAttributeType" : "CIAttributeTypeScalar",
+    "CIAttributeSliderMin" : 1
+  },
   "inputCenter" : {
     "CIAttributeDisplayName" : "Center",
     "CIAttributeDescription" : "The x and y position to use as the center of the effect",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[150 150]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
-  }
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

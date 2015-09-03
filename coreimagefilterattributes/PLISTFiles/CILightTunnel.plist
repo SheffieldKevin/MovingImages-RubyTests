@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.10</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>6</string>
+	<key>CIAttributeFilterCategories</key>
+	<array>
+		<string>CICategoryDistortionEffect</string>
+		<string>CICategoryVideo</string>
+		<string>CICategoryStillImage</string>
+		<string>CICategoryBuiltIn</string>
+	</array>
+	<key>CIAttributeFilterDisplayName</key>
+	<string>Light Tunnel Distortion</string>
+	<key>CIAttributeFilterName</key>
+	<string>CILightTunnel</string>
+	<key>CIAttributeReferenceDocumentation</key>
+	<string>http://developer.apple.com/cgi-bin/apple_ref.cgi?apple_ref=//apple_ref/doc/filter/ci/CILightTunnel</string>
+	<key>inputCenter</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIVector</string>
+		<key>CIAttributeDefault</key>
+		<string>[150 150]</string>
+		<key>CIAttributeDescription</key>
+		<string>Center of the light tunnel.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Center</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypePosition</string>
+	</dict>
+	<key>inputImage</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>CIImage</string>
+		<key>CIAttributeDescription</key>
+		<string>The image to process.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Image</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
+	</dict>
+	<key>inputRadius</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>100</real>
+		<key>CIAttributeDescription</key>
+		<string>center radius of the light tunnel.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Radius</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>500</real>
+		<key>CIAttributeSliderMin</key>
+		<real>1</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeAngle</string>
+	</dict>
+	<key>inputRotation</key>
+	<dict>
+		<key>CIAttributeClass</key>
+		<string>NSNumber</string>
+		<key>CIAttributeDefault</key>
+		<real>0.0</real>
+		<key>CIAttributeDescription</key>
+		<string>Rotation angle of the light tunnel.</string>
+		<key>CIAttributeDisplayName</key>
+		<string>Rotation</string>
+		<key>CIAttributeIdentity</key>
+		<real>0.0</real>
+		<key>CIAttributeSliderMax</key>
+		<real>1.5707963267948966</real>
+		<key>CIAttributeSliderMin</key>
+		<real>0.0</real>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeAngle</string>
+	</dict>
+</dict>
+</plist>

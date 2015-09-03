@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Multiplies source color values and adds a bias factor to each color component.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>5</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryColorAdjustment</string>
@@ -31,8 +33,6 @@
 		<string>Alpha Vector</string>
 		<key>CIAttributeIdentity</key>
 		<string>[0 0 0 1]</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputBVector</key>
 	<dict>
@@ -46,8 +46,6 @@
 		<string>Blue Vector</string>
 		<key>CIAttributeIdentity</key>
 		<string>[0 0 1 0]</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputBiasVector</key>
 	<dict>
@@ -61,8 +59,6 @@
 		<string>Bias Vector</string>
 		<key>CIAttributeIdentity</key>
 		<string>[0 0 0 0]</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputGVector</key>
 	<dict>
@@ -76,8 +72,6 @@
 		<string>Green Vector</string>
 		<key>CIAttributeIdentity</key>
 		<string>[0 1 0 0]</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputImage</key>
 	<dict>
@@ -87,8 +81,8 @@
 		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 	<key>inputRVector</key>
 	<dict>
@@ -102,13 +96,6 @@
 		<string>Red Vector</string>
 		<key>CIAttributeIdentity</key>
 		<string>[1 0 0 0]</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

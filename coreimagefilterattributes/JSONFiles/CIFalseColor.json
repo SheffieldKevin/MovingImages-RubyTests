@@ -1,24 +1,19 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "5",
   "CIAttributeFilterDisplayName" : "False Color",
-  "CIAttributeDescription" : "Maps luminance to a color ramp of two colors. False color is often used to process astronomical and other scientific data, such as ultraviolet and x-ray images.",
   "inputColor0" : {
     "CIAttributeDisplayName" : "Color 1",
     "CIAttributeDescription" : "The first color to use for the color ramp.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "0.3 0 0 1",
-    "CIAttributeClass" : "CIColor"
-  },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeColor"
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIFalseColor",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIFalseColor",
   "CIAttributeFilterCategories" : [
     "CICategoryColorEffect",
     "CICategoryVideo",
@@ -27,11 +22,14 @@
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIFalseColor",
+  "CIAttributeFilterName" : "CIFalseColor",
   "inputColor1" : {
     "CIAttributeDisplayName" : "Color 2",
     "CIAttributeDescription" : "The second color to use for the color ramp.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "1 0.9 0.8 1",
-    "CIAttributeClass" : "CIColor"
-  }
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeColor"
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

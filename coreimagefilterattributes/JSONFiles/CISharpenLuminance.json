@@ -1,15 +1,18 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "6",
   "CIAttributeFilterDisplayName" : "Sharpen Luminance",
-  "CIAttributeDescription" : "Increases image detail by sharpening. It operates on the luminance of the image; the chrominance of the pixels remains unaffected.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
+  "CIAttributeFilterCategories" : [
+    "CICategorySharpen",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
   "CIAttributeFilterName" : "CISharpenLuminance",
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISharpenLuminance",
   "inputSharpness" : {
@@ -18,15 +21,9 @@
     "CIAttributeSliderMax" : 2,
     "CIAttributeDisplayName" : "Sharpness",
     "CIAttributeDefault" : 0.4,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
     "CIAttributeSliderMin" : 0
   },
-  "CIAttributeFilterCategories" : [
-    "CICategorySharpen",
-    "CICategoryVideo",
-    "CICategoryStillImage",
-    "CICategoryBuiltIn"
-  ]
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

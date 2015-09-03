@@ -1,8 +1,7 @@
 {
   "inputTargetImage" : {
-    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeDescription" : "The target image for a transition.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeClass" : "CIImage"
   },
   "inputTime" : {
@@ -11,57 +10,50 @@
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Time",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeTime",
     "CIAttributeDefault" : 0
   },
-  "CIAttributeDescription" : "Transitions from one image to another by simulating a swiping action.",
+  "inputColor" : {
+    "CIAttributeDisplayName" : "Color",
+    "CIAttributeDescription" : "The color of the swipe.",
+    "CIAttributeDefault" : "1 1 1 1",
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeOpaqueColor"
+  },
   "inputAngle" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The angle of the swipe.",
     "CIAttributeSliderMax" : 3.141592653589793,
     "CIAttributeDisplayName" : "Angle",
     "CIAttributeDefault" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeAngle",
     "CIAttributeSliderMin" : -3.141592653589793
   },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "inputWidth" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The width of the swipe",
     "CIAttributeSliderMax" : 800,
     "CIAttributeDisplayName" : "Width",
-    "CIAttributeSliderMin" : 0.1,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 300,
     "CIAttributeMin" : 0.1,
     "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 300
-  },
-  "inputColor" : {
-    "CIAttributeDisplayName" : "Color",
-    "CIAttributeDescription" : "The color of the swipe.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "1 1 1 1",
-    "CIAttributeClass" : "CIColor",
-    "CIAttributeType" : "CIAttributeTypeOpaqueColor"
+    "CIAttributeSliderMin" : 0.1
   },
   "CIAttributeFilterName" : "CISwipeTransition",
   "CIAttributeFilterDisplayName" : "Swipe",
   "inputExtent" : {
     "CIAttributeDisplayName" : "Extent",
     "CIAttributeDescription" : "The extent of the effect.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "[0 0 300 300]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypeRectangle"
   },
+  "CIAttributeFilterAvailable_iOS" : "6",
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CISwipeTransition",
   "CIAttributeFilterCategories" : [
     "CICategoryTransition",
@@ -74,17 +66,16 @@
     "CIAttributeDescription" : "The opacity of the swipe.",
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Opacity",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 0,
     "CIAttributeMin" : 0,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
-    "CIAttributeDefault" : 0
+    "CIAttributeSliderMin" : 0
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   }
 }

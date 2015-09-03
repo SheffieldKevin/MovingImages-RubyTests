@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Aztec Code Generator</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.10</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>8</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryGenerator</string>
@@ -11,7 +13,7 @@
 		<string>CICategoryBuiltIn</string>
 	</array>
 	<key>CIAttributeFilterDisplayName</key>
-	<string>CIAztecCodeGenerator</string>
+	<string>Aztec Code Generator</string>
 	<key>CIAttributeFilterName</key>
 	<string>CIAztecCodeGenerator</string>
 	<key>CIAttributeReferenceDocumentation</key>
@@ -32,8 +34,6 @@
 		<true/>
 		<key>CIAttributeSliderMin</key>
 		<false/>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputCorrectionLevel</key>
 	<dict>
@@ -53,8 +53,6 @@
 		<integer>95</integer>
 		<key>CIAttributeSliderMin</key>
 		<integer>5</integer>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputLayers</key>
 	<dict>
@@ -72,8 +70,6 @@
 		<integer>32</integer>
 		<key>CIAttributeSliderMin</key>
 		<integer>1</integer>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputMessage</key>
 	<dict>
@@ -81,13 +77,6 @@
 		<string>NSData</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Message</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

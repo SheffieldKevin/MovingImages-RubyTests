@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Adjusts midtone brightness. This filter is typically used to compensate for nonlinear effects of displays. Adjusting the gamma effectively changes the slope of the transition between black and white.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>5</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryColorAdjustment</string>
@@ -27,15 +29,15 @@
 		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 	<key>inputPower</key>
 	<dict>
 		<key>CIAttributeClass</key>
 		<string>NSNumber</string>
 		<key>CIAttributeDefault</key>
-		<real>0.75</real>
+		<real>1</real>
 		<key>CIAttributeDescription</key>
 		<string>A gamma value to use to correct image brightness. The larger the value, the darker the result.</string>
 		<key>CIAttributeDisplayName</key>
@@ -43,18 +45,11 @@
 		<key>CIAttributeIdentity</key>
 		<real>1</real>
 		<key>CIAttributeSliderMax</key>
-		<real>3</real>
+		<real>4</real>
 		<key>CIAttributeSliderMin</key>
-		<real>0.10000000000000001</real>
+		<real>0.25</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeScalar</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
 	</dict>
 </dict>
 </plist>

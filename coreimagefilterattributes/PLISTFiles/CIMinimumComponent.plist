@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Converts an image to grayscale using the minimum of the three color components.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.5</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>6</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryColorEffect</string>
@@ -27,13 +29,8 @@
 		<string>The image to process.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 </dict>
 </plist>

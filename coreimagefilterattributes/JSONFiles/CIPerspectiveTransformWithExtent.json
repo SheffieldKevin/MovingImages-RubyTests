@@ -1,0 +1,50 @@
+{
+  "CIAttributeFilterAvailable_Mac" : "10.4",
+  "CIAttributeFilterName" : "CIPerspectiveTransformWithExtent",
+  "CIAttributeFilterDisplayName" : "Perspective Transform with Extent",
+  "inputExtent" : {
+    "CIAttributeDisplayName" : "Extent",
+    "CIAttributeDescription" : "A rectangle that defines the extent of the effect.",
+    "CIAttributeDefault" : "[0 0 300 300]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypeRectangle"
+  },
+  "inputBottomRight" : {
+    "CIAttributeDisplayName" : "Bottom Right",
+    "CIAttributeDefault" : "[548 140]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "inputTopRight" : {
+    "CIAttributeDisplayName" : "Top Right",
+    "CIAttributeDefault" : "[646 507]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeFilterAvailable_iOS" : "6",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIPerspectiveTransformWithExtent",
+  "inputTopLeft" : {
+    "CIAttributeDisplayName" : "Top Left",
+    "CIAttributeDefault" : "[118 484]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "CIAttributeFilterCategories" : [
+    "CICategoryGeometryAdjustment",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
+  "inputBottomLeft" : {
+    "CIAttributeDisplayName" : "Bottom Left",
+    "CIAttributeDefault" : "[155 153]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypePosition"
+  },
+  "inputImage" : {
+    "CIAttributeDisplayName" : "Image",
+    "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
+  }
+}

@@ -1,59 +1,49 @@
 {
   "inputRedCoefficients" : {
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeDescription" : "Polynomial coefficients for red channel",
-    "CIAttributeDisplayName" : "RedCoefficients",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : "[0 1 0 0]",
-    "CIAttributeType" : "CIAttributeTypeRectangle",
-    "CIAttributeDefault" : "[0 1 0 0]"
+    "CIAttributeDisplayName" : "RedCoefficients",
+    "CIAttributeDescription" : "Polynomial coefficients for red channel",
+    "CIAttributeDefault" : "[0 1 0 0]",
+    "CIAttributeClass" : "CIVector"
   },
   "CIAttributeFilterDisplayName" : "Color Polynomial",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeDescription" : "Adjusts the color of an image with polynomials.",
+  "CIAttributeFilterAvailable_Mac" : "10.9",
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeFilterName" : "CIColorPolynomial",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorPolynomial",
-  "inputGreenCoefficients" : {
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeDescription" : "Polynomial coefficients for green channel",
-    "CIAttributeDisplayName" : "GreenCoefficients",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeIdentity" : "[0 1 0 0]",
-    "CIAttributeType" : "CIAttributeTypeRectangle",
-    "CIAttributeDefault" : "[0 1 0 0]"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
   "CIAttributeFilterCategories" : [
     "CICategoryColorAdjustment",
     "CICategoryVideo",
-    "CICategoryStillImage",
     "CICategoryInterlaced",
     "CICategoryNonSquarePixels",
+    "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
-  "inputBlueCoefficients" : {
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeDescription" : "Polynomial coefficients for blue channel",
-    "CIAttributeDisplayName" : "BlueCoefficients",
-    "CIUIParameterSet" : "CIUISetBasic",
+  "CIAttributeFilterName" : "CIColorPolynomial",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIColorPolynomial",
+  "inputGreenCoefficients" : {
     "CIAttributeIdentity" : "[0 1 0 0]",
-    "CIAttributeType" : "CIAttributeTypeRectangle",
-    "CIAttributeDefault" : "[0 1 0 0]"
+    "CIAttributeDisplayName" : "GreenCoefficients",
+    "CIAttributeDescription" : "Polynomial coefficients for green channel",
+    "CIAttributeDefault" : "[0 1 0 0]",
+    "CIAttributeClass" : "CIVector"
+  },
+  "CIAttributeFilterAvailable_iOS" : "7",
+  "inputBlueCoefficients" : {
+    "CIAttributeIdentity" : "[0 1 0 0]",
+    "CIAttributeDisplayName" : "BlueCoefficients",
+    "CIAttributeDescription" : "Polynomial coefficients for blue channel",
+    "CIAttributeDefault" : "[0 1 0 0]",
+    "CIAttributeClass" : "CIVector"
   },
   "inputAlphaCoefficients" : {
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeDescription" : "Polynomial coefficients for alpha channel",
-    "CIAttributeDisplayName" : "AlphaCoefficients",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : "[0 1 0 0]",
-    "CIAttributeType" : "CIAttributeTypeRectangle",
-    "CIAttributeDefault" : "[0 1 0 0]"
+    "CIAttributeDisplayName" : "AlphaCoefficients",
+    "CIAttributeDescription" : "Polynomial coefficients for alpha channel",
+    "CIAttributeDefault" : "[0 1 0 0]",
+    "CIAttributeClass" : "CIVector"
   }
 }

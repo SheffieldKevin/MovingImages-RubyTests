@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CIAttributeDescription</key>
-	<string>Changes the overall hue, or tint, of the source pixels.</string>
+	<key>CIAttributeFilterAvailable_Mac</key>
+	<string>10.4</string>
+	<key>CIAttributeFilterAvailable_iOS</key>
+	<string>5</string>
 	<key>CIAttributeFilterCategories</key>
 	<array>
 		<string>CICategoryColorAdjustment</string>
@@ -26,7 +28,7 @@
 		<key>CIAttributeDefault</key>
 		<real>0.0</real>
 		<key>CIAttributeDescription</key>
-		<string>An angle (in degrees) to use to correct the hue of an image.</string>
+		<string>An angle (in radians) to use to correct the hue of an image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Angle</string>
 		<key>CIAttributeIdentity</key>
@@ -37,8 +39,6 @@
 		<real>-3.1415926535897931</real>
 		<key>CIAttributeType</key>
 		<string>CIAttributeTypeAngle</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
 	</dict>
 	<key>inputImage</key>
 	<dict>
@@ -48,13 +48,8 @@
 		<string>The image to use as an input image. For filters that also use a background image, this is the foreground image.</string>
 		<key>CIAttributeDisplayName</key>
 		<string>Image</string>
-		<key>CIUIParameterSet</key>
-		<string>CIUISetBasic</string>
-	</dict>
-	<key>outputImage</key>
-	<dict>
-		<key>CIAttributeClass</key>
-		<string>CIImage</string>
+		<key>CIAttributeType</key>
+		<string>CIAttributeTypeImage</string>
 	</dict>
 </dict>
 </plist>

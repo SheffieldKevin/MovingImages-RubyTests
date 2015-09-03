@@ -1,48 +1,44 @@
 {
+  "inputColor1" : {
+    "CIAttributeDisplayName" : "Color 2",
+    "CIAttributeDescription" : "The second color to use in the gradient.",
+    "CIAttributeDefault" : "0 0 0 0",
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeColor"
+  },
   "CIAttributeFilterDisplayName" : "Gaussian Gradient",
-  "CIAttributeDescription" : "Generates a gradient that varies from one color to another using a Gaussian distribution.",
+  "CIAttributeFilterAvailable_iOS" : "5",
   "inputColor0" : {
     "CIAttributeDisplayName" : "Color 1",
     "CIAttributeDescription" : "The first color to use in the gradient.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "1 1 1 1",
-    "CIAttributeClass" : "CIColor"
+    "CIAttributeClass" : "CIColor",
+    "CIAttributeType" : "CIAttributeTypeColor"
   },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeFilterName" : "CIGaussianGradient",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIGaussianGradient",
   "CIAttributeFilterCategories" : [
     "CICategoryGradient",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIGaussianGradient",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIGaussianGradient",
   "inputRadius" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The radius of the Gaussian distribution.",
     "CIAttributeSliderMax" : 800,
     "CIAttributeDisplayName" : "Radius",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 300,
     "CIAttributeMin" : 0,
     "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 300
-  },
-  "inputColor1" : {
-    "CIAttributeDisplayName" : "Color 2",
-    "CIAttributeDescription" : "The second color to use in the gradient.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "0 0 0 0",
-    "CIAttributeClass" : "CIColor"
+    "CIAttributeSliderMin" : 0
   },
   "inputCenter" : {
     "CIAttributeDisplayName" : "Center",
-    "CIAttributeDescription" : "The center of the area, as x and y coordinates, to filter.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDescription" : "The center of the effect as x and y coordinates.",
     "CIAttributeDefault" : "[150 150]",
     "CIAttributeClass" : "CIVector",
     "CIAttributeType" : "CIAttributeTypePosition"
-  }
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

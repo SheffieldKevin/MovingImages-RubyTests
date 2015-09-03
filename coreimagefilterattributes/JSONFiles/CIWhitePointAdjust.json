@@ -1,17 +1,12 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "5",
   "CIAttributeFilterDisplayName" : "White Point Adjust",
-  "CIAttributeDescription" : "Adjusts the reference white point for an image and maps all colors in the source using the new reference.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIWhitePointAdjust",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIWhitePointAdjust",
   "CIAttributeFilterCategories" : [
     "CICategoryColorAdjustment",
     "CICategoryVideo",
@@ -20,12 +15,15 @@
     "CICategoryNonSquarePixels",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIWhitePointAdjust",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIWhitePointAdjust",
   "inputColor" : {
-    "CIAttributeDisplayName" : "Color",
     "CIAttributeIdentity" : "1 1 1 1",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDefault" : "1 0.9 0.8 1",
+    "CIAttributeDisplayName" : "Color",
+    "CIAttributeDescription" : "A color to use as the white point.",
+    "CIAttributeDefault" : "1 1 1 1",
     "CIAttributeClass" : "CIColor",
-    "CIAttributeDescription" : "A color to use as the white point."
-  }
+    "CIAttributeType" : "CIAttributeTypeColor"
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

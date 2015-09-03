@@ -1,25 +1,21 @@
 {
+  "CIAttributeFilterAvailable_iOS" : "5",
   "CIAttributeFilterDisplayName" : "Affine Transform",
-  "CIAttributeDescription" : "Applies an affine transform to an image. You can scale, translate, or rotate the input image. You can also apply a combination of these operations.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
-  "CIAttributeFilterName" : "CIAffineTransform",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIAffineTransform",
   "CIAttributeFilterCategories" : [
     "CICategoryGeometryAdjustment",
     "CICategoryVideo",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
   ],
+  "CIAttributeFilterName" : "CIAffineTransform",
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIAffineTransform",
   "inputTransform" : {
-    "CIAttributeDisplayName" : "Transform",
     "CIAttributeIdentity" : {
       "m12" : 0,
       "m21" : 0,
@@ -28,7 +24,8 @@
       "m11" : 1,
       "tX" : 0
     },
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Transform",
+    "CIAttributeDescription" : "A transform to apply to the image.",
     "CIAttributeDefault" : {
       "m12" : 0,
       "m21" : 0,
@@ -38,6 +35,7 @@
       "tX" : 0
     },
     "CIAttributeClass" : "NSAffineTransform",
-    "CIAttributeDescription" : "A transform to apply to the image."
-  }
+    "CIAttributeType" : "CIAttributeTypeTransform"
+  },
+  "CIAttributeFilterAvailable_Mac" : "10.4"
 }

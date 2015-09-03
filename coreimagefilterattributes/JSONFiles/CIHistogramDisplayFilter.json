@@ -1,16 +1,20 @@
 {
+  "CIAttributeFilterAvailable_Mac" : "10.?",
   "CIAttributeFilterDisplayName" : "Histogram Display",
-  "CIAttributeDescription" : "Generates a displayable histogram image from the output of the CIAreaHistogram filter.",
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
+  "CIAttributeFilterAvailable_iOS" : "8",
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   },
   "CIAttributeFilterName" : "CIHistogramDisplayFilter",
+  "CIAttributeFilterCategories" : [
+    "CICategoryReduction",
+    "CICategoryVideo",
+    "CICategoryStillImage",
+    "CICategoryBuiltIn"
+  ],
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIHistogramDisplayFilter",
   "inputLowLimit" : {
     "CIAttributeClass" : "NSNumber",
@@ -18,25 +22,17 @@
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "LowLimit",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeType" : "CIAttributeTypeScalar",
     "CIAttributeDefault" : 0
   },
-  "CIAttributeFilterCategories" : [
-    "CICategoryReduction",
-    "CICategoryVideo",
-    "CICategoryStillImage",
-    "CICategoryBuiltIn"
-  ],
   "inputHighLimit" : {
     "CIAttributeClass" : "NSNumber",
     "CIAttributeDescription" : "The fraction of the right portion of the histogram image to make lighter.",
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "HighLimit",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeType" : "CIAttributeTypeScalar",
@@ -48,7 +44,6 @@
     "CIAttributeSliderMax" : 100,
     "CIAttributeDisplayName" : "Height",
     "CIAttributeSliderMin" : 1,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 1,
     "CIAttributeMax" : 200,
     "CIAttributeType" : "CIAttributeTypeScalar",

@@ -1,26 +1,22 @@
 {
-  "CIAttributeFilterDisplayName" : "CIQRCodeGenerator",
+  "CIAttributeFilterAvailable_iOS" : "7",
+  "CIAttributeFilterDisplayName" : "QRCode Generator",
   "inputCorrectionLevel" : {
     "CIAttributeDisplayName" : "CorrectionLevel",
     "CIAttributeDescription" : "QRCode correction level L, M, Q, or H.",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeDefault" : "M",
     "CIAttributeClass" : "NSString"
-  },
-  "outputImage" : {
-    "CIAttributeClass" : "CIImage"
-  },
-  "CIAttributeDescription" : "QRCode Generator",
-  "CIAttributeFilterName" : "CIQRCodeGenerator",
-  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIQRCodeGenerator",
-  "inputMessage" : {
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeDisplayName" : "Message",
-    "CIAttributeClass" : "NSData"
   },
   "CIAttributeFilterCategories" : [
     "CICategoryGenerator",
     "CICategoryStillImage",
     "CICategoryBuiltIn"
-  ]
+  ],
+  "CIAttributeFilterName" : "CIQRCodeGenerator",
+  "inputMessage" : {
+    "CIAttributeDisplayName" : "Message",
+    "CIAttributeClass" : "NSData"
+  },
+  "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIQRCodeGenerator",
+  "CIAttributeFilterAvailable_Mac" : "10.9"
 }

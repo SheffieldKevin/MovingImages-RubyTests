@@ -1,8 +1,7 @@
 {
   "inputTargetImage" : {
-    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeDescription" : "The target image for a transition.",
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDisplayName" : "Target Image",
     "CIAttributeClass" : "CIImage"
   },
   "inputTime" : {
@@ -11,33 +10,27 @@
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Time",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeTime",
     "CIAttributeDefault" : 0
   },
-  "CIAttributeDescription" : "Transitions from one image to another using the shape defined by a mask.",
+  "CIAttributeFilterAvailable_Mac" : "10.4",
   "inputMaskImage" : {
-    "CIAttributeDisplayName" : "Mask Image",
     "CIAttributeDescription" : "An image that defines the shape to use when disintegrating from the source to the target image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
-  },
-  "outputImage" : {
+    "CIAttributeDisplayName" : "Mask Image",
     "CIAttributeClass" : "CIImage"
   },
   "CIAttributeFilterName" : "CIDisintegrateWithMaskTransition",
   "CIAttributeFilterDisplayName" : "Disintegrate With Mask",
   "inputShadowOffset" : {
-    "CIAttributeClass" : "CIVector",
-    "CIAttributeDescription" : "The offset of the shadow created by the mask.",
-    "CIAttributeDisplayName" : "Shadow Offset",
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeIdentity" : "[0 0]",
-    "CIAttributeType" : "CIAttributeTypeOffset",
-    "CIAttributeDefault" : "[0 -10]"
+    "CIAttributeDisplayName" : "Shadow Offset",
+    "CIAttributeDescription" : "The offset of the shadow created by the mask.",
+    "CIAttributeDefault" : "[0 -10]",
+    "CIAttributeClass" : "CIVector",
+    "CIAttributeType" : "CIAttributeTypeOffset"
   },
   "inputShadowDensity" : {
     "CIAttributeClass" : "NSNumber",
@@ -45,13 +38,13 @@
     "CIAttributeSliderMax" : 1,
     "CIAttributeDisplayName" : "Shadow Density",
     "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
     "CIAttributeMin" : 0,
     "CIAttributeMax" : 1,
     "CIAttributeIdentity" : 0,
     "CIAttributeType" : "CIAttributeTypeScalar",
     "CIAttributeDefault" : 0.65
   },
+  "CIAttributeFilterAvailable_iOS" : "6",
   "CIAttributeReferenceDocumentation" : "http:\/\/developer.apple.com\/cgi-bin\/apple_ref.cgi?apple_ref=\/\/apple_ref\/doc\/filter\/ci\/CIDisintegrateWithMaskTransition",
   "CIAttributeFilterCategories" : [
     "CICategoryTransition",
@@ -64,16 +57,15 @@
     "CIAttributeDescription" : "The radius of the shadow created by the mask.",
     "CIAttributeSliderMax" : 50,
     "CIAttributeDisplayName" : "Shadow Radius",
-    "CIAttributeSliderMin" : 0,
-    "CIUIParameterSet" : "CIUISetBasic",
+    "CIAttributeDefault" : 8,
     "CIAttributeMin" : 0,
     "CIAttributeType" : "CIAttributeTypeDistance",
-    "CIAttributeDefault" : 8
+    "CIAttributeSliderMin" : 0
   },
   "inputImage" : {
     "CIAttributeDisplayName" : "Image",
     "CIAttributeDescription" : "The image to use as an input image. For filters that also use a background image, this is the foreground image.",
-    "CIUIParameterSet" : "CIUISetBasic",
-    "CIAttributeClass" : "CIImage"
+    "CIAttributeClass" : "CIImage",
+    "CIAttributeType" : "CIAttributeTypeImage"
   }
 }
