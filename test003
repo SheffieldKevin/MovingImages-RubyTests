@@ -223,7 +223,7 @@ def test04()
         text: "How long is a piece of string",
         userinterfacefont: :kCTFontUIFontMiniEmphasizedSystem)
     stringDims = Smig.perform_command(calcTextSizeCommand)
-    unless stringDims.eql? '{"width":134.5518292682926,"height":8.698150634765625}'
+    unless stringDims.eql? '{"width":132.02490234375,"height":8.701171875}'
       puts "2: String size different. Returned: #{stringDims}"
     end
 
@@ -232,7 +232,7 @@ def test04()
    userinterfacefont: :kCTFontUIFontMiniEmphasizedSystem, fontsize: 24.0)
    
     stringDims = Smig.perform_command(calcTextSizeCommand)
-    unless stringDims.eql? '{"width":815.6341463414639,"height":23.195068359375}'
+    unless stringDims.eql? '{"width":818.53125,"height":23.203125}'
       puts "3: String size different. Returned: #{stringDims}"
     end
 
