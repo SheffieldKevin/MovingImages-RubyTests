@@ -172,4 +172,5 @@ Cleanup commands are commands that run after the last command in the main list o
     * Compare with a previsouly created composition map.
     * Export the video composition.
     * Check that the video composition is right length and size.
-   
+4. Create a movie editor with two sound tracks
+    * Use audio mix instructions to mix the sound in the tracks.

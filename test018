@@ -663,7 +663,9 @@ LI Layer Instruction
                               exportfiletype: fileType)
     theCommands.add_command(exportMovieCommand)
     Smig.perform_commands(theCommands)
-
+    
+    theCommands.clear
+    
     # 3.10 Import the exported movie and check movie length and size.
     movieImporter2 = theCommands.make_createmovieimporter(movieExportPath,
                                            addtocleanup: false)
@@ -704,6 +706,204 @@ LI Layer Instruction
   end
 end
 
+# Tests the application of audio instructions set volume, and volume ramp.
+# 1. Import a movie file
+# 2. Create a movie editor object.
+# 3. Add a video track to the movie editor.
+# 4. Add a 4 second segment to the video track from the imported movie.
+# 5. Add a passthru layer instruction to the video track.
+# 6. Add two audio tracks to the movie editor.
+# 7. Add content (track segments to each of the two audio tracks.)
+# 8. Set the volume for audio track 2 to 0 from the start.
+# 9. Set the volume ramp for audio track 1 to go from 1 to 0. Time range 1..3
+# 10. Set the volume ramp for audio track 2 to go from 0 to 1. Time range 1..3
+# 11. Export the movie composition.
+# 12. Assign the composition map image to the image collection
+# 13. Add removing the composition map image command to cleanup commands.
+# 14. Create an exporter.
+# 15. Add image from image collection to exporter.
+# 16. Export image
+# 17. Compare images.
+# 18. Compare movie file audio track metadata.
+def test04
+  begin
+    movieImportPath = File.join($directory, "images", "418_clip5_sd.m4v")
+    theCommands = SmigCommands.new
+    # 1. Import the source movie.
+    movieImporter = theCommands.make_createmovieimporter(movieImportPath)
+    
+    # 2. Create the movie editor object.
+    movieEditor = theCommands.make_createmovieeditor()
+
+    # 3. Add a video track to the movie editor.
+    videoTrack = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+      mediatype: :vide, trackindex: 0)
+
+    addVideoTrackCommand = CommandModule.make_createtrackcommand(movieEditor)
+    theCommands.add_command(addVideoTrackCommand)
+
+    # 4. Add a 4 second segment to the video track from the imported movie.
+    insertionTime = MovieTime.make_movietime(timescale: 600, timevalue: 0)
+    duration  = MovieTime.make_movietime_fromseconds(4)
+    startTime = MovieTime.make_movietime_fromseconds(0)
+    sourceTimeRange = MovieTime.make_movie_timerange(start: startTime,
+                                                  duration: duration)
+    insertVideoContent = CommandModule.make_inserttracksegment(movieEditor,
+                            track: videoTrack,
+                    source_object: movieImporter,
+                     source_track: videoTrack,
+                    insertiontime: insertionTime,
+                 source_timerange: sourceTimeRange)
+    theCommands.add_command(insertVideoContent)
+    
+    # 5. Add a passthru layer instruction to the video track.
+    layerInstructions = VideoLayerInstructions.new
+    layerInstructions.add_passthrulayerinstruction(track: videoTrack)
+    passthruTimeRange = MovieTime.make_movie_timerange(start: insertionTime,
+                                                    duration: duration)
+    videoPassthruCommand = CommandModule.make_addvideoinstruction(movieEditor,
+                                                 timerange: passthruTimeRange,
+                                         layerinstructions: layerInstructions)
+    theCommands.add_command(videoPassthruCommand)
+    
+    # 6. Add two audio tracks to the movie editor.
+    audioTrack1 = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+      mediatype: :soun, trackindex: 0)
+    audioTrack2 = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+      mediatype: :soun, trackindex: 1)
+
+    addAudioTrackCommand = CommandModule.make_createtrackcommand(movieEditor,
+      mediatype: :soun)
+    theCommands.add_command(addAudioTrackCommand)
+    theCommands.add_command(addAudioTrackCommand)
+    
+    # 7. Add audio content (track segments to each of the two audio tracks.)
+    startTime0 = MovieTime.make_movietime_fromseconds(0)
+    startTime4 = MovieTime.make_movietime_fromseconds(4)
+    sourceTimeRange4 = MovieTime.make_movie_timerange(start: startTime4,
+                                                   duration: duration)
+    insertAudioContent = CommandModule.make_inserttracksegment(movieEditor,
+                            track: audioTrack1,
+                    source_object: movieImporter,
+                     source_track: audioTrack1,
+                    insertiontime: insertionTime,
+                 source_timerange: sourceTimeRange4)
+    theCommands.add_command(insertAudioContent)
+    
+    insertAudioContent2 = CommandModule.make_inserttracksegment(movieEditor,
+                            track: audioTrack2,
+                    source_object: movieImporter,
+                     source_track: audioTrack1,
+                    insertiontime: insertionTime,
+                 source_timerange: sourceTimeRange)
+    theCommands.add_command(insertAudioContent2)
+    
+    # 8. Set the volume for audio track 2 to 0 from the start.
+    volumeInstruction = AudioInstruction.new(track: audioTrack2)
+    
+    volumeInstruction.set_volume_instruction(time: startTime0, volume: 0.0)
+    addAudioInstruction = CommandModule.make_addaudioinstruction(movieEditor,
+                                               audioinstruction: volumeInstruction)
+    theCommands.add_command(addAudioInstruction)
+
+    # 9. Set the volume ramp for audio track 1 to go from 1 to 0. Time range 1..3
+    rampDuration = MovieTime.make_movietime_fromseconds(2)
+    rampStart = MovieTime.make_movietime_fromseconds(1)
+    rampTimeRange = MovieTime.make_movie_timerange(start: rampStart,
+                                                duration: rampDuration)
+    volumeRampInstruction1 = AudioInstruction.new(track: audioTrack1)
+    volumeRampInstruction1.set_volumeramp_instruction(timerange: rampTimeRange,
+                                                    startvolume: 1.0,
+                                                      endvolume: 0.0)
+    addAudioVolumeRamp1 = CommandModule.make_addaudioinstruction(movieEditor,
+                                               audioinstruction: volumeRampInstruction1)
+    theCommands.add_command(addAudioVolumeRamp1)
+
+    # 10. Set the volume ramp for audio track 2 to go from 0 to 1. Time range 1..3
+    volumeRampInstruction2 = AudioInstruction.new(track: audioTrack2)
+    volumeRampInstruction2.set_volumeramp_instruction(timerange: rampTimeRange,
+                                                    startvolume: 0.0,
+                                                      endvolume: 1.0)
+    addAudioVolumeRamp2 = CommandModule.make_addaudioinstruction(movieEditor,
+                                               audioinstruction: volumeRampInstruction2)
+    theCommands.add_command(addAudioVolumeRamp2)
+
+    # 11. Export the movie composition.
+    movieFileName = "audiowithvolumeramp.mov"
+    movieExportPath = File.join("~/Movies", movieFileName)
+    fileType = "com.apple.quicktime-movie"
+    exportMovieCommand = CommandModule.make_movieeditor_export(movieEditor,
+                                exportpreset: :AVAssetExportPreset960x540,
+                              exportfilepath: movieExportPath,
+                              exportfiletype: fileType)
+    theCommands.add_command(exportMovieCommand)
+    
+    # 12. Assign the composition map image to the image collection
+    imageIdentifier = SecureRandom.uuid
+    addCompositionToImageCollection = CommandModule.make_assignimage_tocollection(
+                                                movieEditor,
+                                    identifier: imageIdentifier)
+    theCommands.add_command(addCompositionToImageCollection)
+    
+    # 13. Add removing the composition map image command to cleanup commands.
+    theCommands.add_tocleanupcommands_removeimagefromcollection(imageIdentifier)
+    
+    # 14. Create an exporter.
+    compMapFileName = "compositionmap04.jpg"
+    # exportPath = File.join($compareImageDir, compMapFileName)
+    exportPath = File.join(Dir.tmpdir(), compMapFileName)
+    exporterObject = theCommands.make_createexporter(exportPath,
+                                        export_type: "public.jpeg")
+  
+    # 15. Add image from image collection to exporter.
+    addImageToExporterCommand = CommandModule.make_addimage_fromimagecollection(
+                                    exporterObject,
+                   imageidentifier: imageIdentifier)
+    theCommands.add_command(addImageToExporterCommand)
+    
+    # 16. Export image
+    exportCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportCommand)
+
+    Smig.perform_commands(theCommands)
+
+    # 17. Compare images.
+    origCompMap = File.join($compareImageDir, compMapFileName)
+    unless AreImageFilesSame(origCompMap, exportPath)
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+
+    # 18. Compare audio track metadata.
+    theCommands.clear
+    movieImporter2 = theCommands.make_createmovieimporter(movieExportPath)
+    getMovieTrackPropertiesCommand = CommandModule.make_get_objectproperties(
+                                                          movieImporter2)
+    theTrack = MovieTrackIdentifier.make_movietrackid_from_mediatype(
+      mediatype: :soun, trackindex: 0)
+
+    getMovieTrackPropertiesCommand.add_option(key: :track, value: theTrack)
+    theCommands.add_command(getMovieTrackPropertiesCommand)
+    theResult = Smig.perform_commands(theCommands)
+    origResult = '{"preferredvolume":1,"mediatype":"soun","timerange":{"start":{"flags":1,"value":0,"timescale":90000,"epoch":0},"duration":{"flags":1,"value":359952,"timescale":90000,"epoch":0}},"trackid":1,"languagecode":"und","languagetag":"","trackenabled":true}'
+    unless theResult.eql? origResult
+      raise "Audio track metadata has changed"
+    end
+
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts " Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+  ensure
+    FileUtils.rm_f(exportPath) unless exportPath.nil?
+    # FileUtils.rm_f(movieExportPath) unless movieExportPath.nil?
+    # `open #{movieExportPath}` unless movieExportPath.nil?
+  end
+end
+
 def LocalTestMain018()
   begin
     puts "test01"
@@ -712,6 +912,8 @@ def LocalTestMain018()
     test02()
     puts "test03"
     test03()
+    puts "test04"
+    test04()
   rescue RuntimeError => e
     puts e.message
     # puts e.backtrace
