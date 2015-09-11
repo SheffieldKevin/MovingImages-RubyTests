@@ -274,9 +274,10 @@ def test02()
     '640,"AVVideoScalingModeKey":"AVVideoScalingModeResizeAspect"},'\
     '"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
     '0},"canwriteframes":true,"file":"\/movie01.mov","time":'\
-    '{"flags":1,"value":0,"timescale":6000,"epoch":0},"size":{"width":640,'\
+    '{"flags":1,"value":0,"timescale":30000,"epoch":0},"size":{"width":640,'\
     '"height":480},"videowriterstatus":0,'\
     '"utifiletype":"com.apple.quicktime-movie"}'
+    # puts result
     fail "Writer with input h264_sd properties different: " unless result.eql? oldRes
 
     # Now redo for h264_hd
@@ -316,7 +317,7 @@ def test02()
     '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001'\
     ',"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
     '"\/movie01.mov","time":{"flags":1,'\
-    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":1080},'\
+    '"value":0,"timescale":30000,"epoch":0},"size":{"width":1920,"height":1080},'\
     '"videowriterstatus":0,"utifiletype"'\
     ':"com.apple.quicktime-movie"}'
     
@@ -350,7 +351,7 @@ def test02()
     ':"jpeg","AVVideoWidthKey":1280,"AVVideoCompressionPropertiesKey":{"Quality":'\
     '0.85}},"frameduration":{"flags":1,"value":1001,"timescale":30000,"epoch":'\
     '0},"canwriteframes":true,"file":"\/movie01.mov","time":{"flags":1,'\
-    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1280,"height":720},'\
+    '"value":0,"timescale":30000,"epoch":0},"size":{"width":1280,"height":720},'\
     '"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
     
     fail "Writer with input jpegpreset properties different: " unless result.eql? oldRes
@@ -386,7 +387,7 @@ def test02()
     '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":1001,'\
     '"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
     '"\/movie01.mov","time":{"flags":1,'\
-    '"value":0,"timescale":6000,"epoch":0},"size":{"width":1280,"height":720}'\
+    '"value":0,"timescale":30000,"epoch":0},"size":{"width":1280,"height":720}'\
     ',"videowriterstatus":'\
     '0,"utifiletype":"com.apple.quicktime-movie"}'
     
@@ -423,7 +424,7 @@ def test02()
     '"AVVideoScalingModeResizeAspect"},"frameduration":{"flags":1,"value":'\
     '1001,"timescale":30000,"epoch":0},"canwriteframes":true,"file":'\
     '"\/movie01.mov","time":{"flags"'\
-    ':1,"value":0,"timescale":6000,"epoch":0},"size":{"width":1920,"height":'\
+    ':1,"value":0,"timescale":30000,"epoch":0},"size":{"width":1920,"height":'\
     '1080},"videowriterstatus":0,"utifiletype":"com.apple.quicktime-movie"}'
     
     fail "Writer with input ProRes4444 properties different: " unless result.eql? oldRes
