@@ -43,6 +43,26 @@
 # 3.8 Compare the composition map image with a previously generated one.
 # 3.9 Export the video compostion.
 # 3.10 Import the exported movie and check movie length and size.
+#
+# 4 Tests the application of audio instructions set volume, and volume ramp.
+# 1. Import a movie file
+# 2. Create a movie editor object.
+# 3. Add a video track to the movie editor.
+# 4. Add a 4 second segment to the video track from the imported movie.
+# 5. Add a passthru layer instruction to the video track.
+# 6. Add two audio tracks to the movie editor.
+# 7. Add content (track segments to each of the two audio tracks.)
+# 8. Set the volume for audio track 2 to 0 from the start.
+# 9. Set the volume ramp for audio track 1 to go from 1 to 0. Time range 1..3
+# 10. Set the volume ramp for audio track 2 to go from 0 to 1. Time range 1..3
+# 11. Export the movie composition.
+# 12. Assign the composition map image to the image collection
+# 13. Add removing the composition map image command to cleanup commands.
+# 14. Create an exporter.
+# 15. Add image from image collection to exporter.
+# 16. Export image
+# 17. Compare images.
+# 18. Compare movie file audio track metadata.
 
 
 require 'Open3'
