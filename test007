@@ -488,7 +488,8 @@ def test03()
     theRect = MIShapes.make_rectangle(origin: theOrigin, size: theSize)
     strokeRectangle.rectangle = theRect
     blackColor = MIColor.make_rgbacolor(0,0,0)
-    strokeRectangle.strokecolor = blackColor
+#    strokeRectangle.strokecolor = blackColor
+    strokeRectangle.strokecolor = "#000000"
     strokeRectangle.linewidth = 3.0
     drawCommand = CommandModule.make_drawelement(bitmapContextObject,
                                          drawinstructions: strokeRectangle)
@@ -651,6 +652,7 @@ def test03()
     theCommands.add_command(drawCommand)
 
     tempFile = File.join(Dir.tmpdir(), baseImageName)
+    # tempFile = File.join(File.expand_path("~/Desktop/"), baseImageName)
     imageExporterName = SecureRandom.uuid
     createExporterCommand = CommandModule.make_createexporter(tempFile,
                                                   export_type: :"public.jpeg",
