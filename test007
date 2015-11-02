@@ -468,6 +468,7 @@ end
 
 def test03()
   baseImageName = "shapedrawing.jpg"
+  origFile = File.join($compareImageDir, baseImageName)
   begin
     theCommands = CommandModule::SmigCommands.new
     theCommands.saveresultstype = :lastcommandresult
@@ -491,6 +492,8 @@ def test03()
 #    strokeRectangle.strokecolor = blackColor
     strokeRectangle.strokecolor = "#000000"
     strokeRectangle.linewidth = 3.0
+    strokeRectangle.dashsegments = [4, 2, 5, 3]
+    strokeRectangle.dashphase = 1
     drawCommand = CommandModule.make_drawelement(bitmapContextObject,
                                          drawinstructions: strokeRectangle)
     theCommands.add_command(drawCommand)
@@ -672,7 +675,6 @@ def test03()
     # puts JSON.pretty_generate(commandsHash)
     $teststring = commandsHash.to_json
     Smig.perform_commands(commandsHash)
-    origFile = File.join($compareImageDir, baseImageName)
     unless AreImageFilesSame(origFile, tempFile)
       raise "Different image files: " + origFile + " and " + tempFile
     end
@@ -1189,17 +1191,17 @@ end
 
 def LocalTestMain007()
   puts "test01"
-  test01()
+  # test01()
   puts "test02"
-  test02()
+  # test02()
   puts "test03"
   test03()
   puts "test04"
-  test04()
+  # test04()
   puts "test05"
-  test05()
+  # test05()
   puts "test06"
-  test06()
+  # test06()
   return $errorcode
 end
 
