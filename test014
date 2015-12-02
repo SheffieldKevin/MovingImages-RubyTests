@@ -196,8 +196,8 @@ def test02()
     objectName = SecureRandom.uuid
     pathSubstitutionKey = SecureRandom.uuid
     importerObject = theCommands.make_createimporter("",
-                                         name: objectName,
-                                         pathsubstitutionkey: pathSubstitutionKey)
+                                               name: objectName,
+                                pathsubstitutionkey: pathSubstitutionKey)
     
     variablesDict = { pathSubstitutionKey => inputImageFile }
     contextName = SecureRandom.uuid
@@ -214,7 +214,7 @@ def test02()
     radius = 50
     theClip = MIClip.new
     theClip.arrayofpathelements = make_arcpath(contextSize: contextSize,
-                                               radius: radius)
+                                                    radius: radius)
 #   The following line is not needed as the non windingrule is default.
     theClip.clippingrule = :nonwindingrule
 #   If you want to use the even odd rule for clipping then uncomment following
@@ -363,6 +363,82 @@ def test03()
   end
 end
 
+# test04
+# Apply a dash to a stroke drawing command.
+# 1. Create a bitmap context
+# 2. Create a path
+# 3. Create a stroke path draw element.
+# 4. Add a dash pattern to the draw element
+# 5. Create a draw command and add draw element to it.
+# 6. Add bitmap as an image to the exporter.
+# 7. Export the image.
+# 8. Compare the output with one we created earlier.
+def test04()
+  begin
+    tempFile = nil
+    baseImageName = "test014-04.jpg"
+    theCommands = CommandModule::SmigCommands.new
+    theCommands.saveresultstype = :lastcommandresult
+    
+    variablesDict = { }
+    contextName = SecureRandom.uuid
+    contextSize = MIShapes.make_size(600, 450)
+    contextObject = theCommands.make_createbitmapcontext(size: contextSize,
+                                                         name: contextName)
+
+    strokePathElement = MIDrawElement.new(:strokepath)
+    radius = 60
+    strokePathElement.arrayofpathelements = make_arcpath(contextSize: contextSize,
+                                                              radius: radius)
+    strokePathElement.startpoint = MIShapes.make_point(2.0 * radius, radius)
+    strokePathElement.linewidth = 8
+    strokePathElement.strokecolor = MIColor.make_rgbacolor(0.8, 0.3, 0.2)
+    strokePathElement.dashsegments = [ 8, 4, 16, 8 ]
+    strokePathElement.dashphase = 4
+                                     
+    drawElementCommand = CommandModule.make_drawelement(contextObject,
+                                      drawinstructions: strokePathElement)
+    theCommands.add_command(drawElementCommand)
+
+    tempFile = File.join(Dir.tmpdir(), baseImageName)
+#    tempFile = File.join($compareImageDir, baseImageName)
+#    exporterObject = theCommands.make_createexporter(tempFile)
+    exporterObject = theCommands.make_createexporter("")
+    addImageToExporterCommand = CommandModule.make_addimage(exporterObject, 
+                                                            contextObject)
+    theCommands.add_command(addImageToExporterCommand)
+    exportPathSubKey = SecureRandom.uuid
+    assignPathCommand = CommandModule.make_set_object_exportpathproperty(
+                                                               exporterObject,
+                                                propertyvalue: nil,
+                                          pathsubstitutionkey: exportPathSubKey)
+    theCommands.add_command(assignPathCommand)
+    exportCommand = CommandModule.make_export(exporterObject)
+    theCommands.add_command(exportCommand)
+    variablesDict[exportPathSubKey] = tempFile
+    theCommands.variables = variablesDict
+#    puts JSON.pretty_generate(theCommands.commandshash)
+    Smig.perform_commands(theCommands)
+    origFile = File.join($compareImageDir, baseImageName)
+    unless AreImageFilesSame(origFile, tempFile)
+      # 10. Report if different.
+      raise "Different image files: " + origFile + " and " + tempFile
+    end
+  rescue RuntimeError => e
+    $errorcode = Smig.exitvalue
+    unless $errorcode.zero?
+      puts "Exit string: " + Smig.exitstring
+      puts "Exit status: " + $errorcode.to_s
+    end
+    puts e.message
+    puts e.backtrace.to_s
+#    exit 240
+  ensure
+    FileUtils.rm_f(tempFile) unless tempFile.nil?
+#    `open #{tempFile}`
+  end
+end
+
 def LocalTestMain014()
   begin
     puts "test01"
@@ -371,6 +447,8 @@ def LocalTestMain014()
     test02()
     puts "test03"
     test03()
+    puts "test04"
+    test04()
   rescue RuntimeError => e
     puts e.message
     # puts e.backtrace
